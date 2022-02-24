@@ -1,7 +1,7 @@
 using IPA;
 using IPALogger = IPA.Logging.Logger;
 
-namespace BsListLastPlayedSort {
+namespace BetterSongList.LastPlayedSort {
   [Plugin(RuntimeOptions.SingleStartInit)]
   public class Plugin {
     internal static Plugin Instance { get; private set; }

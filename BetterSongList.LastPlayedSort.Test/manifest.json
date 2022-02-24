@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "BetterSongList.LastPlayedSort.Test",
+  "name": "BetterSongList.LastPlayedSort.Test",
+  "author": "",
+  "version": "0.0.1",
+  "description": "Assembly for mod test",
+  "gameVersion": "1.19.1",
+  "dependsOn": {
+    "BSIPA": "^4.2.0"
+  }
+}
