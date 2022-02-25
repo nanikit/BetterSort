@@ -1,19 +1,14 @@
-using IPA;
-using IPA.Config;
-using IPA.Config.Stores;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using IPALogger = IPA.Logging.Logger;
-
 namespace BetterSongList.LastPlayedSort.Test {
+  using IPA;
+  using Nanikit.Test;
+  using System.Collections.Generic;
+  using System.Reflection;
+  using UnityEngine;
+  using IPALogger = IPA.Logging.Logger;
+
   [Plugin(RuntimeOptions.SingleStartInit)]
   public class Plugin {
-    internal static Plugin Instance { get; private set; }
-    internal static IPALogger Log { get; private set; }
+    internal static IPALogger Logger { get; private set; }
 
     [Init]
     /// <summary>
@@ -22,32 +17,19 @@ namespace BetterSongList.LastPlayedSort.Test {
     /// Only use [Init] with one Constructor.
     /// </summary>
     public void Init(IPALogger logger) {
-      Instance = this;
-      Log = logger;
-      Log.Info("BetterSongList.LastPlayedSort.Test initialized.");
+      Logger = logger;
     }
-
-    #region BSIPA Config
-    //Uncomment to use BSIPA's config
-    /*
-    [Init]
-    public void InitWithConfig(Config conf)
-    {
-        Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-        Log.Debug("Config loaded");
-    }
-    */
-    #endregion
 
     [OnStart]
     public void OnApplicationStart() {
-      Log.Debug("OnApplicationStart");
+      Logger.Debug("Test start.");
+      new TestRunner(Logger).Test(new List<Assembly> { typeof(Plugin).Assembly });
+      Application.Quit();
     }
 
     [OnExit]
     public void OnApplicationQuit() {
-      Log.Debug("OnApplicationQuit");
-
+      Logger.Debug("Test end.");
     }
   }
 }

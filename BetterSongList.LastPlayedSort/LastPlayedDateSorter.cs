@@ -1,83 +1,65 @@
 #nullable enable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using UnityEngine;
-
 namespace BetterSongList.LastPlayedSort {
-  public class LastPlayedDateSorter : IBetterListPlugin {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-
+  public class LastPlayedDateSorter : ISortFilter, ILegendProvider {
     /// <summary>
     /// Level id to instant.
     /// </summary>
-    private Dictionary<string, DateTime>? _lastPlayedDates;
-
-    private readonly Func<Task<Dictionary<string, DateTime>>> _historyProvider;
+    public Dictionary<string, DateTime>? LastPlayedDates = new();
 
     public string Name => "Last played";
+    public ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> ResultLevels => _resultLevels;
+    public ObservableVariable<bool> IsVisible => _isVisible;
+    public ObservableVariable<IEnumerable<(string, int)>> Legend => _legend;
 
-    public ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> ResultLevels => throw new NotImplementedException();
-
-    public LastPlayedDateSorter(Func<Task<Dictionary<string, DateTime>>> historyProvider) {
-      _historyProvider = historyProvider;
+    public LastPlayedDateSorter() {
+      _isVisible.value = true;
     }
 
-    public async Task Prepare(CancellationToken cancelToken) {
-      _lastPlayedDates = await _historyProvider().ConfigureAwait(false);
+    public Task NotifyChange(IEnumerable<IPreviewBeatmapLevel> newLevels, bool isSelected = false, CancellationToken? token = null) {
+      _isSelected = isSelected;
+      if (!isSelected) {
+        return Task.CompletedTask;
+      }
+
+      if (LastPlayedDates == null) {
+        throw new InvalidOperationException($"Precondition: {nameof(LastPlayedDates)} should not be null.");
+      }
+
+      var comparer = new LastPlayedDateComparer(LastPlayedDates);
+      var ordered = newLevels.OrderBy(x => x, comparer).ToList();
+      _resultLevels.value = ordered;
+      _legend.value = GetLegendByLogScale(ordered, DateTime.Now, LastPlayedDates);
+      return Task.CompletedTask;
     }
 
-    public int Compare(IPreviewBeatmapLevel a, IPreviewBeatmapLevel b) {
-      if (_lastPlayedDates == null) {
-        return 0;
-      }
+    private readonly ObservableVariable<bool> _isVisible = new();
+    private readonly ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> _resultLevels = new();
+    private readonly ObservableVariable<IEnumerable<(string, int)>> _legend = new();
+    private bool _isSelected = false;
 
-      if (_lastPlayedDates.TryGetValue(a.levelID, out var lastPlayOfA)) {
-        if (_lastPlayedDates.TryGetValue(b.levelID, out var lastPlayOfB)) {
-          var descending = lastPlayOfB.CompareTo(lastPlayOfA);
-          return descending;
-        }
-        return -1;
-      }
-      else {
-        if (_lastPlayedDates.TryGetValue(b.levelID, out var _)) {
-          return 1;
-        }
-        return 0;
-      }
-    }
-
-    public List<KeyValuePair<string, int>> BuildLegend(IPreviewBeatmapLevel[] levels) {
-      var legend = new List<KeyValuePair<string, int>>();
-
-      if (_lastPlayedDates == null || levels.Length == 0) {
-        return new List<KeyValuePair<string, int>>();
-      }
-
-      GetLegendByLogScale(levels, now: DateTime.Now, lastPlayedDates: _lastPlayedDates);
-
-      return legend;
-    }
-
-    internal static List<KeyValuePair<string, int>> GetLegendByLogScale(IPreviewBeatmapLevel[] levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
-      var legend = new List<KeyValuePair<string, int>>();
+    internal static List<(string, int)> GetLegendByLogScale(IList<IPreviewBeatmapLevel> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
+      var legend = new List<(string, int)>();
       var unixNow = now.ToUnixTime();
       var lastLogOfUnixDifference = 0;
 
-      for (var i = 0; i < levels.Length; i++) {
+      for (var i = 0; i < levels.Count; i++) {
         var level = levels[i];
         if (lastPlayedDates.TryGetValue(level.levelID, out var lastPlayedDate)) {
           var difference = unixNow - lastPlayedDate.ToUnixTime();
           var logOfDifference = (int)Math.Log(Math.Max(3, difference), Math.E);
           if (lastLogOfUnixDifference < logOfDifference) {
             lastLogOfUnixDifference = logOfDifference;
-            legend.Add(new KeyValuePair<string, int>(FormatRelativeTime(difference), i));
+            legend.Add((FormatRelativeTime(difference), i));
           }
         }
         else {
-          legend.Add(new KeyValuePair<string, int>("Unplayed", i));
+          legend.Add(("Unplayed", i));
           break;
         }
       }
@@ -105,15 +87,5 @@ namespace BetterSongList.LastPlayedSort {
 
       return result.Last();
     }
-
-    public Task<Action> Initialize(CancellationToken token) {
-      throw new NotImplementedException();
-    }
-
-    public Task NotifyChange(IEnumerable<IPreviewBeatmapLevel> newLevels, CancellationToken token) {
-      throw new NotImplementedException();
-    }
-    // BetterSongList.SortModels.LastPlayedDateSorter.Test()
   }
-
 }

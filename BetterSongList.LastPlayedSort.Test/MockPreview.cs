@@ -1,9 +1,8 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using UnityEngine;
-
 namespace BetterSongList.LastPlayedSort.Test {
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using UnityEngine;
 
   class MockPreview : IPreviewBeatmapLevel {
     public MockPreview(string id) {
