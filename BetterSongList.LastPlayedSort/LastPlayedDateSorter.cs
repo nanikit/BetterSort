@@ -1,4 +1,5 @@
 namespace BetterSongList.LastPlayedSort {
+  using BetterSongList.LastPlayedSort.External;
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -16,8 +17,9 @@ namespace BetterSongList.LastPlayedSort {
     public ObservableVariable<bool> IsVisible => _isVisible;
     public ObservableVariable<IEnumerable<(string, int)>> Legend => _legend;
 
-    public LastPlayedDateSorter() {
+    public LastPlayedDateSorter(IClock clock) {
       _isVisible.value = true;
+      _clock = clock;
     }
 
     public Task NotifyChange(IEnumerable<IPreviewBeatmapLevel> newLevels, bool isSelected = false, CancellationToken? token = null) {
@@ -33,25 +35,28 @@ namespace BetterSongList.LastPlayedSort {
       var comparer = new LastPlayedDateComparer(LastPlayedDates);
       var ordered = newLevels.OrderBy(x => x, comparer).ToList();
       _resultLevels.value = ordered;
-      _legend.value = GetLegendByLogScale(ordered, DateTime.Now, LastPlayedDates);
+      _legend.value = GetLegend(ordered, LastPlayedDates);
       return Task.CompletedTask;
     }
 
     private readonly ObservableVariable<bool> _isVisible = new();
     private readonly ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> _resultLevels = new();
     private readonly ObservableVariable<IEnumerable<(string, int)>> _legend = new();
+    private readonly IClock _clock;
     private bool _isSelected = false;
 
-    internal static List<(string, int)> GetLegendByLogScale(IList<IPreviewBeatmapLevel> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
+    internal List<(string, int)> GetLegend(IList<IPreviewBeatmapLevel> levels, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
-      var unixNow = now.ToUnixTime();
-      var lastLogOfUnixDifference = 0;
+      var unixNow = _clock.Now.ToUnixTime();
+      var lastLogOfUnixDifference = -1;
 
       for (var i = 0; i < levels.Count; i++) {
         var level = levels[i];
         if (lastPlayedDates.TryGetValue(level.levelID, out var lastPlayedDate)) {
           var difference = unixNow - lastPlayedDate.ToUnixTime();
-          var logOfDifference = (int)Math.Log(Math.Max(3, difference), Math.E);
+          double logBase = 1.5;
+          double logOffset = 100000;
+          var logOfDifference = (int)(Math.Log(Math.Max(1, difference) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
           if (lastLogOfUnixDifference < logOfDifference) {
             lastLogOfUnixDifference = logOfDifference;
             legend.Add((FormatRelativeTime(difference), i));
@@ -67,8 +72,12 @@ namespace BetterSongList.LastPlayedSort {
     }
 
     internal static string FormatRelativeTime(long unixDifference) {
-      var symbols = new string[] { "s", "m", "h", "D", "M", "Y" };
-      var units = new double[] { 60, 60, 24, 30.4, 12, 1 };
+      if (unixDifference < 0) {
+        return "Future";
+      }
+
+      var symbols = new string[] { "sec", "min", "hour", "days", "month", "year" };
+      var units = new double[] { 60, 60, 24, 30.4, 12, double.MaxValue };
 
       var result = new List<string>();
       var value = unixDifference;
