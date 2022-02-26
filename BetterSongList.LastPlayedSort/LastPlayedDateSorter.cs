@@ -1,4 +1,3 @@
-#nullable enable
 namespace BetterSongList.LastPlayedSort {
   using System;
   using System.Collections.Generic;

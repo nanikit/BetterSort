@@ -1,4 +1,3 @@
-#nullable enable
 namespace Nanikit.Test {
   using System;
   using System.Collections.Generic;

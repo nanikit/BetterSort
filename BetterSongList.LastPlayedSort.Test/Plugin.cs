@@ -3,12 +3,11 @@ namespace BetterSongList.LastPlayedSort.Test {
   using Nanikit.Test;
   using System.Collections.Generic;
   using System.Reflection;
-  using UnityEngine;
   using IPALogger = IPA.Logging.Logger;
 
   [Plugin(RuntimeOptions.SingleStartInit)]
   public class Plugin {
-    internal static IPALogger Logger { get; private set; }
+    internal static IPALogger? Logger { get; private set; }
 
     [Init]
     /// <summary>
@@ -22,14 +21,14 @@ namespace BetterSongList.LastPlayedSort.Test {
 
     [OnStart]
     public void OnApplicationStart() {
-      Logger.Debug("Test start.");
+      Logger?.Info("Test start.");
       new TestRunner(Logger).Test(new List<Assembly> { typeof(Plugin).Assembly });
       //Application.Quit();
     }
 
     [OnExit]
     public void OnApplicationQuit() {
-      Logger.Debug("Test end.");
+      Logger?.Info("Test end.");
     }
 
     public static void Main() {

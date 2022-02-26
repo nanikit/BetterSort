@@ -8,7 +8,7 @@
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <Product>BetterSongList.LastPlayedSort</Product>
     <Company />
     <Authors>nanikit</Authors>
