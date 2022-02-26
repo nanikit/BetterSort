@@ -21,13 +21,13 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>none</DebugType>
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
@@ -87,11 +87,4 @@
   <ItemGroup>
     <ProjectReference Include="..\BetterSongList\BetterSongList.csproj" />
   </ItemGroup>
-
-  <!-- make all references non-private, so they won't be copied to the output folder -->
-  <Target Name="ClearReferenceCopyLocalPaths" AfterTargets="ResolveAssemblyReferences">
-    <ItemGroup>
-      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
-    </ItemGroup>
-  </Target>
 </Project>

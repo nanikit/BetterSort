@@ -24,12 +24,24 @@ namespace BetterSongList.LastPlayedSort.Test {
     public void OnApplicationStart() {
       Logger.Debug("Test start.");
       new TestRunner(Logger).Test(new List<Assembly> { typeof(Plugin).Assembly });
-      Application.Quit();
+      //Application.Quit();
     }
 
     [OnExit]
     public void OnApplicationQuit() {
       Logger.Debug("Test end.");
+    }
+
+    public static void Main() {
+      Plugin plugin = new();
+      plugin.Init(new MockLogger());
+      plugin.OnApplicationStart();
+    }
+  }
+
+  internal class MockLogger : IPALogger {
+    public override void Log(Level level, string message) {
+      System.Console.WriteLine($"[{level}]: {message}");
     }
   }
 }
