@@ -29,7 +29,7 @@ namespace BetterSongList.LastPlayedSort {
   }
 
   public interface ILegendProvider {
-    ObservableVariable<IEnumerable<(string, int)>> Legend { get; }
+    ObservableVariable<IEnumerable<(string Label, int Index)>> Legend { get; }
   }
 
   // BetterSongListApi.RegisterSorter(ISortFilter sorter);

@@ -15,7 +15,7 @@ namespace BetterSongList.LastPlayedSort {
     public string Name => "Last played";
     public ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> ResultLevels => _resultLevels;
     public ObservableVariable<bool> IsVisible => _isVisible;
-    public ObservableVariable<IEnumerable<(string, int)>> Legend => _legend;
+    public ObservableVariable<IEnumerable<(string Label, int Index)>> Legend => _legend;
 
     public LastPlayedDateSorter(IClock clock) {
       _isVisible.value = true;
@@ -23,7 +23,6 @@ namespace BetterSongList.LastPlayedSort {
     }
 
     public Task NotifyChange(IEnumerable<IPreviewBeatmapLevel> newLevels, bool isSelected = false, CancellationToken? token = null) {
-      _isSelected = isSelected;
       if (!isSelected) {
         return Task.CompletedTask;
       }
@@ -41,25 +40,56 @@ namespace BetterSongList.LastPlayedSort {
 
     private readonly ObservableVariable<bool> _isVisible = new();
     private readonly ObservableVariable<IEnumerable<IPreviewBeatmapLevel>> _resultLevels = new();
-    private readonly ObservableVariable<IEnumerable<(string, int)>> _legend = new();
+    private readonly ObservableVariable<IEnumerable<(string Label, int Index)>> _legend = new();
     private readonly IClock _clock;
-    private bool _isSelected = false;
 
     internal List<(string, int)> GetLegend(IList<IPreviewBeatmapLevel> levels, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
-      var unixNow = _clock.Now.ToUnixTime();
-      var lastLogOfUnixDifference = -1;
+      var now = _clock.Now.ToLocalTime();
+      var today = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Local);
+      var yesterday = today.AddDays(-1);
+      var thisWeek = today.AddDays(-(int)today.DayOfWeek);
+      var pastWeek = thisWeek.AddDays(-7);
+      var monthAgo = today.AddMonths(-1);
+      var twoMonthsAgo = today.AddMonths(-2);
+      var threeMonthsAgo = today.AddMonths(-3);
+      var sixMonthsAgo = today.AddMonths(-6);
+      var yearAgo = today.AddYears(-1);
+      var twoYearsAgo = today.AddYears(-2);
+      var threeYearsAgo = today.AddYears(-3);
+      var sixYearsAgo = today.AddYears(-6);
 
+      var groups = new List<(string Label, Func<DateTime, bool> Predicate)>() {
+        ("Future", (date) => now < date),
+        ("Today", (date) => today < date),
+        ("Yesterday", (date) => yesterday < date),
+        ("This week", (date) => thisWeek < date),
+        ("Past week", (date) => pastWeek < date),
+        ("a month ago", (date) => monthAgo < date),
+        ("2 months ago", (date) => twoMonthsAgo < date),
+        ("3 months ago", (date) => threeMonthsAgo < date),
+        ("6 months ago", (date) => sixMonthsAgo < date),
+        ("1 year ago", (date) => yearAgo < date),
+        ("2 years ago", (date) => twoYearsAgo < date),
+        ("3 years ago", (date) => threeYearsAgo < date),
+        ("6 years ago", (date) => sixYearsAgo < date),
+      };
+
+      var previousLabel = "";
       for (var i = 0; i < levels.Count; i++) {
         var level = levels[i];
         if (lastPlayedDates.TryGetValue(level.levelID, out var lastPlayedDate)) {
-          var difference = unixNow - lastPlayedDate.ToUnixTime();
-          double logBase = 1.5;
-          double logOffset = 100000;
-          var logOfDifference = (int)(Math.Log(Math.Max(1, difference) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
-          if (lastLogOfUnixDifference < logOfDifference) {
-            lastLogOfUnixDifference = logOfDifference;
-            legend.Add((FormatRelativeTime(difference), i));
+          while (groups.Count > 0 && !groups[0].Predicate(lastPlayedDate)) {
+            groups.RemoveAt(0);
+          }
+
+          if (groups.Count == 0) {
+            break;
+          }
+
+          if (groups[0].Label != previousLabel) {
+            legend.Add((groups[0].Label, i));
+            previousLabel = groups[0].Label;
           }
         }
         else {
@@ -69,31 +99,6 @@ namespace BetterSongList.LastPlayedSort {
       }
 
       return legend;
-    }
-
-    internal static string FormatRelativeTime(long unixDifference) {
-      if (unixDifference < 0) {
-        return "Future";
-      }
-
-      var symbols = new string[] { "sec", "min", "hour", "days", "month", "year" };
-      var units = new double[] { 60, 60, 24, 30.4, 12, double.MaxValue };
-
-      var result = new List<string>();
-      var value = unixDifference;
-
-      for (var i = 0; i < symbols.Length; i++) {
-        var unit = units[i];
-        var remnant = value % unit;
-        result.Add($"{remnant} {symbols[i]}");
-
-        value = (long)Math.Floor(value / unit);
-        if (value <= 0) {
-          break;
-        }
-      }
-
-      return result.Last();
     }
   }
 }

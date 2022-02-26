@@ -31,12 +31,16 @@ namespace BetterSongList.LastPlayedSort.Test {
       data.ShuffleInPlace();
       await sorter.NotifyChange(data.Select(x => x.preview), true);
 
-      foreach (var legend in sorter.Legend.value) {
-        _logger.Info($"{legend}");
-      }
+      var legend = sorter.Legend.value.ToList();
 
       Assert.True(isChangedFired, "ResultLevels.didChangeEvent is not fired.");
       Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), sorter.ResultLevels.value.Select(x => x.levelID));
+      Assert.Equal("Yesterday", legend[0].Label);
+      Assert.Equal(0, legend[0].Index);
+      Assert.Equal("This week", legend[1].Label);
+      Assert.Equal(45, legend[1].Index);
+      Assert.Equal("6 years ago", legend[10].Label);
+      Assert.Equal(456, legend[10].Index);
     }
 
     private readonly IPALogger _logger;
