@@ -23,9 +23,9 @@ namespace Nanikit.Test {
     private void RunTestsWithConsoleOutput(IEnumerable<MethodInfo> testMethods) {
       int success = 0;
       int total = 0;
-      foreach (var result in RunTests(testMethods)) {
-        var typeName = result.Method.DeclaringType.Name;
-        var methodName = result.Method.Name;
+      foreach (TestResult? result in RunTests(testMethods)) {
+        string? typeName = result.Method.DeclaringType.Name;
+        string? methodName = result.Method.Name;
         if (result.Exception == null) {
           _logger?.Info($"PASS: {typeName}.{methodName}");
           success++;
@@ -39,7 +39,7 @@ namespace Nanikit.Test {
     }
 
     private IEnumerable<TestResult> RunTests(IEnumerable<MethodInfo> tests) {
-      var parameters = new object[] { };
+      object[]? parameters = new object[] { };
       object? previousInstance = null;
 
       var container = new DiContainer();
@@ -52,11 +52,11 @@ namespace Nanikit.Test {
         return container.Resolve(type);
       }
 
-      foreach (var method in tests) {
+      foreach (MethodInfo? method in tests) {
         Exception? exception = null;
         try {
-          var isSameType = method.DeclaringType == previousInstance?.GetType();
-          var instance = isSameType ? previousInstance : Resolve(method.DeclaringType);
+          bool isSameType = method.DeclaringType == previousInstance?.GetType();
+          object? instance = isSameType ? previousInstance : Resolve(method.DeclaringType);
           previousInstance = instance;
 
           bool isAwaitable = method.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null;
@@ -75,10 +75,10 @@ namespace Nanikit.Test {
     }
 
     private static List<MethodInfo> GetTests(Assembly targetAssembly) {
-      var testAttribute = typeof(Test);
+      Type? testAttribute = typeof(Test);
       var testMethods = new List<MethodInfo>();
-      foreach (var type in targetAssembly.GetTypes()) {
-        foreach (var method in type.GetMethods()) {
+      foreach (Type? type in targetAssembly.GetTypes()) {
+        foreach (MethodInfo? method in type.GetMethods()) {
           if (Attribute.IsDefined(method, testAttribute)) {
             testMethods.Add(method);
           }

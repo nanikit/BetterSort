@@ -42,7 +42,7 @@ namespace BetterSongList.LastPlayedSort.External {
       }
 
       DateTime now = _clock.Now;
-      var duration = now - _startTime;
+      TimeSpan duration = now - _startTime;
       bool isPlayedTooShort = duration.Seconds < 10 && _songDuration < 10;
       if (isPlayedTooShort) {
         return;

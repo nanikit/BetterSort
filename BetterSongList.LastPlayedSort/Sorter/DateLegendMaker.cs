@@ -5,19 +5,19 @@ namespace BetterSongList.LastPlayedSort.Sorter {
   internal class DateLegendMaker {
     public static List<(string, int)> GetLegend(IList<IPreviewBeatmapLevel> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
-      var instant = now.ToLocalTime();
+      DateTime instant = now.ToLocalTime();
       var today = new DateTime(instant.Year, instant.Month, instant.Day, 0, 0, 0, DateTimeKind.Local);
-      var yesterday = today.AddDays(-1);
-      var thisWeek = today.AddDays(-(int)today.DayOfWeek);
-      var pastWeek = thisWeek.AddDays(-7);
-      var monthAgo = today.AddMonths(-1);
-      var twoMonthsAgo = today.AddMonths(-2);
-      var threeMonthsAgo = today.AddMonths(-3);
-      var sixMonthsAgo = today.AddMonths(-6);
-      var yearAgo = today.AddYears(-1);
-      var twoYearsAgo = today.AddYears(-2);
-      var threeYearsAgo = today.AddYears(-3);
-      var sixYearsAgo = today.AddYears(-6);
+      DateTime yesterday = today.AddDays(-1);
+      DateTime thisWeek = today.AddDays(-(int)today.DayOfWeek);
+      DateTime pastWeek = thisWeek.AddDays(-7);
+      DateTime monthAgo = today.AddMonths(-1);
+      DateTime twoMonthsAgo = today.AddMonths(-2);
+      DateTime threeMonthsAgo = today.AddMonths(-3);
+      DateTime sixMonthsAgo = today.AddMonths(-6);
+      DateTime yearAgo = today.AddYears(-1);
+      DateTime twoYearsAgo = today.AddYears(-2);
+      DateTime threeYearsAgo = today.AddYears(-3);
+      DateTime sixYearsAgo = today.AddYears(-6);
 
       var groups = new List<(string Label, Func<DateTime, bool> Predicate)>() {
         ("Future", (date) => instant < date),
@@ -35,10 +35,10 @@ namespace BetterSongList.LastPlayedSort.Sorter {
         ("6 years ago", (date) => sixYearsAgo < date),
       };
 
-      var previousLabel = "";
-      for (var i = 0; i < levels.Count; i++) {
-        var level = levels[i];
-        if (lastPlayedDates.TryGetValue(level.levelID, out var lastPlayedDate)) {
+      string previousLabel = "";
+      for (int i = 0; i < levels.Count; i++) {
+        IPreviewBeatmapLevel? level = levels[i];
+        if (lastPlayedDates.TryGetValue(level.levelID, out DateTime lastPlayedDate)) {
           while (groups.Count > 0 && !groups[0].Predicate(lastPlayedDate)) {
             groups.RemoveAt(0);
           }
