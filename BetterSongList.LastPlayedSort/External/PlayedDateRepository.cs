@@ -6,16 +6,16 @@ namespace BetterSongList.LastPlayedSort.External {
   using System.Linq;
 
   internal interface IPlayedDateRepository {
-    void Save(IEnumerable<(string, DateTime)> playDates);
+    void Save(IDictionary<string, DateTime> playDates);
 
     StoredData? Load();
   }
 
   internal class PlayedDateRepository : IPlayedDateRepository {
-    public void Save(IEnumerable<(string, DateTime)> playDates) {
+    public void Save(IDictionary<string, DateTime> playDates) {
       string json = JsonConvert.SerializeObject(new StoredData() {
-        Version = "",
-        LastPlays = playDates.ToList(),
+        Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
+        LastPlays = playDates.ToDictionary(x => x.Key, x => x.Value),
       });
       File.WriteAllText(_path, json);
     }

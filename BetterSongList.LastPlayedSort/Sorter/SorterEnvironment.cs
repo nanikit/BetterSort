@@ -2,6 +2,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
   using BetterSongList.Api;
   using BetterSongList.LastPlayedSort.External;
   using System;
+  using System.Collections.Generic;
   using System.Linq;
   using IPALogger = IPA.Logging.Logger;
 
@@ -15,7 +16,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
 
     public void Start() {
       StoredData? data = _repository.Load();
-      _sorter.LastPlayedDates = data?.LastPlays.ToDictionary(x => x.id, x => x.date) ?? new();
+      _sorter.LastPlayedDates = data?.LastPlays ?? new Dictionary<string, DateTime>();
       _playEventSource.OnSongPlayed += RecordHistory;
       BetterSongListApi.RegisterSorter(_sorter);
     }
@@ -28,7 +29,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
     private void RecordHistory(string levelId, DateTime instant) {
       _logger.Info($"Record play {levelId}: {instant}");
       _sorter.LastPlayedDates[levelId] = instant;
-      _repository.Save(_sorter.LastPlayedDates.Select(x => (x.Key, x.Value)));
+      _repository.Save(_sorter.LastPlayedDates);
     }
   }
 }

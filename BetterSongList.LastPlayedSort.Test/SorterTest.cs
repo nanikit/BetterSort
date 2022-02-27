@@ -1,6 +1,6 @@
 namespace BetterSongList.LastPlayedSort.Test {
-  using BetterSongList.LastPlayedSort.External;
   using BetterSongList.LastPlayedSort.Sorter;
+  using BetterSongList.LastPlayedSort.Test.Mocks;
   using Nanikit.Test;
   using System;
   using System.Linq;
@@ -45,13 +45,5 @@ namespace BetterSongList.LastPlayedSort.Test {
     }
 
     private readonly IPALogger _logger;
-  }
-
-  class FixedClock : IClock {
-    public FixedClock(DateTime now) {
-      Now = now;
-    }
-
-    public DateTime Now { get; private set; }
   }
 }
