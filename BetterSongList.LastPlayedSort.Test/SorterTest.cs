@@ -1,5 +1,6 @@
 namespace BetterSongList.LastPlayedSort.Test {
   using BetterSongList.LastPlayedSort.External;
+  using BetterSongList.LastPlayedSort.Sorter;
   using Nanikit.Test;
   using System;
   using System.Linq;
@@ -15,7 +16,7 @@ namespace BetterSongList.LastPlayedSort.Test {
     [Test]
     public async Task TestOneshotSort() {
       var now = new DateTime(2022, 3, 1);
-      var sorter = new LastPlayedDateSorter(new FixedClock(now));
+      var sorter = new LastPlayedDateSorter(new FixedClock(now), _logger);
       bool isChangedFired = false;
       sorter.ResultLevels.didChangeEvent += () => {
         isChangedFired = true;

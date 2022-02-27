@@ -1,5 +1,5 @@
 namespace BetterSongList.LastPlayedSort {
-  using BetterSongList.LastPlayedSort.External;
+
   using IPA;
   using IPALogger = IPA.Logging.Logger;
 
@@ -17,9 +17,11 @@ namespace BetterSongList.LastPlayedSort {
 
     [OnStart]
     public void Initialize() {
-      var sorter = new LastPlayedDateSorter(new Clock());
-      //SceneManager.activeSceneChanged += (a, b) => sorter.RequestRefresh();
-      _logger?.Info("Initialized.");
+      if (_logger == null) {
+        return;
+      }
+
+      _logger.Info("Initialized.");
     }
 
     [OnExit]

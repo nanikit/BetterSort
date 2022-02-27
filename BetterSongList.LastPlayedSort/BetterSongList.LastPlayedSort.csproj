@@ -56,8 +56,16 @@
       <HintPath>$(BeatSaberDir)\Libs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="BS_Utils">
+      <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="IPA.Loader">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">

@@ -1,4 +1,4 @@
-namespace BetterSongList.LastPlayedSort {
+namespace BetterSongList.LastPlayedSort.Sorter {
   using System;
   using System.Collections.Generic;
 
