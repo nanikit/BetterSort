@@ -1,6 +1,8 @@
 namespace BetterSongList.LastPlayedSort {
-
+  using BetterSongList.LastPlayedSort.External;
+  using BetterSongList.LastPlayedSort.Sorter;
   using IPA;
+  using Zenject;
   using IPALogger = IPA.Logging.Logger;
 
   [Plugin(RuntimeOptions.SingleStartInit)]
@@ -20,6 +22,17 @@ namespace BetterSongList.LastPlayedSort {
       if (_logger == null) {
         return;
       }
+
+      DiContainer container = ProjectContext.Instance.Container.CreateSubContainer();
+      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      container.BindInterfacesAndSelfTo<Clock>().AsSingle();
+      container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
+      container.BindInterfacesAndSelfTo<PlayedDateRepository>().AsSingle();
+      container.Bind<LastPlayedDateSorter>().AsSingle();
+      container.Bind<SorterEnvironment>().AsSingle();
+
+      SorterEnvironment environment = container.Resolve<SorterEnvironment>();
+      environment.Start(true);
 
       _logger.Info("Initialized.");
     }

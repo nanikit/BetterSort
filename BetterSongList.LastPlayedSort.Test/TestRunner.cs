@@ -40,7 +40,6 @@ namespace Nanikit.Test {
 
     private IEnumerable<TestResult> RunTests(IEnumerable<MethodInfo> tests) {
       object[]? parameters = new object[] { };
-      object? previousInstance = null;
 
       var container = new DiContainer();
       if (_logger != null) {
@@ -48,16 +47,16 @@ namespace Nanikit.Test {
       }
 
       object Resolve(Type type) {
-        container.BindInterfacesAndSelfTo(type).AsSingle();
+        if (!container.HasBinding(type)) {
+          container.BindInterfacesAndSelfTo(type).AsTransient();
+        }
         return container.Resolve(type);
       }
 
       foreach (MethodInfo? method in tests) {
         Exception? exception = null;
         try {
-          bool isSameType = method.DeclaringType == previousInstance?.GetType();
-          object? instance = isSameType ? previousInstance : Resolve(method.DeclaringType);
-          previousInstance = instance;
+          object? instance = Resolve(method.DeclaringType);
 
           bool isAwaitable = method.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null;
           if (isAwaitable) {

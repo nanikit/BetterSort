@@ -7,11 +7,12 @@ namespace BetterSongList.LastPlayedSort.Test {
   class MockPreview : IPreviewBeatmapLevel {
     public MockPreview(string id) {
       levelID = id;
+      songName = id;
     }
 
     public string levelID { get; private set; }
 
-    public string songName => throw new NotImplementedException();
+    public string songName { get; private set; }
 
     public string songSubName => throw new NotImplementedException();
 

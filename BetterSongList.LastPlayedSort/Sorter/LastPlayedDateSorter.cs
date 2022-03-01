@@ -21,6 +21,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
 
     public LastPlayedDateSorter(IClock clock, IPALogger logger) {
       _isVisible.value = true;
+      _resultLevels.value = new List<IPreviewBeatmapLevel>();
       _clock = clock;
       _logger = logger;
     }

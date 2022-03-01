@@ -3,7 +3,6 @@ namespace BetterSongList.LastPlayedSort.Sorter {
   using BetterSongList.LastPlayedSort.External;
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using IPALogger = IPA.Logging.Logger;
 
   internal class SorterEnvironment {
@@ -14,11 +13,13 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       _sorter = sorter;
     }
 
-    public void Start() {
+    public void Start(bool register) {
       StoredData? data = _repository.Load();
       _sorter.LastPlayedDates = data?.LastPlays ?? new Dictionary<string, DateTime>();
       _playEventSource.OnSongPlayed += RecordHistory;
-      BetterSongListApi.RegisterSorter(_sorter);
+      if (register) {
+        BetterSongListApi.RegisterSorter(_sorter);
+      }
     }
 
     private readonly IPALogger _logger;

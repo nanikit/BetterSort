@@ -3,10 +3,6 @@ namespace BetterSongList.LastPlayedSort.Test.Mocks {
   using System;
 
   internal class FixedClock : IClock {
-    public FixedClock(DateTime now) {
-      Now = now;
-    }
-
-    public DateTime Now { get; private set; }
+    public DateTime Now { get; set; }
   }
 }
