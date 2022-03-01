@@ -55,6 +55,8 @@ namespace BetterSongList.LastPlayedSort.Test {
       Assert.Equal(456, legend[10].Index);
     }
 
+    // TODO: BetterSongList passes empty list before passing real items. discuss or test it.
+    // TODO: Test short play skip
     [Test]
     public async Task TestSort() {
       _clock.Now = new DateTime(2022, 3, 1);

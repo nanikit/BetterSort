@@ -19,6 +19,10 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       _playEventSource.OnSongPlayed += RecordHistory;
       if (register) {
         BetterSongListApi.RegisterSorter(_sorter);
+        _logger.Debug("Registered last play date sorter.");
+      }
+      else {
+        _logger.Debug("Skip last play date sorter registration.");
       }
     }
 
