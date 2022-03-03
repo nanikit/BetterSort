@@ -1,10 +1,12 @@
 namespace BetterSongList.LastPlayedSort.Test {
+  using BetterSongList.Api;
   using BetterSongList.LastPlayedSort.Sorter;
   using BetterSongList.LastPlayedSort.Test.Mocks;
   using Nanikit.Test;
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
   using Xunit;
   using Zenject;
@@ -32,21 +34,14 @@ namespace BetterSongList.LastPlayedSort.Test {
     public async Task TestOneshotSort() {
       _clock.Now = new DateTime(2022, 3, 1);
 
-      bool isChangedFired = false;
-      _sorter.ResultLevels.didChangeEvent += () => {
-        isChangedFired = true;
-      };
-
       var data = GenerateData().ToList();
       _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.levelID, x => x.date);
 
       data.ShuffleInPlace();
-      await _sorter.NotifyChange(data.Select(x => x.preview), true);
+      ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      var legend = _sorter.Legend.value.ToList();
-
-      Assert.True(isChangedFired, "ResultLevels.didChangeEvent is not fired.");
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), _sorter.ResultLevels.value.Select(x => x.levelID));
+      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.levelID));
+      var legend = result.Legend.ToList();
       Assert.Equal("Yesterday", legend[0].Label);
       Assert.Equal(0, legend[0].Index);
       Assert.Equal("This week", legend[1].Label);
@@ -63,26 +58,20 @@ namespace BetterSongList.LastPlayedSort.Test {
       var data = GenerateData().ToList();
       _repository.LastPlayedDate = data.ToDictionary(x => x.preview.levelID, x => x.date);
 
-      bool isChangedFired = false;
-      _sorter.ResultLevels.didChangeEvent += () => {
-        isChangedFired = true;
-      };
       _container.Resolve<SorterEnvironment>().Start(false);
-      await _sorter.NotifyChange(data.Select(x => x.preview), true);
 
-      Assert.True(isChangedFired);
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), _sorter.ResultLevels.value.Select(x => x.levelID));
+      ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      isChangedFired = false;
+      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.levelID));
+
       _clock.Now = new DateTime(2022, 3, 1, 7, 0, 0);
       _playSource.SimulatePlay("1", _clock.Now);
-      await _sorter.NotifyChange(data.Select(x => x.preview), true);
-      var result = _sorter.ResultLevels.value.ToList();
-      _logger.Debug($"0: {result[0].levelID}, 1: {result[1].levelID}, 2: {result[2].levelID}");
+      result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
+      var levels = result.Levels.ToList();
+      _logger.Debug($"0: {levels[0].levelID}, 1: {levels[1].levelID}, 2: {levels[2].levelID}");
 
-      Assert.True(isChangedFired);
       IEnumerable<string> expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
-      Assert.Equal(expectation, _sorter.ResultLevels.value.Select(x => x.levelID));
+      Assert.Equal(expectation, levels.Select(x => x.levelID));
     }
 
     private readonly IPALogger _logger;
@@ -91,6 +80,26 @@ namespace BetterSongList.LastPlayedSort.Test {
     private readonly InMemoryDateRepository _repository;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FixedClock _clock;
+
+    private async Task<ISortFilterResult> WaitResult(IEnumerable<IPreviewBeatmapLevel>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+      TaskCompletionSource<ISortFilterResult?> completer = new();
+      void SetResult(ISortFilterResult? res) {
+        completer.TrySetResult(res);
+      }
+      _sorter.OnResultChanged += SetResult;
+
+      _sorter.NotifyChange(newLevels, isSelected, token);
+
+      ISortFilterResult? result = await completer.Task.ConfigureAwait(false);
+      _sorter.OnResultChanged -= SetResult;
+      if (result == null) {
+        Assert.Fail("result is null");
+        throw new Exception();
+      }
+
+      return result;
+    }
+
 
     private IEnumerable<(MockPreview preview, DateTime date)> GenerateData() {
       return Enumerable.Range(0, 1000)
