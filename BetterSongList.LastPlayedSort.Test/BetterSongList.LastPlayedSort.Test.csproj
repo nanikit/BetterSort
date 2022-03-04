@@ -19,6 +19,7 @@
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
     <Configurations>Debug;Release;DebugTest</Configurations>
   </PropertyGroup>
@@ -45,12 +46,6 @@
     <DisableCopyToPlugins>True</DisableCopyToPlugins>
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="manifest.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="manifest.json" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -90,5 +85,18 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSongList.LastPlayedSort\BetterSongList.LastPlayedSort.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PluginId>BetterSongList.LastPlayedSort.Test</PluginId>
+    <PluginName>BetterSongList.LastPlayedSort.Test</PluginName>
+    <Authors>nanikit</Authors>
+    <Version>0.0.1</Version>
+    <GameVersion>1.19.1</GameVersion>
+    <Description>Assembly for mod test</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <DependsOn Include="BSIPA" Version="^4.2.0" />
+    <DependsOn Include="BetterSongList.LastPlayedSort" Version="^0.0.1" />
   </ItemGroup>
 </Project>

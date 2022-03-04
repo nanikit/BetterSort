@@ -19,6 +19,7 @@
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -39,12 +40,6 @@
     <DisableCopyToPlugins>True</DisableCopyToPlugins>
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="manifest.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="manifest.json" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -98,5 +93,19 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSongList\BetterSongList.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PluginId>BetterSongList.LastPlayedSort</PluginId>
+    <PluginName>BetterSongList.LastPlayedSort</PluginName>
+    <Authors>nanikit</Authors>
+    <Version>0.0.1</Version>
+    <GameVersion>1.19.1</GameVersion>
+    <Description>Add last played date sort to BetterSongList</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <DependsOn Include="BSIPA" Version="^4.2.0" />
+    <DependsOn Include="BS Utils" Version="^1.11.2" />
+    <DependsOn Include="BetterSongList" Version="^0.2.9" />
   </ItemGroup>
 </Project>
