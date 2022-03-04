@@ -6,7 +6,7 @@ namespace BetterSongList.LastPlayedSort.External {
   using System.Linq;
   using IPALogger = IPA.Logging.Logger;
 
-  internal interface IPlayedDateRepository {
+  public interface IPlayedDateRepository {
     void Save(IDictionary<string, DateTime> playDates);
 
     StoredData? Load();

@@ -4,7 +4,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
   using System.Collections.Generic;
   using IPALogger = IPA.Logging.Logger;
 
-  internal class SorterEnvironment {
+  public class SorterEnvironment {
     public SorterEnvironment(IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
       _logger = logger;
       _repository = repository;

@@ -7,7 +7,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
   using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
-  internal class FilterSortAdaptor : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
+  public class FilterSortAdaptor : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
     public FilterSortAdaptor(ISortFilter sorter, IPALogger logger) {
       _logger = logger;
       _sorter = sorter;

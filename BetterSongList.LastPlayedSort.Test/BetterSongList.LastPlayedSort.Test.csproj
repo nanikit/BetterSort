@@ -18,7 +18,6 @@
     <Description></Description>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
     <Configurations>Debug;Release;DebugTest</Configurations>

@@ -3,7 +3,7 @@ namespace BetterSongList.LastPlayedSort.External {
   using System;
   using System.Collections.Generic;
 
-  internal class StoredData {
+  public class StoredData {
     [JsonProperty("version")]
     public string? Version { get; set; }
 
