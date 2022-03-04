@@ -43,7 +43,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
     private bool _isSelected = false;
 
     private void Sort() {
-      if (!_isSelected || _triggeredLevels.FirstOrDefault() == null) {
+      if (!_isSelected) {
         return;
       }
 
