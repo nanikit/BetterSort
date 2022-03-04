@@ -9,6 +9,6 @@
   "dependsOn": {
     "BSIPA": "^4.2.0",
     "BS Utils": "^1.11.2",
-    "BetterSongList": "^0.3.0"
+    "BetterSongList": "^0.2.9"
   }
 }

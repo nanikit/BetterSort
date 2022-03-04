@@ -23,7 +23,7 @@ namespace BetterSongList.LastPlayedSort.External {
         LastPlays = playDates.ToDictionary(x => x.Key, x => x.Value),
       });
       File.WriteAllText(_path, json);
-      _logger.Debug($"Saved {playDates.Count} records");
+      _logger.Info($"Saved {playDates.Count} records");
     }
 
     public StoredData? Load() {
@@ -35,7 +35,7 @@ namespace BetterSongList.LastPlayedSort.External {
       try {
         string json = File.ReadAllText(_path);
         StoredData data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Debug($"Loaded {data.LastPlays?.Count.ToString() ?? "no"} records");
+        _logger.Info($"Loaded {data.LastPlays?.Count.ToString() ?? "no"} records");
         return data;
       }
       catch (Exception exception) {

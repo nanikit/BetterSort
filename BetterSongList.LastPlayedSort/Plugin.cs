@@ -22,13 +22,15 @@ namespace BetterSongList.LastPlayedSort {
       if (_logger == null) {
         return;
       }
+      _logger.Debug("Initialize()");
 
       DiContainer container = ProjectContext.Instance.Container.CreateSubContainer();
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<Clock>().AsSingle();
       container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<PlayedDateRepository>().AsSingle();
-      container.Bind<LastPlayedDateSorter>().AsSingle();
+      container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
+      container.Bind<FilterSortAdaptor>().AsSingle();
       container.Bind<SorterEnvironment>().AsSingle();
 
       SorterEnvironment environment = container.Resolve<SorterEnvironment>();

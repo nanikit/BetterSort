@@ -1,6 +1,6 @@
 [submodule "BetterSongList"]
 	path = BetterSongList
-	url = https://github.com/nanikit/BeatSaber_BetterSongList.git
+	url = https://github.com/kinsi55/BeatSaber_BetterSongList.git
 [submodule "BetterSongList.LastPlayedSort.Test/assert.xunit"]
 	path = BetterSongList.LastPlayedSort.Test/assert.xunit
 	url = https://github.com/xunit/assert.xunit.git

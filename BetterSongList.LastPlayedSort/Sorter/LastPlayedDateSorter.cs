@@ -1,5 +1,4 @@
 namespace BetterSongList.LastPlayedSort.Sorter {
-  using BetterSongList.Api;
   using BetterSongList.LastPlayedSort.External;
   using System;
   using System.Collections.Generic;

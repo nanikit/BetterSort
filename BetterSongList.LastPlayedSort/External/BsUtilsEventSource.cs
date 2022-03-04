@@ -47,7 +47,7 @@ namespace BetterSongList.LastPlayedSort.External {
         return;
       }
       if (finished is not LevelFinishedWithResultsEventArgs) {
-        _logger.Debug($"Skip tutorial play record.");
+        _logger.Info($"Skip tutorial play record.");
         return;
       }
 
@@ -55,11 +55,11 @@ namespace BetterSongList.LastPlayedSort.External {
       TimeSpan duration = now - _startTime;
       bool isPlayedTooShort = duration.Seconds < 10 && _songDuration > 10;
       if (isPlayedTooShort) {
-        _logger.Debug($"Skip due to too short play: {_selectedSongName}");
+        _logger.Info($"Skip record due to too short play: {_selectedSongName}");
         return;
       }
 
-      _logger.Debug($"Dispatch play event: {_selectedSongName}");
+      _logger.Info($"Dispatch play event: {_selectedSongName}");
       OnSongPlayed(_selectedLevelId, now);
     }
   }

@@ -1,5 +1,4 @@
 namespace BetterSongList.LastPlayedSort.Test {
-  using BetterSongList.Api;
   using BetterSongList.LastPlayedSort.Sorter;
   using BetterSongList.LastPlayedSort.Test.Mocks;
   using Nanikit.Test;
@@ -21,7 +20,8 @@ namespace BetterSongList.LastPlayedSort.Test {
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
-      container.Bind<LastPlayedDateSorter>().AsSingle();
+      container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
+      container.Bind<FilterSortAdaptor>().AsSingle();
       container.Bind<SorterEnvironment>().AsSingle();
       _clock = container.Resolve<FixedClock>();
       _playSource = container.Resolve<MockEventSource>();
