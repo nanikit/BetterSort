@@ -18,8 +18,6 @@
     <Description></Description>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateManifest>true</GenerateManifest>
-    <DisableZipRelease>True</DisableZipRelease>
     <Configurations>Debug;Release;DebugTest</Configurations>
   </PropertyGroup>
 
@@ -87,6 +85,10 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <ImportBSMTTargets>True</ImportBSMTTargets>
+    <BSMTProjectType>BSIPA</BSMTProjectType>
+    <GenerateManifest>true</GenerateManifest>
+    <DisableZipRelease>True</DisableZipRelease>
     <PluginId>BetterSongList.LastPlayedSort.Test</PluginId>
     <PluginName>BetterSongList.LastPlayedSort.Test</PluginName>
     <Authors>nanikit</Authors>

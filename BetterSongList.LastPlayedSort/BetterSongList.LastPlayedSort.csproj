@@ -18,7 +18,6 @@
     <Description></Description>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -95,6 +94,9 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <ImportBSMTTargets>True</ImportBSMTTargets>
+    <BSMTProjectType>BSIPA</BSMTProjectType>
+    <GenerateManifest>true</GenerateManifest>
     <PluginId>BetterSongList.LastPlayedSort</PluginId>
     <PluginName>BetterSongList.LastPlayedSort</PluginName>
     <Authors>nanikit</Authors>
