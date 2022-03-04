@@ -42,12 +42,16 @@ namespace BetterSongList.LastPlayedSort.Test {
 
       Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.levelID));
       var legend = result.Legend.ToList();
-      Assert.Equal("Yesterday", legend[0].Label);
-      Assert.Equal(0, legend[0].Index);
-      Assert.Equal("This week", legend[1].Label);
-      Assert.Equal(45, legend[1].Index);
-      Assert.Equal("6 years ago", legend[10].Label);
-      Assert.Equal(456, legend[10].Index);
+      _logger.Debug(legend.Aggregate("", (acc, x) => $"{acc}, {x}"));
+      Assert.Equal(legend, new[] {
+        ("00:00", 0), ("12:05", 35),
+        (legend[2].Label, 47), (legend[3].Label, 57), (legend[4].Label, 67), (legend[5].Label, 78),
+        ("02-20", 89), ("02-16", 102), ("02-11", 115), ("02-03", 130), ("01-23", 146), ("01-08", 165),
+        ("12-17", 185), ("11-16", 208), ("10-03", 234), ("08-02", 263), ("05-07", 295), ("2021-01", 331),
+        ("2020-07", 372), ("2019-11", 417), ("2018-11", 468), ("2017-07", 526), ("2015-08", 590),
+        ("2012-12", 662), ("2009-03", 743), ("2003-10", 834), ("1996-03", 936),
+      });
+      Assert.True(legend.Count <= 28, "Too many legend");
     }
 
     // TODO: BetterSongList passes empty list before passing real items. discuss or test it.
@@ -68,7 +72,6 @@ namespace BetterSongList.LastPlayedSort.Test {
       _playSource.SimulatePlay("1", _clock.Now);
       result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
       var levels = result.Levels.ToList();
-      _logger.Debug($"0: {levels[0].levelID}, 1: {levels[1].levelID}, 2: {levels[2].levelID}");
 
       IEnumerable<string> expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
       Assert.Equal(expectation, levels.Select(x => x.levelID));
