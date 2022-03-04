@@ -14,9 +14,9 @@ namespace BetterSongList.LastPlayedSort.Sorter {
     /// <summary>
     /// Notify beatmap level changes.
     /// </summary>
-    /// <param name="newLevels">All levels before sort or filter. null means there is no change.</param>
+    /// <param name="newLevels">All levels before sort or filter.</param>
     /// <param name="isSelected">Is the result levels should be changed because it is selected?</param>
-    void NotifyChange(IEnumerable<IPreviewBeatmapLevel>? newLevels, bool isSelected = false, CancellationToken? token = null);
+    void NotifyChange(IEnumerable<IPreviewBeatmapLevel> newLevels, bool isSelected = false, CancellationToken? token = null);
 
     /// <summary>
     /// null means sorter / filter is not usable.
