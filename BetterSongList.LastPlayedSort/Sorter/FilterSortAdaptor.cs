@@ -25,7 +25,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       return Task.CompletedTask;
     }
 
-    public void ContextSwitch(SelectLevelCategoryViewController.LevelCategory levelCategory, IPlaylist? playlist) {
+    public void ContextSwitch(SelectLevelCategoryViewController.LevelCategory levelCategory, IAnnotatedBeatmapLevelCollection? playlist) {
     }
 
     public void DoSort(ref IEnumerable<IPreviewBeatmapLevel> levels, bool ascending) {
