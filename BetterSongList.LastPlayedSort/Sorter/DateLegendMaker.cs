@@ -1,9 +1,10 @@
 namespace BetterSongList.LastPlayedSort.Sorter {
+  using BetterSongList.LastPlayedSort.Core;
   using System;
   using System.Collections.Generic;
 
   internal class DateLegendMaker {
-    public static List<(string, int)> GetLegend(IList<IPreviewBeatmapLevel> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
+    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
       int lastLogOfUnixDifference = -1;
 
@@ -11,8 +12,8 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       double logOffset = 100000;
 
       for (int i = 0; i < levels.Count; i++) {
-        IPreviewBeatmapLevel? level = levels[i];
-        if (lastPlayedDates.TryGetValue(level.levelID, out DateTime lastPlayedDate)) {
+        ILevelPreview? level = levels[i];
+        if (lastPlayedDates.TryGetValue(level.LevelId, out DateTime lastPlayedDate)) {
           TimeSpan difference = now - lastPlayedDate;
           double seconds = difference.TotalSeconds;
 

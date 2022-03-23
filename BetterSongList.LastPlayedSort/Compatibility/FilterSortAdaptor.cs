@@ -1,5 +1,6 @@
-namespace BetterSongList.LastPlayedSort.Sorter {
+namespace BetterSongList.LastPlayedSort.Compatibility {
   using BetterSongList.Interfaces;
+  using BetterSongList.LastPlayedSort.Core;
   using BetterSongList.SortModels;
   using System.Collections.Generic;
   using System.Linq;
@@ -31,13 +32,13 @@ namespace BetterSongList.LastPlayedSort.Sorter {
     public void DoSort(ref IEnumerable<IPreviewBeatmapLevel> levels, bool ascending) {
       _logger.Trace($"FilterSortAdaptor.DoSort({levels.Count()}, {ascending}) is called.");
       _result = new();
-      _sorter.NotifyChange(levels, true);
+      _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
       _result.Task.Wait();
 
-      IEnumerable<IPreviewBeatmapLevel>? newLevels = _result.Task.Result?.Levels;
-      _logger.Trace($"FilterSortAdaptor.DoSort() newLevels[0]: {(newLevels?.Count() > 0 ? newLevels.First().songName : "_empty")}");
+      IEnumerable<ILevelPreview>? newLevels = _result.Task.Result?.Levels;
+      _logger.Trace($"FilterSortAdaptor.DoSort() newLevels[0]: {(newLevels?.Count() > 0 ? newLevels.First().SongName : "_empty")}");
       if (newLevels != null) {
-        levels = newLevels;
+        levels = newLevels.OfType<LevelPreview>().Select(preview => preview.Preview).ToList();
       }
     }
 
@@ -58,6 +59,17 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       if (!_result.TrySetResult(result)) {
         _logger.Warn($"FilterSortAdaptor.SaveResult(): TrySetResult failed.");
       }
+    }
+  }
+
+  public class LevelPreview : ILevelPreview {
+    public IPreviewBeatmapLevel Preview { get; private set; }
+
+    public string LevelId { get => Preview.levelID; }
+    public string SongName { get => Preview.songName; }
+
+    public LevelPreview(IPreviewBeatmapLevel preview) {
+      Preview = preview;
     }
   }
 }

@@ -1,4 +1,5 @@
 namespace BetterSongList.LastPlayedSort {
+  using BetterSongList.LastPlayedSort.Compatibility;
   using BetterSongList.LastPlayedSort.External;
   using BetterSongList.LastPlayedSort.Sorter;
   using IPA;

@@ -1,5 +1,6 @@
 namespace BetterSongList.LastPlayedSort.Sorter {
   using BetterSongList.LastPlayedSort.External;
+  using BetterSongList.LastPlayedSort.Core;
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -21,7 +22,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
 
     public event Action<ISortFilterResult?> OnResultChanged = delegate { };
 
-    public void NotifyChange(IEnumerable<IPreviewBeatmapLevel>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+    public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       _isSelected = isSelected;
       _logger.Debug($"NotifyChange called: newLevels.Count: {newLevels.Count()}, isSelected: {isSelected}");
 
@@ -39,7 +40,7 @@ namespace BetterSongList.LastPlayedSort.Sorter {
 
     private readonly IClock _clock;
     private readonly IPALogger _logger;
-    private IEnumerable<IPreviewBeatmapLevel>? _triggeredLevels;
+    private IEnumerable<ILevelPreview>? _triggeredLevels;
     private bool _isSelected = false;
 
     private void Sort() {
@@ -55,7 +56,20 @@ namespace BetterSongList.LastPlayedSort.Sorter {
       var ordered = _triggeredLevels.OrderBy(x => x, comparer).ToList();
       List<(string, int)> legend = DateLegendMaker.GetLegend(ordered, _clock.Now, LastPlayedDates);
       OnResultChanged(new SortFilterResult(ordered, legend));
-      _logger.Debug($"Sort finished, first: ordered?[0].Name: {ordered?[0].songName}");
+      _logger.Debug($"Sort finished, first: ordered?[0].Name: {ordered?[0].SongName}");
     }
+  }
+
+  public class SortFilterResult : ISortFilterResult {
+    public IEnumerable<ILevelPreview> Levels => _levels;
+    public IEnumerable<(string Label, int Index)>? Legend => _legend;
+
+    public SortFilterResult(IEnumerable<ILevelPreview> levels, IEnumerable<(string Label, int Index)>? legend = null) {
+      _levels = levels;
+      _legend = legend;
+    }
+
+    private readonly IEnumerable<ILevelPreview> _levels;
+    private readonly IEnumerable<(string Label, int Index)>? _legend;
   }
 }

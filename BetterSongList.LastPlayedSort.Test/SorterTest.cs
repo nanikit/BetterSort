@@ -1,4 +1,6 @@
 namespace BetterSongList.LastPlayedSort.Test {
+  using BetterSongList.LastPlayedSort.Compatibility;
+  using BetterSongList.LastPlayedSort.Core;
   using BetterSongList.LastPlayedSort.Sorter;
   using BetterSongList.LastPlayedSort.Test.Mocks;
   using Nanikit.Test;
@@ -35,12 +37,12 @@ namespace BetterSongList.LastPlayedSort.Test {
       _clock.Now = new DateTime(2022, 3, 1);
 
       var data = GenerateData().ToList();
-      _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.levelID, x => x.date);
+      _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.LevelId, x => x.date);
 
       data.ShuffleInPlace();
       ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.levelID));
+      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
       var legend = result.Legend.ToList();
       _logger.Debug(legend.Aggregate("", (acc, x) => $"{acc}, {x}"));
       Assert.Equal(legend, new[] {
@@ -60,13 +62,13 @@ namespace BetterSongList.LastPlayedSort.Test {
     public async Task TestSort() {
       _clock.Now = new DateTime(2022, 3, 1);
       var data = GenerateData().ToList();
-      _repository.LastPlayedDate = data.ToDictionary(x => x.preview.levelID, x => x.date);
+      _repository.LastPlayedDate = data.ToDictionary(x => x.preview.LevelId, x => x.date);
 
       _container.Resolve<SorterEnvironment>().Start(false);
 
       ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.levelID));
+      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
 
       _clock.Now = new DateTime(2022, 3, 1, 7, 0, 0);
       _playSource.SimulatePlay("1", _clock.Now);
@@ -74,7 +76,7 @@ namespace BetterSongList.LastPlayedSort.Test {
       var levels = result.Levels.ToList();
 
       IEnumerable<string> expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
-      Assert.Equal(expectation, levels.Select(x => x.levelID));
+      Assert.Equal(expectation, levels.Select(x => x.LevelId));
     }
 
     private readonly IPALogger _logger;
@@ -84,7 +86,7 @@ namespace BetterSongList.LastPlayedSort.Test {
     private readonly LastPlayedDateSorter _sorter;
     private readonly FixedClock _clock;
 
-    private async Task<ISortFilterResult> WaitResult(IEnumerable<IPreviewBeatmapLevel>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+    private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       TaskCompletionSource<ISortFilterResult?> completer = new();
       void SetResult(ISortFilterResult? res) {
         completer.TrySetResult(res);
