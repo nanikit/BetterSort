@@ -18,7 +18,7 @@
     <Description></Description>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Debug;Release;DebugTest</Configurations>
+    <Configurations>Lib;Exe</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' OR '$(Configuration)' == 'DebugTest'">
@@ -27,13 +27,8 @@
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='DebugTest'">
+  <PropertyGroup Condition="'$(Configuration)'=='Exe'">
     <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>none</DebugType>
-    <OutputPath>bin\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
