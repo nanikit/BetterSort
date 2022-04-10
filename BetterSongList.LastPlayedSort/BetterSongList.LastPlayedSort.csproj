@@ -101,7 +101,7 @@
     <PluginName>BetterSongList.LastPlayedSort</PluginName>
     <Authors>nanikit</Authors>
     <Version>1.0.0</Version>
-    <GameVersion>1.19.1</GameVersion>
+    <GameVersion>1.21.0</GameVersion>
     <Description>Add last played date sort to BetterSongList</Description>
   </PropertyGroup>
   <ItemGroup>
