@@ -44,7 +44,7 @@ namespace BetterSongList.LastPlayedSort.External {
       }
     }
 
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json");
+    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
     private readonly IPALogger _logger;
   }
 }
