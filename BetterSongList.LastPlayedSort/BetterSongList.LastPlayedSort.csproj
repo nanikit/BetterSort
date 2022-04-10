@@ -106,7 +106,7 @@
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BS Utils" Version="^1.11.2" />
+    <DependsOn Include="BS Utils" Version="^1.11.0" />
     <DependsOn Include="BetterSongList" Version="^0.3.0" />
   </ItemGroup>
 </Project>
