@@ -39,7 +39,6 @@ namespace BetterSongList.LastPlayedSort.External {
 
     private void RecordStartTime() {
       _startTime = _clock.Now;
-      _logger.Debug($"Level started at {_startTime}");
     }
 
     private void DispatchIfLongEnough(object sender, LevelFinishedEventArgs finished) {
