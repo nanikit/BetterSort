@@ -1,4 +1,5 @@
 namespace BetterSongList.LastPlayedSort.External {
+  using BetterSongList.LastPlayedSort.Sorter;
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace BetterSongList.LastPlayedSort.External {
   using IPALogger = IPA.Logging.Logger;
 
   public interface IPlayedDateRepository {
-    void Save(IDictionary<string, DateTime> playDates);
+    void Save(IReadOnlyDictionary<string, DateTime> playDates);
 
     StoredData? Load();
   }
@@ -17,11 +18,15 @@ namespace BetterSongList.LastPlayedSort.External {
       _logger = logger;
     }
 
-    public void Save(IDictionary<string, DateTime> playDates) {
+    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
+      var sorted = new SortedDictionary<string, DateTime>(
+        playDates.ToDictionary(x => x.Key, x => x.Value),
+        new LastPlayedDateComparer(playDates)
+      );
       string json = JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LastPlays = playDates.ToDictionary(x => x.Key, x => x.Value),
-      });
+        LastPlays = sorted,
+      }, Formatting.Indented);
       File.WriteAllText(_path, json);
       _logger.Info($"Saved {playDates.Count} records");
     }

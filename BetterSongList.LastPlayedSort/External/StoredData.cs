@@ -8,6 +8,6 @@ namespace BetterSongList.LastPlayedSort.External {
     public string? Version { get; set; }
 
     [JsonProperty("lastPlays")]
-    public Dictionary<string, DateTime>? LastPlays { get; set; }
+    public IDictionary<string, DateTime>? LastPlays { get; set; }
   }
 }
