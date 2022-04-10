@@ -16,5 +16,8 @@ Just click left-bottom sort button in song select scene, and select 'Last played
 
 ## Q&A
 
-- Q: Reverse sort not work. <br />
+- Q: Just installed, it doesn't sort at all.<br />
+A: After installation there's no play history. So play first.
+
+- Q: Reverse sort not work.<br />
 A: I didn't support it intentionally. Currently BetterSongList doesn't remember sort direction of each sorter, it confused me.
