@@ -8,6 +8,8 @@ Beat saber mod adding last played date sort feature to [BetterSongList](https://
 
 Use [mod assistant](https://github.com/Assistant/ModAssistant/releases/latest). I'll support that.
 
+If it's not available or new features is added later, download [the latest release](https://github.com/nanikit/BetterSongList.LastPlayedSort/releases/latest).
+
 ## Usage
 
 Just click left-bottom sort button in song select scene, and select 'Last played'.
