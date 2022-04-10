@@ -39,6 +39,7 @@ namespace BetterSongList.LastPlayedSort.External {
 
     private void RecordStartTime() {
       _startTime = _clock.Now;
+      _logger.Debug($"Level started at {_startTime}");
     }
 
     private void DispatchIfLongEnough(object sender, LevelFinishedEventArgs finished) {
@@ -53,7 +54,7 @@ namespace BetterSongList.LastPlayedSort.External {
 
       DateTime now = _clock.Now;
       TimeSpan duration = now - _startTime;
-      bool isPlayedTooShort = duration.Seconds < 10 && _songDuration > 10;
+      bool isPlayedTooShort = duration.TotalSeconds < 10 && _songDuration > 10;
       if (isPlayedTooShort) {
         _logger.Info($"Skip record due to too short play: {_selectedSongName}");
         return;
