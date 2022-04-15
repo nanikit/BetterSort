@@ -1,5 +1,5 @@
-namespace BetterSongList.LastPlayedSort.Test.Mocks {
-  using BetterSongList.LastPlayedSort.External;
+namespace BetterSort.LastPlayed.Test.Mocks {
+  using BetterSort.LastPlayed.External;
   using System;
   using System.Collections.Generic;
   using System.Linq;

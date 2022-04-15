@@ -1,5 +1,5 @@
-namespace BetterSongList.LastPlayedSort.External {
-  using BetterSongList.LastPlayedSort.Sorter;
+namespace BetterSort.LastPlayed.External {
+  using BetterSort.LastPlayed.Sorter;
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;

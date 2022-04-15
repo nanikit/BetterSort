@@ -1,8 +1,8 @@
-namespace BetterSongList.LastPlayedSort.Test {
-  using BetterSongList.LastPlayedSort.Compatibility;
-  using BetterSongList.LastPlayedSort.Core;
-  using BetterSongList.LastPlayedSort.Sorter;
-  using BetterSongList.LastPlayedSort.Test.Mocks;
+namespace BetterSort.LastPlayed.Test {
+  using BetterSort.LastPlayed.Compatibility;
+  using BetterSort.LastPlayed.Core;
+  using BetterSort.LastPlayed.Sorter;
+  using BetterSort.LastPlayed.Test.Mocks;
   using Nanikit.Test;
   using System;
   using System.Collections.Generic;

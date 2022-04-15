@@ -4,12 +4,12 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSongList.LastPlayedSort.Test</RootNamespace>
+    <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>BetterSongList.LastPlayedSort.Test</Product>
+    <Product>BetterSort.LastPlayed.Test</Product>
     <Company />
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
@@ -76,7 +76,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BetterSongList.LastPlayedSort\BetterSongList.LastPlayedSort.csproj" />
+    <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -84,8 +84,8 @@
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
-    <PluginId>BetterSongList.LastPlayedSort.Test</PluginId>
-    <PluginName>BetterSongList.LastPlayedSort.Test</PluginName>
+    <PluginId>BetterSort.LastPlayed.Test</PluginId>
+    <PluginName>BetterSort.LastPlayed.Test</PluginName>
     <Authors>nanikit</Authors>
     <Version>0.0.1</Version>
     <GameVersion>1.19.1</GameVersion>
@@ -93,6 +93,6 @@
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BetterSongList.LastPlayedSort" Version="^0.0.1" />
+    <DependsOn Include="BetterSort.LastPlayed" Version="^0.0.1" />
   </ItemGroup>
 </Project>

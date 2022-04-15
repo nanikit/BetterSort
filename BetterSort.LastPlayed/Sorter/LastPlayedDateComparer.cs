@@ -1,5 +1,5 @@
-namespace BetterSongList.LastPlayedSort.Sorter {
-  using BetterSongList.LastPlayedSort.Core;
+namespace BetterSort.LastPlayed.Sorter {
+  using BetterSort.LastPlayed.Core;
   using System;
   using System.Collections.Generic;
 

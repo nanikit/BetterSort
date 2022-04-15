@@ -1,4 +1,4 @@
-namespace BetterSongList.LastPlayedSort.Core {
+namespace BetterSort.LastPlayed.Core {
   using System;
   using System.Collections.Generic;
   using System.Threading;

@@ -1,9 +1,9 @@
-namespace BetterSongList.LastPlayedSort.Sorter {
-  using BetterSongList.LastPlayedSort.Compatibility;
-  using BetterSongList.LastPlayedSort.External;
+namespace BetterSort.LastPlayed.Sorter {
+  using BetterSongList;
+  using BetterSort.LastPlayed.Compatibility;
+  using BetterSort.LastPlayed.External;
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using IPALogger = IPA.Logging.Logger;
 
   public class SorterEnvironment {

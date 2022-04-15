@@ -1,4 +1,4 @@
-namespace BetterSongList.LastPlayedSort.Core {
+namespace BetterSort.LastPlayed.Core {
   using System.Collections.Generic;
 
   public interface ISortFilterResult {

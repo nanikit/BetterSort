@@ -1,5 +1,5 @@
 #nullable enable
-namespace BetterSongList.LastPlayedSort.Core {
+namespace BetterSort.LastPlayed.Core {
   public interface ILevelPreview {
     string LevelId { get; }
     string SongName { get; }

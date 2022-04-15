@@ -1,5 +1,5 @@
-namespace BetterSongList.LastPlayedSort.Test {
-  using BetterSongList.LastPlayedSort.Core;
+namespace BetterSort.LastPlayed.Test {
+  using BetterSort.LastPlayed.Core;
 
   class MockPreview : ILevelPreview {
     public string LevelId => _id;

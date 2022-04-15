@@ -1,6 +1,6 @@
-namespace BetterSongList.LastPlayedSort.Compatibility {
+namespace BetterSort.LastPlayed.Compatibility {
   using BetterSongList.Interfaces;
-  using BetterSongList.LastPlayedSort.Core;
+  using BetterSort.LastPlayed.Core;
   using BetterSongList.SortModels;
   using System.Collections.Generic;
   using System.Linq;

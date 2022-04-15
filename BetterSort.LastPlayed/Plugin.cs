@@ -1,7 +1,7 @@
-namespace BetterSongList.LastPlayedSort {
-  using BetterSongList.LastPlayedSort.Compatibility;
-  using BetterSongList.LastPlayedSort.External;
-  using BetterSongList.LastPlayedSort.Sorter;
+namespace BetterSort.LastPlayed {
+  using BetterSort.LastPlayed.Compatibility;
+  using BetterSort.LastPlayed.External;
+  using BetterSort.LastPlayed.Sorter;
   using IPA;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;

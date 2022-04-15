@@ -1,4 +1,4 @@
-namespace BetterSongList.LastPlayedSort.External {
+namespace BetterSort.LastPlayed.External {
   using BS_Utils.Utilities;
   using System;
   using IPALogger = IPA.Logging.Logger;

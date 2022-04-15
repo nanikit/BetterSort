@@ -4,12 +4,12 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSongList.LastPlayedSort</RootNamespace>
+    <RootNamespace>BetterSort.LastPlayed</RootNamespace>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>BetterSongList.LastPlayedSort</Product>
+    <Product>BetterSort.LastPlayed</Product>
     <Company />
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
@@ -97,8 +97,8 @@
     <ImportBSMTTargets>True</ImportBSMTTargets>
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
-    <PluginId>BetterSongList.LastPlayedSort</PluginId>
-    <PluginName>BetterSongList.LastPlayedSort</PluginName>
+    <PluginId>BetterSort.LastPlayed</PluginId>
+    <PluginName>BetterSort.LastPlayed</PluginName>
     <Authors>nanikit</Authors>
     <Version>1.0.1</Version>
     <GameVersion>1.21.0</GameVersion>

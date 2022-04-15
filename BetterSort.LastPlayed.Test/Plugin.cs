@@ -1,4 +1,4 @@
-namespace BetterSongList.LastPlayedSort.Test {
+namespace BetterSort.LastPlayed.Test {
   using IPA;
   using Nanikit.Test;
   using System.Collections.Generic;
