@@ -28,8 +28,13 @@ namespace BetterSort.LastPlayed {
       var container = ProjectContext.Instance.Container.CreateSubContainer();
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<Clock>().AsSingle();
+
+      container.Bind<PlayedDateRepository>().AsSingle();
+      container.Bind<SongPlayHistoryImporter>().AsSingle();
+      container.BindInterfacesTo<PlayedDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
+      container.BindInterfacesAndSelfTo<ImmigrationRepository>().AsSingle();
+
       container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
-      container.BindInterfacesAndSelfTo<PlayedDateRepository>().AsSingle();
       container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
       container.Bind<FilterSortAdaptor>().AsSingle();
       container.Bind<SorterEnvironment>().AsSingle();

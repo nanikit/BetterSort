@@ -10,7 +10,7 @@ namespace BetterSort.LastPlayed.Test {
   public class Plugin {
     internal static IPALogger? Logger { get; private set; }
 
-    internal bool IsUnityPlayer { get; set; } = true;
+    internal static bool IsUnityPlayer { get; set; } = true;
 
     [Init]
     /// <summary>
@@ -37,7 +37,8 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     public static void Main() {
-      Plugin plugin = new() { IsUnityPlayer = false };
+      IsUnityPlayer = false;
+      Plugin plugin = new();
       plugin.Init(new MockLogger());
       plugin.OnApplicationStart();
     }
