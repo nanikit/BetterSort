@@ -29,7 +29,17 @@ namespace BetterSort.LastPlayed.Test {
       _playSource = container.Resolve<MockEventSource>();
       _sorter = container.Resolve<LastPlayedDateSorter>();
       _repository = container.Resolve<InMemoryDateRepository>();
+      _adaptor = container.Resolve<FilterSortAdaptor>();
       _container = container;
+    }
+
+    // BetterSongList can pass empty list.
+    [Test]
+    public void TestEmptySort() {
+      _sorter.LastPlayedDates = new();
+      var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
+      _adaptor.DoSort(ref data, true);
+      Assert.Equal(0, data.Count());
     }
 
     [Test]
@@ -56,7 +66,6 @@ namespace BetterSort.LastPlayed.Test {
       Assert.True(legend.Count <= 28, "Too many legend");
     }
 
-    // TODO: BetterSongList passes empty list before passing real items. discuss or test it.
     // TODO: Test short play skip
     [Test]
     public async Task TestSort() {
@@ -83,6 +92,7 @@ namespace BetterSort.LastPlayed.Test {
     private readonly DiContainer _container;
     private readonly MockEventSource _playSource;
     private readonly InMemoryDateRepository _repository;
+    private readonly FilterSortAdaptor _adaptor;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FixedClock _clock;
 
