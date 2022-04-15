@@ -17,15 +17,15 @@ namespace BetterSort.LastPlayed.Sorter {
         return 0;
       }
 
-      if (_lastPlayedDates.TryGetValue(a, out DateTime lastPlayOfA)) {
-        if (_lastPlayedDates.TryGetValue(b, out DateTime lastPlayOfB)) {
+      if (_lastPlayedDates.TryGetValue(a, out var lastPlayOfA)) {
+        if (_lastPlayedDates.TryGetValue(b, out var lastPlayOfB)) {
           int descending = lastPlayOfB.CompareTo(lastPlayOfA);
           return descending;
         }
         return -1;
       }
       else {
-        if (_lastPlayedDates.TryGetValue(b, out DateTime _)) {
+        if (_lastPlayedDates.TryGetValue(b, out var _)) {
           return 1;
         }
         return 0;

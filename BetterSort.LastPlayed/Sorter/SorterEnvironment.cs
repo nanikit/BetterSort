@@ -16,7 +16,7 @@ namespace BetterSort.LastPlayed.Sorter {
     }
 
     public void Start(bool register) {
-      StoredData? data = _repository.Load();
+      var data = _repository.Load();
       _sorter.LastPlayedDates = data?.LastPlays is Dictionary<string, DateTime> lastPlays
         ? lastPlays
         : new Dictionary<string, DateTime>();

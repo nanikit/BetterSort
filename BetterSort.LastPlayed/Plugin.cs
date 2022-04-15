@@ -25,7 +25,7 @@ namespace BetterSort.LastPlayed {
       }
       _logger.Debug("Initialize()");
 
-      DiContainer container = ProjectContext.Instance.Container.CreateSubContainer();
+      var container = ProjectContext.Instance.Container.CreateSubContainer();
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<Clock>().AsSingle();
       container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
@@ -34,7 +34,7 @@ namespace BetterSort.LastPlayed {
       container.Bind<FilterSortAdaptor>().AsSingle();
       container.Bind<SorterEnvironment>().AsSingle();
 
-      SorterEnvironment environment = container.Resolve<SorterEnvironment>();
+      var environment = container.Resolve<SorterEnvironment>();
       environment.Start(true);
 
       _logger.Info("Initialized.");

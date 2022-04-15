@@ -35,7 +35,7 @@ namespace BetterSort.LastPlayed.Compatibility {
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
       _result.Task.Wait();
 
-      IEnumerable<ILevelPreview>? newLevels = _result.Task.Result?.Levels;
+      var newLevels = _result.Task.Result?.Levels;
       _logger.Trace($"FilterSortAdaptor.DoSort() newLevels[0]: {(newLevels?.Count() > 0 ? newLevels.First().SongName : "_empty")}");
       if (newLevels != null) {
         levels = newLevels.OfType<LevelPreview>().Select(preview => preview.Preview).ToList();

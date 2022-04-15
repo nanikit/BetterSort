@@ -23,7 +23,7 @@ namespace Nanikit.Test {
     private void RunTestsWithConsoleOutput(IEnumerable<MethodInfo> testMethods) {
       int success = 0;
       int total = 0;
-      foreach (TestResult? result in RunTests(testMethods)) {
+      foreach (var result in RunTests(testMethods)) {
         string? typeName = result.Method.DeclaringType.Name;
         string? methodName = result.Method.Name;
         if (result.Exception == null) {
@@ -53,7 +53,7 @@ namespace Nanikit.Test {
         return container.Resolve(type);
       }
 
-      foreach (MethodInfo? method in tests) {
+      foreach (var method in tests) {
         Exception? exception = null;
         try {
           object? instance = Resolve(method.DeclaringType);
@@ -74,10 +74,10 @@ namespace Nanikit.Test {
     }
 
     private static List<MethodInfo> GetTests(Assembly targetAssembly) {
-      Type? testAttribute = typeof(Test);
+      var testAttribute = typeof(Test);
       var testMethods = new List<MethodInfo>();
-      foreach (Type? type in targetAssembly.GetTypes()) {
-        foreach (MethodInfo? method in type.GetMethods()) {
+      foreach (var type in targetAssembly.GetTypes()) {
+        foreach (var method in type.GetMethods()) {
           if (Attribute.IsDefined(method, testAttribute)) {
             testMethods.Add(method);
           }

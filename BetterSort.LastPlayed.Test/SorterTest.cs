@@ -40,7 +40,7 @@ namespace BetterSort.LastPlayed.Test {
       _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.LevelId, x => x.date);
 
       data.ShuffleInPlace();
-      ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
+      var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
       Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
       var legend = result.Legend.ToList();
@@ -66,7 +66,7 @@ namespace BetterSort.LastPlayed.Test {
 
       _container.Resolve<SorterEnvironment>().Start(false);
 
-      ISortFilterResult? result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
+      var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
       Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
 
@@ -75,7 +75,7 @@ namespace BetterSort.LastPlayed.Test {
       result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
       var levels = result.Levels.ToList();
 
-      IEnumerable<string> expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
+      var expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
       Assert.Equal(expectation, levels.Select(x => x.LevelId));
     }
 
@@ -95,7 +95,7 @@ namespace BetterSort.LastPlayed.Test {
 
       _sorter.NotifyChange(newLevels, isSelected, token);
 
-      ISortFilterResult? result = await completer.Task.ConfigureAwait(false);
+      var result = await completer.Task.ConfigureAwait(false);
       _sorter.OnResultChanged -= SetResult;
       if (result == null) {
         Assert.Fail("result is null");

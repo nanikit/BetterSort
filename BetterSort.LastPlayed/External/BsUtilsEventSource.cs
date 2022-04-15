@@ -51,8 +51,8 @@ namespace BetterSort.LastPlayed.External {
         return;
       }
 
-      DateTime now = _clock.Now;
-      TimeSpan duration = now - _startTime;
+      var now = _clock.Now;
+      var duration = now - _startTime;
       bool isPlayedTooShort = duration.TotalSeconds < 10 && _songDuration > 10;
       if (isPlayedTooShort) {
         _logger.Info($"Skip record due to too short play: {_selectedSongName}");
