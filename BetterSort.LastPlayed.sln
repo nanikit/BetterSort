@@ -43,8 +43,8 @@ Global
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.Release|x64.ActiveCfg = Lib|x64
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestInGame|x64.ActiveCfg = Lib|x64
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestInGame|x64.Build.0 = Lib|x64
-		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.ActiveCfg = Lib|x64
-		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.Build.0 = Lib|x64
+		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.ActiveCfg = Exe|x64
+		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.Build.0 = Exe|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
