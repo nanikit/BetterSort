@@ -1,4 +1,6 @@
 # 2.0.0
+**Delete previous BetterSongList.LastPlayedSort.dll if you have it.**
+
 - Rename project from BetterSongList.LastPlayedSort to BetterSort.LastPlayed([#1](https://github.com/nanikit/BetterSort.LastPlayed/issues/1)).
 
 ### 1.0.1

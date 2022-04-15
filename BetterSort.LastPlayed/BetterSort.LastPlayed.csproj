@@ -109,4 +109,10 @@
     <DependsOn Include="BS Utils" Version="^1.11.0" />
     <DependsOn Include="BetterSongList" Version="^0.3.0" />
   </ItemGroup>
+  <ItemGroup>
+    <LoadBefore Include="BetterSongList.LastPlayedSort" />
+  </ItemGroup>
+  <ItemGroup>
+    <ConflictsWith Include="BetterSongList.LastPlayedSort" Version="^1.0.0" />
+  </ItemGroup>
 </Project>
