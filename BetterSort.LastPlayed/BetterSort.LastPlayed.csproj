@@ -13,9 +13,8 @@
     <Company />
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
-    <RepositoryType></RepositoryType>
-    <RepositoryUrl></RepositoryUrl>
-    <Description></Description>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/nanikit/BetterSort.LastPlayed.git</RepositoryUrl>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
@@ -99,9 +98,11 @@
     <PluginId>BetterSort.LastPlayed</PluginId>
     <PluginName>BetterSort.LastPlayed</PluginName>
     <Authors>nanikit</Authors>
-    <Version>2.0.1</Version>
+    <Version>2.0.0</Version>
     <GameVersion>1.21.0</GameVersion>
     <Description>Add last played date sort to BetterSongList</Description>
+    <ProjectHome>https://github.com/nanikit/BetterSort.LastPlayed</ProjectHome>
+    <ProjectSource>$(RepositoryUrl)</ProjectSource>
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
