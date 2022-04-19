@@ -37,7 +37,7 @@ namespace BetterSort.LastPlayed.Test {
     [Test]
     public void TestImport() {
       if (Plugin.IsUnityPlayer) {
-        // user data overwrite!
+        // It can overwrite user data. Skip.
         return;
       }
 
@@ -57,6 +57,11 @@ namespace BetterSort.LastPlayed.Test {
 
     [Test]
     public void TestBothExist() {
+      if (Plugin.IsUnityPlayer) {
+        // It can overwrite user data. Skip.
+        return;
+      }
+
       _ourHistory.LastPlayedDate = new();
       Directory.CreateDirectory(_dataPath);
       File.WriteAllText(_testSphPath, _testSphFile);
