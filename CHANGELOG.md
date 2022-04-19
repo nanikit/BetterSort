@@ -1,3 +1,7 @@
+### 2.0.2
+
+- Fix recording replay to play history.
+
 # 2.0.0
 **Delete previous BetterSongList.LastPlayedSort.dll if you have it.**
 
