@@ -1,4 +1,5 @@
 namespace BetterSort.LastPlayed.External {
+  using IPA.Loader;
   using System;
   using System.Reflection;
   using IPALogger = IPA.Logging.Logger;
@@ -7,9 +8,10 @@ namespace BetterSort.LastPlayed.External {
     public Scoresaber(IPALogger logger) {
       _logger = logger;
 
-      var scoresaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
+      // GetPluginFromId's result can be null but intellisense doesn't catch it.
+      var scoresaber = (PluginMetadata?)PluginManager.GetPluginFromId("ScoreSaber");
       string typeName = "ScoreSaber.Core.ReplaySystem.HarmonyPatches.PatchHandleHMDUnmounted";
-      var method = scoresaber.Assembly.GetType(typeName)?
+      var method = scoresaber?.Assembly.GetType(typeName)?
         .GetMethod("Prefix", BindingFlags.Static | BindingFlags.NonPublic);
       if (method == null) {
         _logger.Warn("Scoresaber replay detection hook failure");
