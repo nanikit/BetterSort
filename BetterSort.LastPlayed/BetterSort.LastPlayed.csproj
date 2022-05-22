@@ -98,7 +98,7 @@
     <PluginId>BetterSort.LastPlayed</PluginId>
     <PluginName>BetterSort.LastPlayed</PluginName>
     <Authors>nanikit</Authors>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
     <GameVersion>1.21.0</GameVersion>
     <Description>Add last played date sort to BetterSongList</Description>
     <ProjectHome>https://github.com/nanikit/BetterSort.LastPlayed</ProjectHome>
