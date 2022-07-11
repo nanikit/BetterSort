@@ -36,7 +36,6 @@ namespace BetterSort.LastPlayed {
       container.BindInterfacesAndSelfTo<ImmigrationRepository>().AsSingle();
 
       container.Bind<Scoresaber>().AsSingle();
-      container.Bind<Beatleader>().AsSingle();
       container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
       container.Bind<FilterSortAdaptor>().AsSingle();

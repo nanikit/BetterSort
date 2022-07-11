@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.Core {
+namespace BetterSort.Common.Interfaces {
   using System.Collections.Generic;
 
   public interface ISortFilterResult {

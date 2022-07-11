@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.Core {
+namespace BetterSort.Common.Interfaces {
   using System;
   using System.Collections.Generic;
   using System.Threading;

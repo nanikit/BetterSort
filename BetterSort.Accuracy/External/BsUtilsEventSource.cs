@@ -11,11 +11,10 @@ namespace BetterSort.LastPlayed.External {
   internal class BsUtilsEventSource : IPlayEventSource {
     public event Action<string, DateTime> OnSongPlayed = delegate { };
 
-    public BsUtilsEventSource(IClock clock, IPALogger logger, Scoresaber scoresaber, Beatleader beatleader) {
+    public BsUtilsEventSource(IClock clock, IPALogger logger, Scoresaber scoresaber) {
       _clock = clock;
       _logger = logger;
       _scoresaber = scoresaber;
-      _beatleader = beatleader;
       BSEvents.levelSelected += PreserveSelectedLevel;
       BSEvents.gameSceneLoaded += RecordStartTime;
       BSEvents.LevelFinished += DispatchIfLongEnough;
@@ -30,7 +29,6 @@ namespace BetterSort.LastPlayed.External {
     private readonly IClock _clock;
     private readonly IPALogger _logger;
     private readonly Scoresaber _scoresaber;
-    private readonly Beatleader _beatleader;
     private string _selectedLevelId = "";
     private string _selectedSongName = "";
     private float _songDuration;
@@ -56,11 +54,7 @@ namespace BetterSort.LastPlayed.External {
         return;
       }
       if (_scoresaber.IsInReplay()) {
-        _logger.Info($"Skip scoresaber replay record.");
-        return;
-      }
-      if (_beatleader.IsInReplay()) {
-        _logger.Info($"Skip beatleader replay record.");
+        _logger.Info($"Skip replay record.");
         return;
       }
 

@@ -4,12 +4,12 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSort.LastPlayed</RootNamespace>
+    <RootNamespace>BetterSort.Common</RootNamespace>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>BetterSort.LastPlayed</Product>
+    <Product>BetterSort.Common</Product>
     <Company />
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
@@ -17,6 +17,8 @@
     <RepositoryUrl>https://github.com/nanikit/BetterSort.LastPlayed.git</RepositoryUrl>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -30,13 +32,6 @@
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-    <DisableZipRelease>True</DisableZipRelease>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,38 +39,12 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="0Harmony">
-      <HintPath>$(BeatSaberDir)\Libs\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BS_Utils">
-      <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="IPA.Loader">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Main">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Main.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HMLib">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Zenject">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -85,23 +54,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSongList\BetterSongList.csproj" />
-    <ProjectReference Include="..\BetterSort.Common\BetterSort.Common.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
     <ImportBSMTTargets>True</ImportBSMTTargets>
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
-    <PluginId>BetterSort.LastPlayed</PluginId>
-    <PluginName>BetterSort.LastPlayed</PluginName>
+    <PluginId>BetterSort.Common</PluginId>
+    <PluginName>BetterSort.Common</PluginName>
     <Authors>nanikit</Authors>
-    <Version>2.1.0</Version>
+    <Version>0.1.0</Version>
     <GameVersion>1.21.0</GameVersion>
-    <Description>Add last played date sort to BetterSongList</Description>
+    <Description>Common module for LastPlayed and Accuracy.</Description>
     <ProjectHome>https://github.com/nanikit/BetterSort.LastPlayed</ProjectHome>
     <ProjectSource>$(RepositoryUrl)</ProjectSource>
   </PropertyGroup>
@@ -109,11 +76,5 @@
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BS Utils" Version="^1.12.0" />
     <DependsOn Include="BetterSongList" Version="^0.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <LoadBefore Include="BetterSongList.LastPlayedSort" />
-  </ItemGroup>
-  <ItemGroup>
-    <ConflictsWith Include="BetterSongList.LastPlayedSort" Version="^1.0.0" />
   </ItemGroup>
 </Project>

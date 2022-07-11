@@ -1,5 +1,5 @@
 namespace BetterSort.LastPlayed.Test.Mocks {
-  using BetterSort.LastPlayed.External;
+  using BetterSort.Common.External;
   using System;
 
   internal class FixedClock : IClock {

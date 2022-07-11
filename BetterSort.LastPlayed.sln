@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy", "BetterSort.Accuracy\BetterSort.Accuracy.csproj", "{56D037CE-D147-4E85-AC36-657DD88CA6A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Common", "BetterSort.Common\BetterSort.Common.csproj", "{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +49,22 @@ Global
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestInGame|x64.Build.0 = Lib|x64
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.ActiveCfg = Exe|x64
 		{248F8761-0D9B-41BB-BC89-E2331D744BC0}.TestOutGame|x64.Build.0 = Exe|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.Debug|x64.ActiveCfg = Debug|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.Debug|x64.Build.0 = Debug|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.Release|x64.ActiveCfg = Release|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.Release|x64.Build.0 = Release|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.TestInGame|x64.ActiveCfg = Debug|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.TestInGame|x64.Build.0 = Debug|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.TestOutGame|x64.ActiveCfg = Debug|x64
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4}.TestOutGame|x64.Build.0 = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.Debug|x64.ActiveCfg = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.Debug|x64.Build.0 = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.Release|x64.ActiveCfg = Release|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.Release|x64.Build.0 = Release|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestInGame|x64.ActiveCfg = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestInGame|x64.Build.0 = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.ActiveCfg = Debug|x64
+		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

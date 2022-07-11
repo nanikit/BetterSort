@@ -1,6 +1,6 @@
 namespace BetterSort.LastPlayed.Test {
-  using BetterSort.LastPlayed.Compatibility;
-  using BetterSort.LastPlayed.Core;
+  using BetterSort.Common.Compatibility;
+  using BetterSort.Common.Interfaces;
   using BetterSort.LastPlayed.Sorter;
   using BetterSort.LastPlayed.Test.Mocks;
   using Nanikit.Test;

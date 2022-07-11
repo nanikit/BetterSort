@@ -12,9 +12,9 @@ namespace BetterSort.LastPlayed.Sorter {
       double logOffset = 100000;
 
       for (int i = 0; i < levels.Count; i++) {
-        var level = levels[i];
-        if (lastPlayedDates.TryGetValue(level.LevelId, out var lastPlayedDate)) {
-          var difference = now - lastPlayedDate;
+        ILevelPreview? level = levels[i];
+        if (lastPlayedDates.TryGetValue(level.LevelId, out DateTime lastPlayedDate)) {
+          TimeSpan difference = now - lastPlayedDate;
           double seconds = difference.TotalSeconds;
 
           int logOfDifference = (int)(Math.Log(Math.Max(1, seconds) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));

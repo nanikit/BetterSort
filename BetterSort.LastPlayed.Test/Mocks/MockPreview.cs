@@ -1,5 +1,5 @@
 namespace BetterSort.LastPlayed.Test {
-  using BetterSort.LastPlayed.Core;
+  using BetterSort.Common.Interfaces;
 
   class MockPreview : ILevelPreview {
     public string LevelId => _id;

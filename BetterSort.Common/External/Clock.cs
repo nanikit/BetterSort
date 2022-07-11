@@ -1,6 +1,6 @@
 using System;
 
-namespace BetterSort.LastPlayed.External {
+namespace BetterSort.Common.External {
   public interface IClock {
     DateTime Now { get; }
   }
