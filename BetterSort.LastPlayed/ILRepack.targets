@@ -4,8 +4,11 @@
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
       <InputAssemblies Include="$(OutputPath)\BetterSort.Common.dll" />
+      <InternalizeExclude Include="BetterSort.Common" />
     </ItemGroup>
-
+    <!-- <PropertyGroup Condition="'$(Configuration)'!='TestOutGame'">
+      <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    </PropertyGroup> -->
     <ILRepack
         CopyAttributes="true"
         Parallel="true"

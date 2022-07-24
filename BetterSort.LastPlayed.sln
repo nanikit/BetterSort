@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.LastPlayed", "BetterSort.LastPlayed\BetterSort.LastPlayed.csproj", "{14269CDE-DEC8-458D-84A3-ACD5A768A04C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.LastPlayed.Test", "BetterSort.LastPlayed.Test\BetterSort.LastPlayed.Test.csproj", "{248F8761-0D9B-41BB-BC89-E2331D744BC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{14269CDE-DEC8-458D-84A3-ACD5A768A04C} = {14269CDE-DEC8-458D-84A3-ACD5A768A04C}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24A6A13D-6539-4783-9F65-2A42848533D3}"
 	ProjectSection(SolutionItems) = preProject
