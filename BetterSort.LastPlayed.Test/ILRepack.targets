@@ -3,8 +3,7 @@
   <Target Name="ILRepacker" BeforeTargets="BSMT_AfterBuild" Condition="'$(Configuration)'!='TestOutGame'">
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
-      <InputAssemblies Include="$(OutputPath)\BetterSort.Common.dll" />
-      <InternalizeExclude Include="BetterSort.Common" />
+      <InputAssemblies Include="$(OutputPath)\BetterSort.Test.Common.dll" />
     </ItemGroup>
 
     <ILRepack

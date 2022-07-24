@@ -4,12 +4,12 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
+    <RootNamespace>BetterSort.Accuracy.Test</RootNamespace>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>BetterSort.LastPlayed.Test</Product>
+    <Product>BetterSort.Accuracy.Test</Product>
     <Company />
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
@@ -39,8 +39,11 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BetterSort.LastPlayed">
-      <HintPath>..\BetterSort.LastPlayed\bin\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
+    <Reference Include="BetterSort.Accuracy" Condition="'$(Configuration)' == 'Release'">
+      <HintPath>..\BetterSort.Accuracy\bin\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
+    </Reference>
+    <Reference Include="BetterSort.Accuracy" Condition="'$(Configuration)' != 'Release'">
+      <HintPath>..\BetterSort.Accuracy\bin\Debug\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -85,8 +88,8 @@
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
-    <PluginId>BetterSort.LastPlayed.Test</PluginId>
-    <PluginName>BetterSort.LastPlayed.Test</PluginName>
+    <PluginId>BetterSort.Accuracy.Test</PluginId>
+    <PluginName>BetterSort.Accuracy.Test</PluginName>
     <Authors>nanikit</Authors>
     <Version>0.0.1</Version>
     <GameVersion>1.19.1</GameVersion>
@@ -94,7 +97,7 @@
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BetterSort.LastPlayed" Version="^0.0.1" />
+    <DependsOn Include="BetterSort.Accuracy" Version="^0.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />

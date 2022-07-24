@@ -3,7 +3,7 @@ namespace BetterSort.LastPlayed.Sorter {
   using System;
   using System.Collections.Generic;
 
-  internal class DateLegendMaker {
+  internal class AccuracyLegendMaker {
     public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
       int lastLogOfUnixDifference = -1;

@@ -14,7 +14,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.LastPlayed.Test"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24A6A13D-6539-4783-9F65-2A42848533D3}"
 	ProjectSection(SolutionItems) = preProject
-		CHANGELOG.md = CHANGELOG.md
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -22,7 +21,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy", "Bett
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Common", "BetterSort.Common\BetterSort.Common.csproj", "{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assert.Xunit", "Assert.Xunit\Assert.Xunit.csproj", "{899FE257-310D-4E44-B0D4-13994A1D574E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Test.Common", "BetterSort.Test.Common\BetterSort.Test.Common.csproj", "{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy.Test", "BetterSort.Accuracy.Test\BetterSort.Accuracy.Test.csproj", "{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56D037CE-D147-4E85-AC36-657DD88CA6A4} = {56D037CE-D147-4E85-AC36-657DD88CA6A4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,14 +74,20 @@ Global
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestInGame|x64.Build.0 = Debug|x64
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.ActiveCfg = Debug|x64
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.Build.0 = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.Debug|x64.ActiveCfg = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.Debug|x64.Build.0 = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.Release|x64.ActiveCfg = Release|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.Release|x64.Build.0 = Release|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestInGame|x64.ActiveCfg = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestInGame|x64.Build.0 = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestOutGame|x64.ActiveCfg = Debug|x64
-		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestOutGame|x64.Build.0 = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.Debug|x64.ActiveCfg = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.Debug|x64.Build.0 = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.Release|x64.ActiveCfg = Release|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.Release|x64.Build.0 = Release|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.TestInGame|x64.ActiveCfg = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.TestInGame|x64.Build.0 = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.TestOutGame|x64.ActiveCfg = Debug|x64
+		{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}.TestOutGame|x64.Build.0 = Debug|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.Debug|x64.ActiveCfg = Lib|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.Release|x64.ActiveCfg = Lib|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.TestInGame|x64.ActiveCfg = Lib|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.TestInGame|x64.Build.0 = Lib|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.TestOutGame|x64.ActiveCfg = Lib|x64
+		{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}.TestOutGame|x64.Build.0 = Lib|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

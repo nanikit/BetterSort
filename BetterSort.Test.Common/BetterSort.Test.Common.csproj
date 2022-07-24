@@ -4,10 +4,10 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>Xunit</RootNamespace>
+    <RootNamespace>BetterSort.Test.Common</RootNamespace>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>Xunit.Assert</Product>
+    <Product>BetterSort.Test.Common</Product>
     <Company />
     <Authors></Authors>
     <Copyright></Copyright>
@@ -28,12 +28,35 @@
     <NoWarn>8600;8601;8603;8604;8618;8625</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ImportBSMTTargets>False</ImportBSMTTargets>
+    <BSMTProjectType>BSIPA</BSMTProjectType>
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableZipRelease>True</DisableZipRelease>
+    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
+    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="BeatSaberModdingTools.Tasks">
+      <Version>2.0.0-beta4</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IPA.Loader">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Zenject">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
