@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy", "Bett
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Common", "BetterSort.Common\BetterSort.Common.csproj", "{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assert.Xunit", "Assert.Xunit\Assert.Xunit.csproj", "{899FE257-310D-4E44-B0D4-13994A1D574E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -65,6 +67,14 @@ Global
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestInGame|x64.Build.0 = Debug|x64
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.ActiveCfg = Debug|x64
 		{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}.TestOutGame|x64.Build.0 = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.Debug|x64.ActiveCfg = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.Debug|x64.Build.0 = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.Release|x64.ActiveCfg = Release|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.Release|x64.Build.0 = Release|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestInGame|x64.ActiveCfg = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestInGame|x64.Build.0 = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestOutGame|x64.ActiveCfg = Debug|x64
+		{899FE257-310D-4E44-B0D4-13994A1D574E}.TestOutGame|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

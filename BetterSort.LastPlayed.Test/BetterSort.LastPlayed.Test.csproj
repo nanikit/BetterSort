@@ -76,6 +76,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Assert.Xunit\Assert.Xunit.csproj" />
     <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
   </ItemGroup>
 
