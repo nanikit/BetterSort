@@ -14,7 +14,7 @@
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/nanikit/BetterSort.LastPlayed.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/nanikit/BetterSorts.git</RepositoryUrl>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DisableCopyToPlugins>True</DisableCopyToPlugins>
@@ -57,24 +57,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSongList\BetterSongList.csproj" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <ImportBSMTTargets>True</ImportBSMTTargets>
-    <BSMTProjectType>BSIPA</BSMTProjectType>
-    <GenerateManifest>true</GenerateManifest>
-    <PluginId>BetterSort.Common</PluginId>
-    <PluginName>BetterSort.Common</PluginName>
-    <Authors>nanikit</Authors>
-    <Version>0.1.0</Version>
-    <GameVersion>1.21.0</GameVersion>
-    <Description>Common module for LastPlayed and Accuracy.</Description>
-    <ProjectHome>https://github.com/nanikit/BetterSort.LastPlayed</ProjectHome>
-    <ProjectSource>$(RepositoryUrl)</ProjectSource>
-  </PropertyGroup>
-  <ItemGroup>
-    <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BS Utils" Version="^1.12.0" />
-    <DependsOn Include="BetterSongList" Version="^0.3.0" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.External {
+namespace BetterSort.Common.External {
   using IPA.Loader;
   using System;
   using System.Reflection;

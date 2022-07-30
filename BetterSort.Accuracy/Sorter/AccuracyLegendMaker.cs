@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.Sorter {
+namespace BetterSort.Accuracy.Sorter {
   using BetterSort.Common.Interfaces;
   using System;
   using System.Collections.Generic;

@@ -14,7 +14,7 @@
     <Authors>nanikit</Authors>
     <Copyright>nanikit (c) 2022</Copyright>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/nanikit/BetterSort.LastPlayed.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/nanikit/BetterSorts.git</RepositoryUrl>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
@@ -58,6 +58,10 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Steamworks.NET.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -76,6 +80,10 @@
     </Reference>
     <Reference Include="Zenject">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -102,7 +110,7 @@
     <Version>0.1.0</Version>
     <GameVersion>1.21.0</GameVersion>
     <Description>Add accuracy sort to BetterSongList</Description>
-    <ProjectHome>https://github.com/nanikit/BetterSort.LastPlayed</ProjectHome>
+    <ProjectHome>https://github.com/nanikit/BetterSorts</ProjectHome>
     <ProjectSource>$(RepositoryUrl)</ProjectSource>
   </PropertyGroup>
   <ItemGroup>

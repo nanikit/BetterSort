@@ -1,13 +1,13 @@
-namespace BetterSort.LastPlayed.Sorter {
+namespace BetterSort.Accuracy.Sorter {
   using BetterSongList;
   using BetterSort.Common.Compatibility;
-  using BetterSort.LastPlayed.External;
+  using BetterSort.Accuracy.External;
   using System;
   using System.Collections.Generic;
   using IPALogger = IPA.Logging.Logger;
 
   public class SorterEnvironment {
-    public SorterEnvironment(IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
+    public SorterEnvironment(IPALogger logger, IAccuracyRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
       _logger = logger;
       _repository = repository;
       _playEventSource = playEventSource;
@@ -17,7 +17,7 @@ namespace BetterSort.LastPlayed.Sorter {
 
     public void Start(bool register) {
       var data = _repository.Load();
-      _sorter.LastPlayedDates = data?.LastPlays is Dictionary<string, DateTime> lastPlays
+      _sorter.LastPlayedDates = data?.BestAccuracies is Dictionary<string, DateTime> lastPlays
         ? lastPlays
         : new Dictionary<string, DateTime>();
       _playEventSource.OnSongPlayed += RecordHistory;
@@ -31,7 +31,7 @@ namespace BetterSort.LastPlayed.Sorter {
     }
 
     private readonly IPALogger _logger;
-    private readonly IPlayedDateRepository _repository;
+    private readonly IAccuracyRepository _repository;
     private readonly IPlayEventSource _playEventSource;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
@@ -39,7 +39,6 @@ namespace BetterSort.LastPlayed.Sorter {
     private void RecordHistory(string levelId, DateTime instant) {
       _logger.Debug($"Record play {levelId}: {instant}");
       _sorter.LastPlayedDates[levelId] = instant;
-      _repository.Save(_sorter.LastPlayedDates);
     }
   }
 }

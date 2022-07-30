@@ -1,5 +1,5 @@
-namespace BetterSort.LastPlayed.External {
-  using BetterSort.LastPlayed.Sorter;
+namespace BetterSort.Accuracy.External {
+  using BetterSort.Accuracy.Sorter;
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;
@@ -7,13 +7,13 @@ namespace BetterSort.LastPlayed.External {
   using System.Linq;
   using IPALogger = IPA.Logging.Logger;
 
-  public interface IPlayedDateRepository {
-    void Save(IReadOnlyDictionary<string, DateTime> playDates);
+  public interface IAccuracyRepository {
+    void Save(IReadOnlyDictionary<string, double> accuracies);
 
     StoredData? Load();
   }
 
-  internal class PlayedDateRepository : IPlayedDateRepository {
+  internal class PlayedDateRepository : IAccuracyRepository {
     public PlayedDateRepository(IPALogger logger) {
       _logger = logger;
     }
@@ -25,7 +25,7 @@ namespace BetterSort.LastPlayed.External {
       );
       string json = JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LastPlays = sorted,
+        BestAccuracies = sorted,
       }, Formatting.Indented);
       File.WriteAllText(_path, json);
       _logger.Info($"Saved {playDates.Count} records");
@@ -40,7 +40,7 @@ namespace BetterSort.LastPlayed.External {
       try {
         string json = File.ReadAllText(_path);
         var data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {data.LastPlays?.Count.ToString() ?? "no"} records");
+        _logger.Info($"Loaded {data.BestAccuracies?.Count.ToString() ?? "no"} records");
         return data;
       }
       catch (Exception exception) {
@@ -51,36 +51,5 @@ namespace BetterSort.LastPlayed.External {
 
     private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
     private readonly IPALogger _logger;
-  }
-
-  public class ImmigrationRepository : IPlayedDateRepository {
-    internal ImmigrationRepository(IPALogger logger, IPlayedDateRepository repository, SongPlayHistoryImporter importer) {
-      _logger = logger;
-      _repository = repository;
-      _importer = importer;
-    }
-
-    public StoredData? Load() {
-      return _repository.Load() ?? TryImportingSongPlayHistoryData();
-    }
-
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
-      _repository.Save(playDates);
-    }
-
-    private readonly IPALogger _logger;
-    private readonly IPlayedDateRepository _repository;
-    private readonly SongPlayHistoryImporter _importer;
-
-    private StoredData? TryImportingSongPlayHistoryData() {
-      var history = _importer.Load();
-      if (history == null) {
-        _logger.Debug("Searched SongPlayHistory data but not found. No history restored.");
-        return null;
-      }
-
-      _logger.Debug($"Imported SongPlayHistory data, total count: {history.Count}");
-      return new StoredData() { LastPlays = history };
-    }
   }
 }

@@ -1,8 +1,8 @@
-namespace BetterSort.LastPlayed {
+namespace BetterSort.Accuracy {
   using BetterSort.Common.Compatibility;
   using BetterSort.Common.External;
-  using BetterSort.LastPlayed.External;
-  using BetterSort.LastPlayed.Sorter;
+  using BetterSort.Accuracy.External;
+  using BetterSort.Accuracy.Sorter;
   using IPA;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
@@ -31,11 +31,9 @@ namespace BetterSort.LastPlayed {
       container.BindInterfacesAndSelfTo<Clock>().AsSingle();
 
       container.Bind<PlayedDateRepository>().AsSingle();
-      container.Bind<SongPlayHistoryImporter>().AsSingle();
-      container.BindInterfacesTo<PlayedDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
-      container.BindInterfacesAndSelfTo<ImmigrationRepository>().AsSingle();
+      container.BindInterfacesTo<PlayedDateRepository>().FromResolve().WhenInjectedInto<PlayerId>();
+      container.BindInterfacesAndSelfTo<PlayerId>().AsSingle();
 
-      container.Bind<Scoresaber>().AsSingle();
       container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
       container.Bind<FilterSortAdaptor>().AsSingle();
