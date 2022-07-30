@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="ILRepacker" BeforeTargets="BSMT_AfterBuild" Condition="'$(Configuration)'!='TestOutGame'">
+  <Target Name="ILRepacker" BeforeTargets="BSMT_AfterBuild" Condition="'$(DoRepack)' == 'True'">
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
       <InputAssemblies Include="$(OutputPath)\BetterSort.Test.Common.dll" />

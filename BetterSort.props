@@ -1,0 +1,58 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
+    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <LangVersion>9</LangVersion>
+    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
+    <Nullable>enable</Nullable>
+    <Company />
+    <Authors>nanikit</Authors>
+    <Copyright>nanikit (c) 2022</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/nanikit/BetterSorts.git</RepositoryUrl>
+    <Platforms>x64</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Configurations>Debug;TestInGame;TestOutGame;Release</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Release'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <OutputPath>bin\Debug</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NCrunch)' == '1'">
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableZipRelease>True</DisableZipRelease>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(OutputType)' == 'Library'">
+    <PackageReference Include="BeatSaberModdingTools.Tasks">
+      <Version>2.0.0-beta4</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug' AND '$(Configuration)' != 'TestOutGame'">
+    <DoRepack>True</DoRepack>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BSMTProjectType>BSIPA</BSMTProjectType>
+    <Authors>nanikit</Authors>
+    <ProjectHome>https://github.com/nanikit/BetterSorts</ProjectHome>
+    <ProjectSource>$(RepositoryUrl)</ProjectSource>
+  </PropertyGroup>
+</Project>

@@ -1,49 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <OutputType>Library</OutputType>
-    <LangVersion>9</LangVersion>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSort.Accuracy.Test</RootNamespace>
-    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
-    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
-    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Nullable>enable</Nullable>
-    <Product>BetterSort.Accuracy.Test</Product>
-    <Company />
-    <Authors>nanikit</Authors>
-    <Copyright>nanikit (c) 2022</Copyright>
-    <RepositoryType></RepositoryType>
-    <RepositoryUrl></RepositoryUrl>
-    <Description></Description>
-    <Platforms>x64</Platforms>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Lib;Exe</Configurations>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\BetterSort.props" />
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' OR '$(Configuration)' == 'DebugTest'">
+  <PropertyGroup>
+    <RootNamespace>BetterSort.Accuracy.Test</RootNamespace>
+    <Product>BetterSort.Accuracy.Test</Product>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Exe'">
+  <PropertyGroup Condition="'$(Configuration)'=='TestOutGame'">
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-    <DisableZipRelease>True</DisableZipRelease>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BetterSort.Accuracy" Condition="'$(Configuration)' == 'Release'">
-      <HintPath>..\BetterSort.Accuracy\bin\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
-    </Reference>
-    <Reference Include="BetterSort.Accuracy" Condition="'$(Configuration)' != 'Release'">
+    <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' != 'Release'">
       <HintPath>..\BetterSort.Accuracy\bin\Debug\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
+    </Reference>
+    <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' == 'Release'">
+      <HintPath>..\BetterSort.Accuracy\bin\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -75,22 +50,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(OutputType)' == 'Library'">
-    <PackageReference Include="BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta4</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
   </ItemGroup>
 
   <PropertyGroup>
     <ImportBSMTTargets>True</ImportBSMTTargets>
-    <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
     <PluginId>BetterSort.Accuracy.Test</PluginId>
     <PluginName>BetterSort.Accuracy.Test</PluginName>
-    <Authors>nanikit</Authors>
     <Version>0.0.1</Version>
     <GameVersion>1.19.1</GameVersion>
     <Description>Assembly for mod test</Description>
@@ -98,6 +66,9 @@
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BetterSort.Accuracy" Version="^0.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DoRepack)' != 'True'">
+    <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />

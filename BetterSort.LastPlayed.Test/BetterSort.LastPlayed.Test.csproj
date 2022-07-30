@@ -1,43 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\BetterSort.props" />
+
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <OutputType>Library</OutputType>
-    <LangVersion>9</LangVersion>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
-    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
-    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
-    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Nullable>enable</Nullable>
     <Product>BetterSort.LastPlayed.Test</Product>
-    <Company />
-    <Authors>nanikit</Authors>
-    <Copyright>nanikit (c) 2022</Copyright>
-    <RepositoryType></RepositoryType>
-    <RepositoryUrl></RepositoryUrl>
-    <Description></Description>
-    <Platforms>x64</Platforms>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Lib;Exe</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' OR '$(Configuration)' == 'DebugTest'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <OutputPath>bin\Debug</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Exe'">
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-    <DisableZipRelease>True</DisableZipRelease>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BetterSort.LastPlayed">
       <HintPath>..\BetterSort.LastPlayed\bin\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
@@ -72,22 +40,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(OutputType)' == 'Library'">
-    <PackageReference Include="BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta4</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
   </ItemGroup>
 
   <PropertyGroup>
     <ImportBSMTTargets>True</ImportBSMTTargets>
-    <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
     <DisableZipRelease>True</DisableZipRelease>
     <PluginId>BetterSort.LastPlayed.Test</PluginId>
     <PluginName>BetterSort.LastPlayed.Test</PluginName>
-    <Authors>nanikit</Authors>
     <Version>0.0.1</Version>
     <GameVersion>1.19.1</GameVersion>
     <Description>Assembly for mod test</Description>

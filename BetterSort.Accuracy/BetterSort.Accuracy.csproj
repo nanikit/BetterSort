@@ -1,42 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\BetterSort.props" />
+
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <OutputType>Library</OutputType>
-    <LangVersion>9</LangVersion>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <RootNamespace>BetterSort.Accuracy</RootNamespace>
-    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
-    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
-    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Nullable>enable</Nullable>
     <Product>BetterSort.Accuracy</Product>
-    <Company />
-    <Authors>nanikit</Authors>
-    <Copyright>nanikit (c) 2022</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/nanikit/BetterSorts.git</RepositoryUrl>
-    <Platforms>x64</Platforms>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <OutputPath>bin\Debug</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>none</DebugType>
-    <OutputPath>bin\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
-    <DisableZipRelease>True</DisableZipRelease>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -88,11 +57,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta4</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
   </ItemGroup>
   <ItemGroup>
@@ -102,16 +66,12 @@
 
   <PropertyGroup>
     <ImportBSMTTargets>True</ImportBSMTTargets>
-    <BSMTProjectType>BSIPA</BSMTProjectType>
-    <GenerateManifest>true</GenerateManifest>
+    <GenerateManifest>True</GenerateManifest>
     <PluginId>BetterSort.Accuracy</PluginId>
     <PluginName>BetterSort.Accuracy</PluginName>
-    <Authors>nanikit</Authors>
     <Version>0.1.0</Version>
     <GameVersion>1.21.0</GameVersion>
     <Description>Add accuracy sort to BetterSongList</Description>
-    <ProjectHome>https://github.com/nanikit/BetterSorts</ProjectHome>
-    <ProjectSource>$(RepositoryUrl)</ProjectSource>
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
