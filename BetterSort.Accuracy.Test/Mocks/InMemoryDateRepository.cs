@@ -1,21 +1,23 @@
-namespace BetterSort.LastPlayed.Test.Mocks {
-  using BetterSort.LastPlayed.External;
-  using System;
+namespace BetterSort.Accuracy.Test.Mocks {
+  using BetterSort.Accuracy.External;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading.Tasks;
 
-  internal class InMemoryDateRepository : IPlayedDateRepository {
-    public Dictionary<string, DateTime>? LastPlayedDate { get; set; } = new();
+  internal class InMemoryDateRepository : IAccuracyRepository {
+    public Dictionary<string, double>? BestAccuracies { get; set; } = new();
 
-    public StoredData? Load() {
-      return LastPlayedDate == null ? null : new StoredData() {
-        Version = "",
-        LastPlays = LastPlayedDate,
-      };
+    public Task Save(IReadOnlyDictionary<string, double> accuracies) {
+      BestAccuracies = accuracies.ToDictionary(x => x.Key, x => x.Value);
+      return Task.CompletedTask;
     }
 
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
-      LastPlayedDate = playDates.ToDictionary(x => x.Key, x => x.Value);
+    Task<StoredData?> IAccuracyRepository.Load() {
+      //return BestAccuracies == null ? null : new StoredData() {
+      //  Version = "",
+      //  LastPlays = BestAccuracies,
+      //};
+      return Task.FromResult<StoredData?>(new StoredData());
     }
   }
 }

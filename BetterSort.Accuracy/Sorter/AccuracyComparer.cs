@@ -3,9 +3,9 @@ namespace BetterSort.Accuracy.Sorter {
   using System;
   using System.Collections.Generic;
 
-  internal class LastPlayedDateComparer : IComparer<ILevelPreview>, IComparer<string> {
-    public LastPlayedDateComparer(IReadOnlyDictionary<string, DateTime> lastPlayedDates) {
-      _lastPlayedDates = lastPlayedDates;
+  internal class AccuracyComparer : IComparer<ILevelPreview>, IComparer<string> {
+    public AccuracyComparer(IReadOnlyDictionary<string, double> accuracies) {
+      _accuracies = accuracies;
     }
 
     public int Compare(ILevelPreview a, ILevelPreview b) {
@@ -13,19 +13,19 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     public int Compare(string a, string b) {
-      if (_lastPlayedDates == null) {
+      if (_accuracies == null) {
         return 0;
       }
 
-      if (_lastPlayedDates.TryGetValue(a, out var lastPlayOfA)) {
-        if (_lastPlayedDates.TryGetValue(b, out var lastPlayOfB)) {
+      if (_accuracies.TryGetValue(a, out var lastPlayOfA)) {
+        if (_accuracies.TryGetValue(b, out var lastPlayOfB)) {
           int descending = lastPlayOfB.CompareTo(lastPlayOfA);
           return descending;
         }
         return -1;
       }
       else {
-        if (_lastPlayedDates.TryGetValue(b, out var _)) {
+        if (_accuracies.TryGetValue(b, out var _)) {
           return 1;
         }
         return 0;
@@ -35,6 +35,6 @@ namespace BetterSort.Accuracy.Sorter {
     /// <summary>
     /// Level id to instant.
     /// </summary>
-    private readonly IReadOnlyDictionary<string, DateTime> _lastPlayedDates;
+    private readonly IReadOnlyDictionary<string, double> _accuracies;
   }
 }

@@ -26,21 +26,18 @@ namespace BetterSort.Accuracy {
       }
       _logger.Debug("Initialize()");
 
-      var container = ProjectContext.Instance.Container.CreateSubContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
-      container.BindInterfacesAndSelfTo<Clock>().AsSingle();
+      //var container = ProjectContext.Instance.Container.CreateSubContainer();
+      //container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      //container.BindInterfacesAndSelfTo<Clock>().AsSingle();
 
-      container.Bind<PlayedDateRepository>().AsSingle();
-      container.BindInterfacesTo<PlayedDateRepository>().FromResolve().WhenInjectedInto<PlayerId>();
-      container.BindInterfacesAndSelfTo<PlayerId>().AsSingle();
+      //container.Bind<AccuracyRepository>().AsSingle();
 
-      container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
-      container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
-      container.Bind<FilterSortAdaptor>().AsSingle();
-      container.Bind<SorterEnvironment>().AsSingle();
+      //container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
+      //container.Bind<FilterSortAdaptor>().AsSingle();
+      //container.Bind<SorterEnvironment>().AsSingle();
 
-      var environment = container.Resolve<SorterEnvironment>();
-      environment.Start(true);
+      //var environment = container.Resolve<SorterEnvironment>();
+      //environment.Start(true);
 
       _logger.Info("Initialized.");
     }

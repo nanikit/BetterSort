@@ -1,6 +1,7 @@
-namespace BetterSort.LastPlayed.Test {
+namespace BetterSort.Accuracy.Test {
+  using BetterSort.Test.Common;
+  using BetterSort.Test.Common.Mocks;
   using IPA;
-  using Nanikit.Test;
   using System.Collections.Generic;
   using System.Reflection;
   using UnityEngine;
@@ -41,12 +42,6 @@ namespace BetterSort.LastPlayed.Test {
       Plugin plugin = new();
       plugin.Init(new MockLogger());
       plugin.OnApplicationStart();
-    }
-  }
-
-  internal class MockLogger : IPALogger {
-    public override void Log(Level level, string message) {
-      System.Console.WriteLine($"[{level}]: {message}");
     }
   }
 }

@@ -1,13 +1,12 @@
 namespace BetterSort.Accuracy.Sorter {
   using BetterSongList;
-  using BetterSort.Common.Compatibility;
   using BetterSort.Accuracy.External;
-  using System;
+  using BetterSort.Common.Compatibility;
   using System.Collections.Generic;
   using IPALogger = IPA.Logging.Logger;
 
   public class SorterEnvironment {
-    public SorterEnvironment(IPALogger logger, IAccuracyRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
+    public SorterEnvironment(IPALogger logger, IAccuracyRepository repository, IPlayEventSource playEventSource, AccuracySorter sorter, FilterSortAdaptor adaptor) {
       _logger = logger;
       _repository = repository;
       _playEventSource = playEventSource;
@@ -15,12 +14,12 @@ namespace BetterSort.Accuracy.Sorter {
       _adaptor = adaptor;
     }
 
-    public void Start(bool register) {
-      var data = _repository.Load();
-      _sorter.LastPlayedDates = data?.BestAccuracies is Dictionary<string, DateTime> lastPlays
+    public async void Start(bool register) {
+      var data = await _repository.Load().ConfigureAwait(false);
+      _sorter.LastPlayedDates = data?.BestAccuracies is Dictionary<string, double> lastPlays
         ? lastPlays
-        : new Dictionary<string, DateTime>();
-      _playEventSource.OnSongPlayed += RecordHistory;
+        : new Dictionary<string, double>();
+      //_playEventSource.OnSongPlayed += RecordHistory;
       if (register) {
         SortMethods.RegisterCustomSorter(_adaptor);
         _logger.Debug("Registered last play date sorter.");
@@ -33,12 +32,7 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly IPALogger _logger;
     private readonly IAccuracyRepository _repository;
     private readonly IPlayEventSource _playEventSource;
-    private readonly LastPlayedDateSorter _sorter;
+    private readonly AccuracySorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
-
-    private void RecordHistory(string levelId, DateTime instant) {
-      _logger.Debug($"Record play {levelId}: {instant}");
-      _sorter.LastPlayedDates[levelId] = instant;
-    }
   }
 }

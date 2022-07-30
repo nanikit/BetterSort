@@ -63,13 +63,6 @@
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BetterSort.LastPlayed" Version="*" />
   </ItemGroup>
-  <ItemGroup>
-    <RequiredFile Include="Libs/System.Diagnostics.Debug.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <OutputCopy Include="$(TargetPath)" OutputPath="Plugins\$(TargetName).dll" />
-    <OutputCopy Include="$(TargetDir)$(TargetName).pdb" OutputPath="Plugins\$(TargetName).pdb" />
-  </ItemGroup>
   <ItemGroup Condition="'$(DoRepack)' != 'True'">
     <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
   </ItemGroup>

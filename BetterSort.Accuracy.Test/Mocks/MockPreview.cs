@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.Test {
+namespace BetterSort.Accuracy.Test.Mocks {
   using BetterSort.Common.Interfaces;
 
   class MockPreview : ILevelPreview {

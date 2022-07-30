@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.External {
+namespace BetterSort.Accuracy.External {
   using BetterSort.Common.External;
   using BS_Utils.Utilities;
   using System;
@@ -8,10 +8,10 @@ namespace BetterSort.LastPlayed.External {
     event Action<string, DateTime> OnSongPlayed;
   }
 
-  internal class BsUtilsEventSource : IPlayEventSource {
+  internal class BsUtilsFinishedEventSource : IPlayEventSource {
     public event Action<string, DateTime> OnSongPlayed = delegate { };
 
-    public BsUtilsEventSource(IClock clock, IPALogger logger, Scoresaber scoresaber) {
+    public BsUtilsFinishedEventSource(IClock clock, IPALogger logger, Scoresaber scoresaber) {
       _clock = clock;
       _logger = logger;
       _scoresaber = scoresaber;

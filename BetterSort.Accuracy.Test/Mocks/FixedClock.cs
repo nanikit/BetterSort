@@ -1,4 +1,4 @@
-namespace BetterSort.LastPlayed.Test.Mocks {
+namespace BetterSort.Accuracy.Test.Mocks {
   using BetterSort.Common.External;
   using System;
 

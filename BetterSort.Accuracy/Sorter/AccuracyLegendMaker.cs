@@ -4,32 +4,33 @@ namespace BetterSort.Accuracy.Sorter {
   using System.Collections.Generic;
 
   internal class AccuracyLegendMaker {
-    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
+    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, double> bestAccuracies) {
       var legend = new List<(string, int)>();
       int lastLogOfUnixDifference = -1;
 
       double logBase = Math.Sqrt(2);
       double logOffset = 100000;
 
-      for (int i = 0; i < levels.Count; i++) {
-        ILevelPreview? level = levels[i];
-        if (lastPlayedDates.TryGetValue(level.LevelId, out DateTime lastPlayedDate)) {
-          TimeSpan difference = now - lastPlayedDate;
-          double seconds = difference.TotalSeconds;
+      throw new NotImplementedException();
+      //for (int i = 0; i < levels.Count; i++) {
+      //  ILevelPreview? level = levels[i];
+      //  if (bestAccuracies.TryGetValue(level.LevelId, out DateTime lastPlayedDate)) {
+      //    TimeSpan difference = now - lastPlayedDate;
+      //    double seconds = difference.TotalSeconds;
 
-          int logOfDifference = (int)(Math.Log(Math.Max(1, seconds) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
-          if (lastLogOfUnixDifference < logOfDifference) {
-            lastLogOfUnixDifference = logOfDifference;
-            legend.Add((FormatTimeLabel(lastPlayedDate, difference), i));
-          }
-        }
-        else {
-          legend.Add(("Never", i));
-          break;
-        }
-      }
+      //    int logOfDifference = (int)(Math.Log(Math.Max(1, seconds) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
+      //    if (lastLogOfUnixDifference < logOfDifference) {
+      //      lastLogOfUnixDifference = logOfDifference;
+      //      legend.Add((FormatTimeLabel(lastPlayedDate, difference), i));
+      //    }
+      //  }
+      //  else {
+      //    legend.Add(("Never", i));
+      //    break;
+      //  }
+      //}
 
-      return legend;
+      //return legend;
     }
 
     private static string FormatTimeLabel(DateTime instant, TimeSpan difference) {

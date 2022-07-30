@@ -1,37 +1,38 @@
 namespace BetterSort.Accuracy.External {
-  using BetterSort.Common.External;
   using Newtonsoft.Json;
   using SiraUtil.Web;
-  using Steamworks;
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
-  public class ScoresaberRepository : IAccuracyRepository {
-    internal ScoresaberRepository(IPALogger logger, IHttpService http) {
+  public class ScoresaberImporter {
+    private readonly IPALogger _logger;
+    private readonly IHttpService _http;
+    private readonly LeaderboardId _id;
+
+    internal ScoresaberImporter(IPALogger logger, IHttpService http, LeaderboardId id) {
       _logger = logger;
       _http = http;
+      _id = id;
     }
 
-    public StoredData? Load() {
-      if (SteamManager.Initialized) {
-        var user = SteamUser.GetSteamID();
-        uint id = (uint)user.GetAccountID();
+    public async Task<List<BestRecord>?> Crawl() {
+      string? id = await _id.GetUserId().ConfigureAwait(false);
+      if (id == null) {
+        _logger.Info("Cannot get user ID. Abort data import.");
+        return null;
       }
-      throw new NotImplementedException();
-    }
-    public void Save(IReadOnlyDictionary<string, double> accuracies) {
-      throw new NotImplementedException();
+
+      var records = await GetRecords(id).ConfigureAwait(false);
+      return records;
     }
 
-    public async Task<List<BestRecord>> GetRecords(uint steamId) {
-      // OculusPlatformUserModel : IPlatformUserModel
-
+    public async Task<List<BestRecord>> GetRecords(string platformId) {
       var records = new List<BestRecord>();
       for (int page = 1; ; page++) {
-        var paged = await GetRecord(steamId, page).ConfigureAwait(false);
+        var paged = await GetRecord(platformId, page).ConfigureAwait(false);
         records.AddRange(
           paged.PlayerScores.Select(x => new BestRecord() {
             Score = x.Score?.BaseScore ?? 0,
@@ -47,8 +48,8 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    private async Task<PagedPlayerScores> GetRecord(uint steamId, int page) {
-      var response = await _http.GetAsync($"https://scoresaber.com/api/player/{steamId}/scores?page={page}&sort=recent").ConfigureAwait(false);
+    public async Task<PagedPlayerScores> GetRecord(string platformId, int page) {
+      var response = await _http.GetAsync($"https://scoresaber.com/api/player/{platformId}/scores?page={page}&sort=recent").ConfigureAwait(false);
       if (!response.Successful) {
         string? error = await response.Error().ConfigureAwait(false);
         throw new Exception($"http request was not successful: {response.Code} {error}");
@@ -58,9 +59,6 @@ namespace BetterSort.Accuracy.External {
       var scores = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
       return scores;
     }
-
-    private readonly IPALogger _logger;
-    private readonly IHttpService _http;
   }
 
   public class BestRecord {

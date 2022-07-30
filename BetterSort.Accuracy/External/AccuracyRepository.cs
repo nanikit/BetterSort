@@ -5,47 +5,49 @@ namespace BetterSort.Accuracy.External {
   using System.Collections.Generic;
   using System.IO;
   using System.Linq;
+  using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
   public interface IAccuracyRepository {
-    void Save(IReadOnlyDictionary<string, double> accuracies);
+    Task Save(IReadOnlyDictionary<string, double> accuracies);
 
-    StoredData? Load();
+    Task<StoredData?> Load();
   }
 
-  internal class PlayedDateRepository : IAccuracyRepository {
-    public PlayedDateRepository(IPALogger logger) {
+  internal class AccuracyRepository : IAccuracyRepository {
+    public AccuracyRepository(IPALogger logger) {
       _logger = logger;
     }
 
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
-      var sorted = new SortedDictionary<string, DateTime>(
-        playDates.ToDictionary(x => x.Key, x => x.Value),
-        new LastPlayedDateComparer(playDates)
+    public Task Save(IReadOnlyDictionary<string, double> accuracies) {
+      var sorted = new SortedDictionary<string, double>(
+        accuracies.ToDictionary(x => x.Key, x => x.Value),
+        new AccuracyComparer(accuracies)
       );
       string json = JsonConvert.SerializeObject(new StoredData() {
-        Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
+        Version = $"{typeof(AccuracyRepository).Assembly.GetName().Version}",
         BestAccuracies = sorted,
       }, Formatting.Indented);
       File.WriteAllText(_path, json);
-      _logger.Info($"Saved {playDates.Count} records");
+      _logger.Info($"Saved {accuracies.Count} records");
+      return Task.CompletedTask;
     }
 
-    public StoredData? Load() {
+    public Task<StoredData?> Load() {
       if (!File.Exists(_path)) {
         _logger.Debug($"Try loading but play history is not exist.");
-        return null;
+        return Task.FromResult<StoredData?>(null);
       }
 
       try {
         string json = File.ReadAllText(_path);
         var data = JsonConvert.DeserializeObject<StoredData>(json);
         _logger.Info($"Loaded {data.BestAccuracies?.Count.ToString() ?? "no"} records");
-        return data;
+        return Task.FromResult<StoredData?>(data);
       }
       catch (Exception exception) {
         _logger.Warn(exception);
-        return null;
+        return Task.FromResult<StoredData?>(null);
       }
     }
 
