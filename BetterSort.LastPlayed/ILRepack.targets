@@ -5,6 +5,9 @@
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
       <InputAssemblies Include="$(OutputPath)\BetterSort.Common.dll" />
     </ItemGroup>
+    <ItemGroup>
+      <InternalizeExclude Include="BetterSort.Common" />
+    </ItemGroup>
 
     <ILRepack
         CopyAttributes="true"

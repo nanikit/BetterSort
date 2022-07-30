@@ -4,6 +4,7 @@
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
       <InputAssemblies Include="$(OutputPath)\BetterSort.Test.Common.dll" />
+      <InputAssemblies Include="$(OutputPath)\xunit*.dll" />
     </ItemGroup>
 
     <ILRepack

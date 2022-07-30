@@ -1,17 +1,20 @@
 namespace BetterSort.LastPlayed.Test {
   using BetterSort.LastPlayed.External;
   using BetterSort.LastPlayed.Test.Mocks;
-  using Nanikit.Test;
+  using BetterSort.Test.Common;
   using System;
   using System.IO;
   using Xunit;
+  using Xunit.Abstractions;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
 
-  internal class HistoryImporterTest {
-    public HistoryImporterTest(IPALogger logger) {
+  public class HistoryImporterTest {
+    public HistoryImporterTest(ITestOutputHelper output) {
+      _logger ??= new TestLogger(output!);
+
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(logger).AsSingle();
+      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.Bind<InMemoryDateRepository>().AsSingle();
       container.BindInterfacesTo<InMemoryDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
       container.BindInterfacesAndSelfTo<SongPlayHistoryImporter>().AsSingle();
@@ -20,21 +23,21 @@ namespace BetterSort.LastPlayed.Test {
       _repository = container.Resolve<ImmigrationRepository>();
     }
 
-    [Test]
+    [Fact]
     public void TestCompleteEmpty() {
       _ourHistory.LastPlayedDate = null;
       var data = _repository.Load();
-      Assert.Equal(null, data);
+      Assert.Null(data);
     }
 
-    [Test]
+    [Fact]
     public void TestOurHistory() {
       _ourHistory.LastPlayedDate = new();
       var data = _repository.Load();
       Assert.Equal(0, data?.LastPlays?.Count);
     }
 
-    [Test]
+    [Fact]
     public void TestImport() {
       if (Plugin.IsUnityPlayer) {
         // It can overwrite user data. Skip.
@@ -55,7 +58,7 @@ namespace BetterSort.LastPlayed.Test {
       }
     }
 
-    [Test]
+    [Fact]
     public void TestBothExist() {
       if (Plugin.IsUnityPlayer) {
         // It can overwrite user data. Skip.
@@ -74,6 +77,8 @@ namespace BetterSort.LastPlayed.Test {
       }
     }
 
+    [Inject]
+    private readonly IPALogger _logger;
     private readonly InMemoryDateRepository _ourHistory;
     private readonly ImmigrationRepository _repository;
     private static readonly string _dataPath = @"UserData";

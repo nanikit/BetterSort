@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="BetterSort.LastPlayed">
+      <Reference Include="BetterSort.LastPlayed" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' != 'Release'">
+      <HintPath>..\BetterSort.LastPlayed\bin\Debug\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
+    </Reference>
+    <Reference Include="BetterSort.LastPlayed" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' == 'Release'">
       <HintPath>..\BetterSort.LastPlayed\bin\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -38,6 +41,9 @@
     <Reference Include="Zenject">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
     </Reference>
+    <Reference Include="Zenject-usage">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(OutputType)' == 'Library'">
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
@@ -55,7 +61,17 @@
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BetterSort.LastPlayed" Version="^0.0.1" />
+    <DependsOn Include="BetterSort.LastPlayed" Version="*" />
+  </ItemGroup>
+  <ItemGroup>
+    <RequiredFile Include="Libs/System.Diagnostics.Debug.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <OutputCopy Include="$(TargetPath)" OutputPath="Plugins\$(TargetName).dll" />
+    <OutputCopy Include="$(TargetDir)$(TargetName).pdb" OutputPath="Plugins\$(TargetName).pdb" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DoRepack)' != 'True'">
+    <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />

@@ -1,4 +1,4 @@
-namespace Nanikit.Test {
+namespace BetterSort.Test.Common {
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -6,6 +6,12 @@ namespace Nanikit.Test {
   using IPALogger = IPA.Logging.Logger;
   using Zenject;
   using System.Threading.Tasks;
+  using Xunit;
+  using System.IO;
+  using Xunit.Abstractions;
+
+  [AttributeUsage(AttributeTargets.Method)]
+  public class UnityFact : Attribute { }
 
   public class TestRunner {
     private readonly IPALogger? _logger;
@@ -44,6 +50,7 @@ namespace Nanikit.Test {
       var container = new DiContainer();
       if (_logger != null) {
         container.Bind<IPALogger>().FromInstance(_logger).AsSingle();
+        container.Bind<ITestOutputHelper>().FromInstance(new XUnitLogger()).AsSingle();
       }
 
       object Resolve(Type type) {
@@ -73,30 +80,36 @@ namespace Nanikit.Test {
       }
     }
 
-    private static List<MethodInfo> GetTests(Assembly targetAssembly) {
-      var testAttribute = typeof(Test);
+    private List<MethodInfo> GetTests(Assembly targetAssembly) {
+      var testAttribute = typeof(FactAttribute);
+      var testAttribute2 = typeof(UnityFact);
       var testMethods = new List<MethodInfo>();
-      foreach (var type in targetAssembly.GetTypes()) {
-        foreach (var method in type.GetMethods()) {
-          if (Attribute.IsDefined(method, testAttribute)) {
-            testMethods.Add(method);
+      foreach (var type in GetLoadableTypes(targetAssembly)) {
+        if (type.Namespace?.StartsWith("Xunit") == true) {
+          continue;
+        }
+
+        try {
+          foreach (var method in type.GetMethods()) {
+            if (Attribute.IsDefined(method, testAttribute) || Attribute.IsDefined(method, testAttribute2)) {
+              testMethods.Add(method);
+            }
           }
+        }
+        catch (FileNotFoundException) {
+          // xUnit repacked type maybe
         }
       }
       return testMethods;
     }
-  }
 
-  public class TestResult {
-    public MethodInfo Method { get; set; }
-    public Exception? Exception { get; set; }
-
-    public TestResult(MethodInfo method, Exception? exception) {
-      Method = method;
-      Exception = exception;
+    public static IEnumerable<Type> GetLoadableTypes(Assembly assembly) {
+      try {
+        return assembly.GetTypes();
+      }
+      catch (ReflectionTypeLoadException e) {
+        return e.Types.Where(t => t != null);
+      }
     }
   }
-
-  [AttributeUsage(AttributeTargets.Method)]
-  public class Test : Attribute { }
 }

@@ -3,22 +3,23 @@ namespace BetterSort.LastPlayed.Test {
   using BetterSort.Common.Interfaces;
   using BetterSort.LastPlayed.Sorter;
   using BetterSort.LastPlayed.Test.Mocks;
-  using Nanikit.Test;
+  using BetterSort.Test.Common;
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
   using Xunit;
+  using Xunit.Abstractions;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
 
-  internal class SorterTest {
-    public SorterTest(IPALogger logger) {
-      _logger = logger;
+  public class SorterTest {
+    public SorterTest(ITestOutputHelper output) {
+      _logger ??= new TestLogger(output);
 
       DiContainer container = new();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(logger).AsSingle();
+      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
@@ -34,15 +35,15 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     // BetterSongList can pass empty list.
-    [Test]
+    [Fact]
     public void TestEmptySort() {
       _sorter.LastPlayedDates = new();
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
-      Assert.Equal(0, data.Count());
+      Assert.Empty(data);
     }
 
-    [Test]
+    [Fact]
     public async Task TestOneshotSort() {
       _clock.Now = new DateTime(2022, 3, 1);
 
@@ -67,7 +68,7 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     // TODO: Test short play skip
-    [Test]
+    [Fact]
     public async Task TestSort() {
       _clock.Now = new DateTime(2022, 3, 1);
       var data = GenerateData().ToList();
@@ -88,6 +89,7 @@ namespace BetterSort.LastPlayed.Test {
       Assert.Equal(expectation, levels.Select(x => x.LevelId));
     }
 
+    [Inject]
     private readonly IPALogger _logger;
     private readonly DiContainer _container;
     private readonly MockEventSource _playSource;

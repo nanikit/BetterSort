@@ -1,6 +1,6 @@
 namespace BetterSort.LastPlayed.Test {
+  using BetterSort.Test.Common;
   using IPA;
-  using Nanikit.Test;
   using System.Collections.Generic;
   using System.Reflection;
   using UnityEngine;

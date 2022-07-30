@@ -9,10 +9,6 @@
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='TestOutGame'">
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' != 'Release'">
       <HintPath>..\BetterSort.Accuracy\bin\Debug\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
@@ -65,7 +61,15 @@
   </PropertyGroup>
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
-    <DependsOn Include="BetterSort.Accuracy" Version="^0.0.1" />
+    <DependsOn Include="BetterSort.Accuracy" Version="^0.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <RequiredFile Include="Libs/System.Diagnostics.Debug.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <OutputCopy Include="../BetterSort.Test.Common/Libs/System.Diagnostics.Debug.dll" OutputPath="Libs/System.Diagnostics.Debug.dll" />
+    <OutputCopy Include="$(TargetPath)" OutputPath="Plugins\$(TargetName).dll" />
+    <OutputCopy Include="$(TargetDir)$(TargetName).pdb" OutputPath="Plugins\$(TargetName).pdb" />
   </ItemGroup>
   <ItemGroup Condition="'$(DoRepack)' != 'True'">
     <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />

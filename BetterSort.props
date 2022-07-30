@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/nanikit/BetterSorts.git</RepositoryUrl>
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Debug;TestInGame;TestOutGame;Release</Configurations>
+    <Configurations>Debug;TestInGame;Release</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' != 'Release'">
@@ -45,7 +45,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Debug' AND '$(Configuration)' != 'TestOutGame'">
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
     <DoRepack>True</DoRepack>
   </PropertyGroup>
 
