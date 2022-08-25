@@ -18,7 +18,7 @@ namespace BetterSort.Accuracy.External {
       _id = id;
     }
 
-    public async Task<List<BestRecord>?> Crawl() {
+    public async Task<List<BestRecord>?> GetPlayerBests() {
       string? id = await _id.GetUserId().ConfigureAwait(false);
       if (id == null) {
         _logger.Info("Cannot get user ID. Abort data import.");
@@ -37,6 +37,7 @@ namespace BetterSort.Accuracy.External {
           paged.PlayerScores.Select(x => new BestRecord() {
             Score = x.Score?.BaseScore ?? 0,
             SongHash = x.Leaderboard?.SongHash,
+            CharacteristicName = x.Leaderboard?.Difficulty?.GameMode ?? "",
             Difficulty = x.Leaderboard?.Difficulty?.Difficulty ?? 0,
             Accuracy = x.Score?.BaseScore / x.Leaderboard?.MaxScore,
           }));
@@ -63,6 +64,8 @@ namespace BetterSort.Accuracy.External {
 
   public class BestRecord {
     public string? SongHash { get; set; }
+
+    public string? CharacteristicName { get; set; }
 
     public int Difficulty { get; set; }
 

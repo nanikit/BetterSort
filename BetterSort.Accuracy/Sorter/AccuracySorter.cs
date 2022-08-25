@@ -9,11 +9,11 @@ namespace BetterSort.Accuracy.Sorter {
 
   public class AccuracySorter : ISortFilter {
     /// <summary>
-    /// Level id to instant.
+    /// Level id to accuracy.
     /// </summary>
-    public Dictionary<string, double> LastPlayedDates = new();
+    public Dictionary<string, double> BestAccuracies = new();
 
-    public string Name => "Last played";
+    public string Name => "Accuracy";
 
     public AccuracySorter(IClock clock, IPALogger logger) {
       _clock = clock;
@@ -48,13 +48,13 @@ namespace BetterSort.Accuracy.Sorter {
         return;
       }
 
-      if (LastPlayedDates == null) {
-        throw new InvalidOperationException($"Precondition: {nameof(LastPlayedDates)} should not be null.");
+      if (BestAccuracies == null) {
+        throw new InvalidOperationException($"Precondition: {nameof(BestAccuracies)} should not be null.");
       }
 
-      var comparer = new AccuracyComparer(LastPlayedDates);
+      var comparer = new AccuracyComparer(BestAccuracies);
       var ordered = _triggeredLevels.OrderBy(x => x, comparer).ToList();
-      var legend = AccuracyLegendMaker.GetLegend(ordered, _clock.Now, LastPlayedDates);
+      var legend = AccuracyLegendMaker.GetLegend(ordered, _clock.Now, BestAccuracies);
       OnResultChanged(new SortFilterResult(ordered, legend));
       _logger.Debug($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
     }

@@ -2,23 +2,26 @@ namespace BetterSort.Accuracy.Test {
   using BetterSort.Accuracy.Sorter;
   using BetterSort.Accuracy.Test.Mocks;
   using BetterSort.Common.Compatibility;
-  using BetterSort.Common.Interfaces;
   using BetterSort.Test.Common.Mocks;
-  using System;
   using System.Collections.Generic;
   using System.Linq;
-  using System.Threading;
-  using System.Threading.Tasks;
   using Xunit;
+  using Xunit.Abstractions;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
 
   public class SorterTest {
-    public SorterTest(IPALogger logger) {
-      _logger = new MockLogger();
+    private readonly IPALogger _logger;
+    private readonly DiContainer _container;
+    private readonly FilterSortAdaptor _adaptor;
+    private readonly AccuracySorter _sorter;
+    private readonly FixedClock _clock;
+
+    public SorterTest(ITestOutputHelper output) {
+      _logger = new MockLogger(output);
 
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(logger).AsSingle();
+      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
       container.Bind<FilterSortAdaptor>().AsSingle();
@@ -27,10 +30,10 @@ namespace BetterSort.Accuracy.Test {
     // BetterSongList can pass empty list.
     [Fact]
     public void TestEmptySort() {
-      //_sorter.LastPlayedDates = new();
-      //var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
-      //_adaptor.DoSort(ref data, true);
-      //Assert.Equal(0, data.Count());
+      _sorter.BestAccuracies = new();
+      var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
+      _adaptor.DoSort(ref data, true);
+      Assert.Empty(data);
     }
 
     //  [Fact]
@@ -57,13 +60,6 @@ namespace BetterSort.Accuracy.Test {
     //    Assert.True(legend.Count <= 28, "Too many legend");
     //  }
 
-
-    private readonly IPALogger _logger;
-    //  private readonly DiContainer _container;
-    //  private readonly FilterSortAdaptor _adaptor;
-    //  private readonly AccuracySorter _sorter;
-    //  private readonly FixedClock _clock;
-
     //  private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
     //    TaskCompletionSource<ISortFilterResult?> completer = new();
     //    void SetResult(ISortFilterResult? res) {
@@ -82,7 +78,6 @@ namespace BetterSort.Accuracy.Test {
 
     //    return result;
     //  }
-
 
     //  private IEnumerable<(MockPreview preview, DateTime date)> GenerateData() {
     //    return Enumerable.Range(0, 1000)

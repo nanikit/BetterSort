@@ -16,7 +16,7 @@ namespace BetterSort.Accuracy.Sorter {
 
     public async void Start(bool register) {
       var data = await _repository.Load().ConfigureAwait(false);
-      _sorter.LastPlayedDates = data?.BestAccuracies is Dictionary<string, double> lastPlays
+      _sorter.BestAccuracies = data?.BestAccuracies is Dictionary<string, double> lastPlays
         ? lastPlays
         : new Dictionary<string, double>();
       //_playEventSource.OnSongPlayed += RecordHistory;

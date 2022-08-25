@@ -36,12 +36,5 @@ namespace BetterSort.LastPlayed.Test {
     public void OnApplicationQuit() {
       Logger?.Info("Test end.");
     }
-
-    public static void Main() {
-      IsUnityPlayer = false;
-      Plugin plugin = new();
-      plugin.Init(new MockLogger());
-      plugin.OnApplicationStart();
-    }
   }
 }

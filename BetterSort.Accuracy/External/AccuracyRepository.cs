@@ -51,7 +51,7 @@ namespace BetterSort.Accuracy.External {
       }
     }
 
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
+    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
     private readonly IPALogger _logger;
   }
 }
