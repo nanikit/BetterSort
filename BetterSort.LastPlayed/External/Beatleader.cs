@@ -9,6 +9,11 @@ namespace BetterSort.LastPlayed.External {
       _logger = logger;
 
       var beatleader = (PluginMetadata?)PluginManager.GetPluginFromId("BeatLeader");
+      if (beatleader == null) {
+        _logger.Info("BeatLeader is not detected.");
+        return;
+      }
+
       string typeName = "BeatLeader.Replayer.ReplayerLauncher";
       var prop = beatleader?.Assembly.GetType(typeName)?
         .GetProperty("IsStartedAsReplay", BindingFlags.Static | BindingFlags.Public);
@@ -16,6 +21,7 @@ namespace BetterSort.LastPlayed.External {
         _logger.Warn("BeatLeader replay detection hook failure");
         return;
       }
+
       _replayStarted = prop;
     }
 
