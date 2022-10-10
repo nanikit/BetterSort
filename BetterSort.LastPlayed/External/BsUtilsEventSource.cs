@@ -54,8 +54,12 @@ namespace BetterSort.LastPlayed.External {
         _logger.Info($"Skip tutorial play record.");
         return;
       }
-      if (_scoresaber.IsInReplay() || _beatleader.IsInReplay()) {
-        _logger.Info($"Skip replay record.");
+      if (_scoresaber.IsInReplay()) {
+        _logger.Info($"Skip scoresaber replay record.");
+        return;
+      }
+      if (_beatleader.IsInReplay()) {
+        _logger.Info($"Skip beatleader replay record.");
         return;
       }
 
