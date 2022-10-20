@@ -1,23 +1,21 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+
 namespace BetterSort.Accuracy.External {
-  using Newtonsoft.Json;
-  using System;
-  using System.Collections.Generic;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
 
   public class StoredData {
     [JsonProperty("version")]
     public string? Version { get; set; }
 
-    [JsonProperty("bestAccuracies")]
-    public IDictionary<string, double>? BestAccuracies { get; set; }
-
+    /// <summary>
+    /// Keys are in-game song hash, mode, difficulty in order.
+    /// </summary>
+    [JsonProperty("bestRecords")]
+    public BestRecords BestRecords { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<string, double>>>();
 
     [JsonProperty("lastRecordAt")]
-    public DateTime LastRecordAt { get; set; }
-
-    [JsonProperty("lastScoresaberSync")]
-    public DateTime LastScoresaberSync { get; set; }
-
-    [JsonProperty("lastBeatLeaderSync")]
-    public DateTime LastBeatLeaderSync { get; set; }
+    public DateTime? LastRecordAt { get; set; }
   }
 }

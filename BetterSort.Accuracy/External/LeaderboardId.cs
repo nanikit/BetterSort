@@ -5,7 +5,11 @@ namespace BetterSort.Accuracy.External {
   using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
-  public class LeaderboardId {
+  public interface ILeaderboardId {
+    Task<string?> GetUserId();
+  }
+
+  public class LeaderboardId : ILeaderboardId {
     public LeaderboardId(IPALogger logger) {
       _logger = logger;
     }

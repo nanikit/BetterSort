@@ -1,8 +1,8 @@
 namespace BetterSort.Accuracy {
-  using BetterSort.Common.Compatibility;
-  using BetterSort.Common.External;
   using BetterSort.Accuracy.External;
   using BetterSort.Accuracy.Sorter;
+  using BetterSort.Common.Compatibility;
+  using BetterSort.Common.External;
   using IPA;
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
@@ -26,17 +26,21 @@ namespace BetterSort.Accuracy {
       }
       _logger.Debug("Initialize()");
 
-      //var container = ProjectContext.Instance.Container.CreateSubContainer();
-      //container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
-      //container.BindInterfacesAndSelfTo<Clock>().AsSingle();
+      var container = ProjectContext.Instance.Container.CreateSubContainer();
+      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      container.BindInterfacesAndSelfTo<Clock>().AsSingle();
 
-      //container.Bind<AccuracyRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
+      container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
+      container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
+      container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
 
-      //container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
-      //container.Bind<FilterSortAdaptor>().AsSingle();
-      //container.Bind<SorterEnvironment>().AsSingle();
+      container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
+      container.Bind<FilterSortAdaptor>().AsSingle();
+      container.Bind<SorterEnvironment>().AsSingle();
 
-      //var environment = container.Resolve<SorterEnvironment>();
+      var environment = container.Resolve<SorterEnvironment>();
       //environment.Start(true);
 
       _logger.Info("Initialized.");

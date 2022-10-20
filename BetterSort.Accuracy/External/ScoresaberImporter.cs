@@ -1,18 +1,18 @@
 namespace BetterSort.Accuracy.External {
   using Newtonsoft.Json;
+  using Scoresaber;
   using SiraUtil.Web;
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
-  public class ScoresaberImporter {
+  public class ScoresaberImporter : IScoreImporter {
     private readonly IPALogger _logger;
     private readonly IHttpService _http;
-    private readonly LeaderboardId _id;
+    private readonly ILeaderboardId _id;
 
-    internal ScoresaberImporter(IPALogger logger, IHttpService http, LeaderboardId id) {
+    internal ScoresaberImporter(IPALogger logger, IHttpService http, ILeaderboardId id) {
       _logger = logger;
       _http = http;
       _id = id;
@@ -29,26 +29,6 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    public async Task<List<BestRecord>> GetRecords(string platformId) {
-      var records = new List<BestRecord>();
-      for (int page = 1; ; page++) {
-        var paged = await GetRecord(platformId, page).ConfigureAwait(false);
-        records.AddRange(
-          paged.PlayerScores.Select(x => new BestRecord() {
-            Score = x.Score?.BaseScore ?? 0,
-            SongHash = x.Leaderboard?.SongHash,
-            CharacteristicName = x.Leaderboard?.Difficulty?.GameMode ?? "",
-            Difficulty = x.Leaderboard?.Difficulty?.Difficulty ?? 0,
-            Accuracy = x.Score?.BaseScore / x.Leaderboard?.MaxScore,
-          }));
-        if (page >= paged.Metadata!.Total) {
-          break;
-        }
-      }
-
-      return records;
-    }
-
     public async Task<PagedPlayerScores> GetRecord(string platformId, int page) {
       var response = await _http.GetAsync($"https://scoresaber.com/api/player/{platformId}/scores?page={page}&sort=recent").ConfigureAwait(false);
       if (!response.Successful) {
@@ -60,19 +40,66 @@ namespace BetterSort.Accuracy.External {
       var scores = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
       return scores;
     }
+
+    private async Task<List<BestRecord>> GetRecords(string platformId) {
+      var records = new List<BestRecord>();
+      for (int page = 1; ; page++) {
+        var paged = await GetRecord(platformId, page).ConfigureAwait(false);
+        var scores = paged?.PlayerScores;
+        if (paged == null || scores == null) {
+          _logger.Warn("Records field is missing. Can't import from scoresaber.");
+          break;
+        }
+        foreach (var score in scores) {
+          string? hash = score.Leaderboard?.SongHash;
+          if (hash == null) {
+            _logger.Warn("Cannot get song hash from scoresaber. skip.");
+            continue;
+          }
+          double? accuracyOrNull = (double?)score.Score?.BaseScore / score.Leaderboard?.MaxScore;
+          if (accuracyOrNull is not double accuracy) {
+            _logger.Warn($"Can't derive scoresaber accuracy. skip({hash})");
+            continue;
+          }
+          var difficulty = ConvertToEnum(score.Leaderboard?.Difficulty?.Difficulty);
+          if (difficulty == null) {
+            _logger.Warn($"Unknown scoresaber difficulty. Regard it as ExpertPlus({hash})");
+          }
+
+          records.Add(new BestRecord() {
+            SongHash = hash,
+            Mode = score.Leaderboard?.Difficulty?.GameMode ?? "Standard",
+            Difficulty = difficulty ?? BeatmapDifficulty.ExpertPlus,
+            Accuracy = accuracy,
+            Score = score.Score?.ModifiedScore ?? 0,
+          });
+        }
+        int maxPage = (int)Math.Ceiling((double)paged.Metadata!.Total / paged.Metadata.ItemsPerPage);
+        if (page >= maxPage) {
+          break;
+        }
+      }
+
+      return records;
+    }
+
+    private static BeatmapDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
+      return scoresaberDifficulty switch {
+        1 => BeatmapDifficulty.Easy,
+        3 => BeatmapDifficulty.Normal,
+        5 => BeatmapDifficulty.Hard,
+        7 => BeatmapDifficulty.Expert,
+        9 => BeatmapDifficulty.ExpertPlus,
+        _ => null,
+      };
+    }
   }
+}
 
-  public class BestRecord {
-    public string? SongHash { get; set; }
-
-    public string? CharacteristicName { get; set; }
-
-    public int Difficulty { get; set; }
-
-    public int Score { get; set; }
-
-    public double? Accuracy { get; set; }
-  }
+namespace Scoresaber {
+  using Newtonsoft.Json;
+  using System;
+  using System.Collections.Generic;
 
   public class PagedPlayerScores {
     [JsonProperty("playerScores")]

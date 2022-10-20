@@ -10,6 +10,10 @@ namespace BetterSort.Accuracy.Test.Mocks {
       _id = id;
     }
 
+    public ILevelPreview Clone() {
+      return new MockPreview(_id);
+    }
+
     private readonly string _id;
   }
 }

@@ -71,16 +71,5 @@ namespace BetterSort.Common.Compatibility {
       }
     }
   }
-
-  public class LevelPreview : ILevelPreview {
-    public IPreviewBeatmapLevel Preview { get; private set; }
-
-    public string LevelId { get => Preview.levelID; }
-    public string SongName { get => Preview.songName; }
-
-    public LevelPreview(IPreviewBeatmapLevel preview) {
-      Preview = preview;
-    }
-  }
 }
 

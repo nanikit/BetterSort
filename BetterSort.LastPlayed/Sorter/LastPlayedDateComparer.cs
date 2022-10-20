@@ -12,6 +12,9 @@ namespace BetterSort.LastPlayed.Sorter {
       return Compare(a.LevelId, b.LevelId);
     }
 
+    /// <summary>
+    /// Use with map id that will be serialized.
+    /// </summary>
     public int Compare(string a, string b) {
       if (_lastPlayedDates == null) {
         return 0;

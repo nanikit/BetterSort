@@ -7,3 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 // Unity overrides null comparison. So this can cause issue.
 [assembly: SuppressMessage("Style", "IDE0029:Use coalesce expression", Justification = "<Pending>")]
+
+namespace System.Runtime.CompilerServices {
+  internal class IsExternalInit { }
+}

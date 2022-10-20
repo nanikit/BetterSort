@@ -16,6 +16,9 @@
     <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' == 'Release'">
       <HintPath>..\BetterSort.Accuracy\bin\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SiraUtil">
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
     </Reference>

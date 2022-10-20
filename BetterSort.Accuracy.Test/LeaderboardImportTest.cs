@@ -14,29 +14,40 @@ namespace BetterSort.Accuracy.Test {
   using Zenject;
   using IPALogger = IPA.Logging.Logger;
 
-  public class ScoresaberTest {
+  public class LeaderboardImportTest {
     private readonly IPALogger _logger;
     private readonly DiContainer _container;
-    private readonly ScoresaberImporter _importer;
+    private readonly ScoresaberImporter _scoresaber;
+    private readonly BeatLeaderImporter _beatLeader;
 
-    public ScoresaberTest(ITestOutputHelper output) {
+    public LeaderboardImportTest(ITestOutputHelper output) {
       _logger = new MockLogger(output);
 
       var container = new DiContainer();
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<PlainHttpService>().AsSingle();
-      container.Bind<ScoresaberImporter>().AsSingle();
-      container.Bind<LeaderboardId>().AsSingle();
+      container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
+      container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
+      container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
 
-      _importer = container.Resolve<ScoresaberImporter>();
+      _scoresaber = container.Resolve<ScoresaberImporter>();
+      _beatLeader = container.Resolve<BeatLeaderImporter>();
       _container = container;
     }
 
     [Fact]
-    public async Task TestFetch() {
-      var records = await _importer.GetRecord("76561198159100356", 1).ConfigureAwait(false);
+    public async Task TestScoresaber() {
+      var records = await _scoresaber.GetRecord("76561198159100356", 1).ConfigureAwait(false);
       Assert.NotEmpty(records.PlayerScores!);
+      Assert.InRange(records.PlayerScores![0].Score!.ModifiedScore, 0, int.MaxValue);
+    }
+
+    [Fact]
+    public async Task TestBeatLeader() {
+      var records = await _beatLeader.GetRecord("76561198159100356", 1).ConfigureAwait(false);
+      Assert.NotEmpty(records.Data!);
+      Assert.InRange(records.Data![0].Accuracy, 0, 1);
     }
   }
 

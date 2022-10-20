@@ -1,51 +1,24 @@
+using BetterSort.Common.Interfaces;
+using System;
+using System.Collections.Generic;
+
 namespace BetterSort.Accuracy.Sorter {
-  using BetterSort.Common.Interfaces;
-  using System;
-  using System.Collections.Generic;
-
   internal class AccuracyLegendMaker {
-    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, double> bestAccuracies) {
+    public static List<(string, int)> GetLegend(
+      IReadOnlyList<ILevelPreview> levels,
+      IReadOnlyDictionary<ILevelPreview, LevelRecord> recordMap
+    ) {
       var legend = new List<(string, int)>();
-      int lastLogOfUnixDifference = -1;
 
-      double logBase = Math.Sqrt(2);
-      double logOffset = 100000;
-
-      throw new NotImplementedException();
-      //for (int i = 0; i < levels.Count; i++) {
-      //  ILevelPreview? level = levels[i];
-      //  if (bestAccuracies.TryGetValue(level.LevelId, out DateTime lastPlayedDate)) {
-      //    TimeSpan difference = now - lastPlayedDate;
-      //    double seconds = difference.TotalSeconds;
-
-      //    int logOfDifference = (int)(Math.Log(Math.Max(1, seconds) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
-      //    if (lastLogOfUnixDifference < logOfDifference) {
-      //      lastLogOfUnixDifference = logOfDifference;
-      //      legend.Add((FormatTimeLabel(lastPlayedDate, difference), i));
-      //    }
-      //  }
-      //  else {
-      //    legend.Add(("Never", i));
-      //    break;
-      //  }
-      //}
-
-      //return legend;
-    }
-
-    private static string FormatTimeLabel(DateTime instant, TimeSpan difference) {
-      if (difference.TotalDays < 1) {
-        return $"{instant:HH:mm}";
+      int count = Math.Min(32, recordMap.Count);
+      for (int i = 0; i < count; i++) {
+        int index = (int)((double)i / count * count);
+        var record = recordMap[levels[index]];
+        legend.Add(($"{record.Accuracy:0.2f}", index));
       }
-      else if (difference.TotalDays < 7) {
-        return $"{instant:ddd}";
-      }
-      else if (difference.TotalDays < 365) {
-        return $"{instant:MM-dd}";
-      }
-      else {
-        return $"{instant:yyyy-MM}";
-      }
+      legend.Add(("N/A", recordMap.Count));
+
+      return legend;
     }
   }
 }

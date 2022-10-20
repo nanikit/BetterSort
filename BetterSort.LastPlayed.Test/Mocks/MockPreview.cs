@@ -11,5 +11,9 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     private readonly string _id;
+
+    public ILevelPreview Clone() {
+      return new MockPreview(_id);
+    }
   }
 }
