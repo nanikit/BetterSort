@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <ImportBSMTTargets>False</ImportBSMTTargets>
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableCopyToGame>True</DisableCopyToGame>
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
 

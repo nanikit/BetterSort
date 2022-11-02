@@ -31,7 +31,7 @@
   <PropertyGroup>
     <ImportBSMTTargets>False</ImportBSMTTargets>
     <BSMTProjectType>BSIPA</BSMTProjectType>
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableCopyToGame>True</DisableCopyToGame>
     <DisableZipRelease>True</DisableZipRelease>
     <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
     <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>

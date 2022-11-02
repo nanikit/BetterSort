@@ -9,13 +9,13 @@
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ImportBSMTTargets>False</ImportBSMTTargets>
+    <DisableCopyToGame>True</DisableCopyToGame>
+    <DisableZipRelease>True</DisableZipRelease>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' != 'Release'">
-      <HintPath>..\BetterSort.Accuracy\bin\Debug\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
-    </Reference>
-    <Reference Include="BetterSort.Accuracy" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' == 'Release'">
-      <HintPath>..\BetterSort.Accuracy\bin\Artifact\Plugins\BetterSort.Accuracy.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -69,10 +69,8 @@
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BetterSort.Accuracy" Version="^0.1.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(DoRepack)' != 'True'">
-    <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />
-  </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />
     <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />
   </ItemGroup>
 </Project>

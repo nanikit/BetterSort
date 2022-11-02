@@ -6,13 +6,13 @@
     <Product>BetterSort.LastPlayed.Test</Product>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ImportBSMTTargets>False</ImportBSMTTargets>
+    <DisableCopyToGame>True</DisableCopyToGame>
+    <DisableZipRelease>True</DisableZipRelease>
+  </PropertyGroup>
+
   <ItemGroup>
-      <Reference Include="BetterSort.LastPlayed" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' != 'Release'">
-      <HintPath>..\BetterSort.LastPlayed\bin\Debug\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
-    </Reference>
-    <Reference Include="BetterSort.LastPlayed" Condition="'$(DoRepack)' == 'True' AND '$(Configuration)' == 'Release'">
-      <HintPath>..\BetterSort.LastPlayed\bin\Artifact\Plugins\BetterSort.LastPlayed.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,10 +63,8 @@
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BetterSort.LastPlayed" Version="*" />
   </ItemGroup>
-  <ItemGroup Condition="'$(DoRepack)' != 'True'">
-    <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
-  </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
     <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />
   </ItemGroup>
 </Project>

@@ -30,10 +30,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableCopyToGame>True</DisableCopyToGame>
   </PropertyGroup>
   <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableCopyToGame>True</DisableCopyToGame>
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
 
@@ -45,9 +45,9 @@
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
-    <DoRepack>True</DoRepack>
-  </PropertyGroup>
+  <ItemGroup>
+    <OutputCopy Include="$(OutputPath)\Merged\$(AssemblyName).dll" OutputPath="Plugins\$(AssemblyName).dll" />
+  </ItemGroup>
 
   <PropertyGroup>
     <BSMTProjectType>BSIPA</BSMTProjectType>
