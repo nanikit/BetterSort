@@ -38,7 +38,7 @@ namespace BetterSort.Common.Compatibility {
       // Actually it sorts synchronously so sort is done already. Timeout is just for safety.
       bool isComplete = _result.Task.Wait(1000);
       if (!isComplete) {
-        _logger.Error($"Timeout exceeded. Current implementation doesn't support asynchonocity.");
+        _logger.Error($"Timeout exceeded. Current implementation doesn't support asynchronocity.");
         return;
       }
 

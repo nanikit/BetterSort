@@ -1,19 +1,20 @@
-namespace BetterSort.LastPlayed.Test {
-  using BetterSort.Common.Compatibility;
-  using BetterSort.Common.Interfaces;
-  using BetterSort.LastPlayed.Sorter;
-  using BetterSort.LastPlayed.Test.Mocks;
-  using BetterSort.Test.Common;
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using Xunit;
-  using Xunit.Abstractions;
-  using Zenject;
-  using IPALogger = IPA.Logging.Logger;
+using BetterSort.Common.Compatibility;
+using BetterSort.Common.Interfaces;
+using BetterSort.LastPlayed.Sorter;
+using BetterSort.LastPlayed.Test.Mocks;
+using BetterSort.Test.Common;
+using BetterSort.Test.Common.Mocks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+using Zenject;
+using IPALogger = IPA.Logging.Logger;
 
+namespace BetterSort.LastPlayed.Test {
   public class SorterTest {
     public SorterTest(ITestOutputHelper output) {
       _logger ??= new TestLogger(output);

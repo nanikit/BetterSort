@@ -41,7 +41,7 @@ namespace BetterSort.Accuracy {
       container.Bind<SorterEnvironment>().AsSingle();
 
       var environment = container.Resolve<SorterEnvironment>();
-      //environment.Start(true);
+      _ = environment.Start(true);
 
       _logger.Info("Initialized.");
     }

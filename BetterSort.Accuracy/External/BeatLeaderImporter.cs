@@ -34,10 +34,11 @@ namespace BetterSort.Accuracy.External {
     }
 
     public async Task<PagedPlayerScores> GetRecord(string platformId, int page) {
-      var response = await _http.GetAsync($"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc").ConfigureAwait(false);
+      string url = $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
+      var response = await _http.GetAsync(url).ConfigureAwait(false);
       if (!response.Successful) {
         string? error = await response.Error().ConfigureAwait(false);
-        throw new Exception($"http request was not successful: {response.Code} {error}");
+        throw new Exception($"http request was not successful: {url}\n{response.Code} {error}");
       }
 
       string json = await response.ReadAsStringAsync().ConfigureAwait(false);
@@ -48,6 +49,8 @@ namespace BetterSort.Accuracy.External {
     private async Task<List<BestRecord>> GetRecords(string platformId) {
       var records = new List<BestRecord>();
       for (int page = 1; ; page++) {
+        _logger.Debug($"Try getting beatleader page {page}...");
+
         var paged = await GetRecord(platformId, page).ConfigureAwait(false);
         var data = paged?.Data;
         if (paged == null || data == null) {
@@ -60,7 +63,7 @@ namespace BetterSort.Accuracy.External {
             _logger.Warn("Cannot get song hash from beatleader. skip.");
             continue;
           }
-          var difficulty = ConvertToString(score.Leaderboard?.Difficulty?.DifficultyName);
+          var difficulty = DifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
           if (difficulty == null) {
             _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");
           }
@@ -82,16 +85,6 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    private BeatmapDifficulty? ConvertToString(string? beatleaderDifficulty) {
-      return beatleaderDifficulty switch {
-        "Easy" => BeatmapDifficulty.Easy,
-        "Normal" => BeatmapDifficulty.Normal,
-        "Hard" => BeatmapDifficulty.Hard,
-        "Expert" => BeatmapDifficulty.Expert,
-        "ExpertPlus" => BeatmapDifficulty.ExpertPlus,
-        _ => null,
-      };
-    }
   }
 
 }

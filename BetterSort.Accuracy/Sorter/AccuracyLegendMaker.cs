@@ -10,11 +10,11 @@ namespace BetterSort.Accuracy.Sorter {
     ) {
       var legend = new List<(string, int)>();
 
-      int count = Math.Min(32, recordMap.Count);
+      int count = Math.Min(Math.Min(32, recordMap.Count), levels.Count);
       for (int i = 0; i < count; i++) {
         int index = (int)((double)i / count * count);
         var record = recordMap[levels[index]];
-        legend.Add(($"{record.Accuracy:0.2f}", index));
+        legend.Add(((record.Accuracy * 100).ToString("00.00"), index));
       }
       legend.Add(("N/A", recordMap.Count));
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BetterSort.Accuracy.Sorter {
-  using BestRecords = IReadOnlyDictionary<string, Dictionary<string, Dictionary<string, double>>>;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
 
   internal record class LevelRecord(string Mode, string Difficulty, double Accuracy);
 

@@ -44,6 +44,8 @@ namespace BetterSort.Accuracy.External {
     private async Task<List<BestRecord>> GetRecords(string platformId) {
       var records = new List<BestRecord>();
       for (int page = 1; ; page++) {
+        _logger.Debug($"Try getting scoresaber page {page}...");
+
         var paged = await GetRecord(platformId, page).ConfigureAwait(false);
         var scores = paged?.PlayerScores;
         if (paged == null || scores == null) {

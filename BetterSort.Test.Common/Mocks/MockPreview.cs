@@ -1,7 +1,7 @@
-namespace BetterSort.LastPlayed.Test {
-  using BetterSort.Common.Interfaces;
+using BetterSort.Common.Interfaces;
 
-  class MockPreview : ILevelPreview {
+namespace BetterSort.Test.Common.Mocks {
+  public class MockPreview : ILevelPreview {
     public string LevelId => _id;
 
     public string SongName => _id;

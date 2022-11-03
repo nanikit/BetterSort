@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
-  using BestRecords = Dictionary<string, Dictionary<string, Dictionary<string, double>>>;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
 
   public interface IAccuracyRepository {
     Task Save(BestRecords accuracies);
@@ -28,17 +28,23 @@ namespace BetterSort.Accuracy.External {
         new BeatmapAccuracyComparer(accuracies)
       );
       var now = _clock.Now;
-      string json = JsonConvert.SerializeObject(new StoredData() {
+      _cache = new StoredData() {
         Version = $"{typeof(AccuracyRepository).Assembly.GetName().Version}",
         BestRecords = sorted,
         LastRecordAt = now,
-      }, Formatting.Indented);
+      };
+      string json = JsonConvert.SerializeObject(_cache, Formatting.Indented);
       File.WriteAllText(_path, json);
       _logger.Info($"Saved {accuracies.Count} records");
+
       return Task.CompletedTask;
     }
 
     public Task<StoredData?> Load() {
+      if (_cache != null) {
+        return Task.FromResult<StoredData?>(_cache);
+      }
+
       if (!File.Exists(_path)) {
         _logger.Debug($"Try loading but play history is not exist.");
         return Task.FromResult<StoredData?>(null);
@@ -59,5 +65,6 @@ namespace BetterSort.Accuracy.External {
     private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
     private readonly IPALogger _logger;
     private readonly IClock _clock;
+    private StoredData? _cache;
   }
 }
