@@ -7,6 +7,8 @@ namespace BetterSort.Accuracy.Test {
   using System.Collections.Generic;
   using System.IO;
   using System.Net.Http;
+  using System.Security.Cryptography;
+  using System.Text;
   using System.Threading;
   using System.Threading.Tasks;
   using Xunit;
@@ -17,8 +19,6 @@ namespace BetterSort.Accuracy.Test {
   public class LeaderboardImportTest {
     private readonly IPALogger _logger;
     private readonly DiContainer _container;
-    private readonly ScoresaberImporter _scoresaber;
-    private readonly BeatLeaderImporter _beatLeader;
 
     public LeaderboardImportTest(ITestOutputHelper output) {
       _logger = new MockLogger(output);
@@ -27,16 +27,18 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<PlainHttpService>().AsSingle();
+      container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
       container.Install<AccuracyInstaller>();
-
-      _scoresaber = container.Resolve<ScoresaberImporter>();
-      _beatLeader = container.Resolve<BeatLeaderImporter>();
+      var mockId = new MockId();
+      container.BindInterfacesAndSelfTo<MockId>().FromInstance(mockId).WhenInjectedInto<ScoresaberImporter>();
+      container.BindInterfacesAndSelfTo<MockId>().FromInstance(mockId).WhenInjectedInto<BeatLeaderImporter>();
       _container = container;
     }
 
     [Fact]
     public async Task TestScoresaber() {
-      var page = await _scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      var scoresaber = _container.Resolve<ScoresaberImporter>();
+      var page = await scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
       if (page is not (var records, var maxPage)) {
         Assert.Fail("Failed to get data");
         throw new Exception();
@@ -48,7 +50,8 @@ namespace BetterSort.Accuracy.Test {
 
     [Fact]
     public async Task TestBeatLeader() {
-      var page = await _beatLeader.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      var beatLeader = _container.Resolve<BeatLeaderImporter>();
+      var page = await beatLeader.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
       if (page is not (var records, var maxPage)) {
         Assert.Fail("Failed to get data");
         throw new Exception();
@@ -57,10 +60,28 @@ namespace BetterSort.Accuracy.Test {
       Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
       Assert.InRange(maxPage, 1, int.MaxValue);
     }
+
+    [Fact]
+    public async Task TestImport() {
+      Directory.CreateDirectory("UserData");
+      var importer = _container.Resolve<UnifiedImporter>();
+      await importer.CollectOrImport().ConfigureAwait(false);
+    }
+  }
+
+  internal class MockId : ILeaderboardId {
+    public Task<string?> GetUserId() {
+      return Task.FromResult<string?>("76561198159100356");
+    }
   }
 
   public class PlainHttpService : IHttpService {
     private readonly HttpClient _client = new();
+    private readonly IPALogger _logger;
+
+    public PlainHttpService(IPALogger logger) {
+      _logger = logger;
+    }
 
     public string? Token { set { } }
     public string? BaseURL {
@@ -77,12 +98,27 @@ namespace BetterSort.Accuracy.Test {
     }
 
     public async Task<IHttpResponse> GetAsync(string url, IProgress<float>? progress = null, CancellationToken? cancellationToken = null) {
-      var response = await _client.GetAsync(url, cancellationToken ?? CancellationToken.None).ConfigureAwait(false);
-      return new MockHttpResponse() {
-        Code = (int)response.StatusCode,
-        Response = await response.Content.ReadAsStringAsync().ConfigureAwait(false),
-        Successful = true,
-      };
+      string hash = GetHashString(url);
+      string path = $"{hash}.json";
+      if (File.Exists(path)) {
+        string content = File.ReadAllText(path);
+        return new MockHttpResponse() {
+          Code = 200,
+          Response = content,
+          Successful = true,
+        };
+      }
+      else {
+        _logger.Debug($"Download {url}");
+        var response = await _client.GetAsync(url, cancellationToken ?? CancellationToken.None).ConfigureAwait(false);
+        string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        File.WriteAllText(path, json);
+        return new MockHttpResponse() {
+          Code = (int)response.StatusCode,
+          Response = json,
+          Successful = true,
+        };
+      }
     }
 
     public Task<IHttpResponse> PatchAsync(string url, object? body = null, CancellationToken? cancellationToken = null) {
@@ -99,6 +135,19 @@ namespace BetterSort.Accuracy.Test {
 
     public Task<IHttpResponse> SendAsync(HTTPMethod method, string url, string? body = null, IDictionary<string, string>? withHeaders = null, IProgress<float>? downloadProgress = null, CancellationToken? cancellationToken = null) {
       throw new NotImplementedException();
+    }
+
+    private static byte[] GetHash(string inputString) {
+      using HashAlgorithm algorithm = SHA256.Create();
+      return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+    }
+
+    private static string GetHashString(string inputString) {
+      var sb = new StringBuilder();
+      foreach (byte b in GetHash(inputString))
+        sb.Append(b.ToString("x2"));
+
+      return sb.ToString();
     }
   }
 

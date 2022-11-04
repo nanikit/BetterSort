@@ -74,6 +74,7 @@ namespace BetterSort.Accuracy.External {
           _logger.Warn("Cannot get song hash from beatleader. skip.");
           continue;
         }
+
         var difficulty = DifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
         if (difficulty == null) {
           _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");

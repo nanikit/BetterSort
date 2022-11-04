@@ -66,7 +66,7 @@ namespace BetterSort.Accuracy.Sorter {
     /// </summary>
     public int Compare(string a, string b) {
       if (_records == null) {
-        return 0;
+        return b.CompareTo(a);
       }
 
       if (_records.TryGetValue(a, out var bestA)) {
@@ -74,7 +74,7 @@ namespace BetterSort.Accuracy.Sorter {
           double accuracyA = bestA.SelectMany(x => x.Value.Values).Max();
           double accuracyB = bestB.SelectMany(x => x.Value.Values).Max();
           int descending = accuracyB.CompareTo(accuracyA);
-          return descending;
+          return descending == 0 ? b.CompareTo(a) : descending;
         }
         return -1;
       }
@@ -82,7 +82,7 @@ namespace BetterSort.Accuracy.Sorter {
         if (_records.ContainsKey(b)) {
           return 1;
         }
-        return 0;
+        return b.CompareTo(a);
       }
     }
 

@@ -35,7 +35,7 @@ namespace BetterSort.Accuracy.External {
         return null;
       }
 
-      return GetScores(json);
+      return await GetScores(json);
     }
 
     private async Task<List<BestRecord>> GetRecords(string platformId) {
@@ -58,7 +58,7 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
+    private async Task<(List<BestRecord> Records, int MaxPage)?> GetScores(string json) {
       var records = new List<BestRecord>();
 
       var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
@@ -74,14 +74,23 @@ namespace BetterSort.Accuracy.External {
           _logger.Warn("Cannot get song hash from scoresaber. skip.");
           continue;
         }
-        double? accuracyOrNull = (double?)score.Score?.BaseScore / score.Leaderboard?.MaxScore;
+
+        int? multiplied = score.Score?.BaseScore;
+        int? maxScore = score.Leaderboard?.MaxScore;
+        if (multiplied > 0 && (maxScore == null || maxScore == 0)) {
+          maxScore = null;
+          // TODO: calculate max score
+          //await _scorer.GetDifficultyBeatmap(score?.Leaderboard?.SongHash, score?.Leaderboard?.);
+          //maxScore = await _scorer.CalculateMaxScore()
+        }
+        double? accuracyOrNull = (double?)multiplied / maxScore;
         if (accuracyOrNull is not double accuracy) {
-          _logger.Warn($"Can't derive scoresaber accuracy. skip({hash})");
+          _logger.Warn($"Can't derive scoresaber accuracy. skip({hash}, {score.Leaderboard?.SongName})");
           continue;
         }
         var difficulty = ConvertToEnum(score.Leaderboard?.Difficulty?.Difficulty);
         if (difficulty == null) {
-          _logger.Warn($"Unknown scoresaber difficulty. Regard it as ExpertPlus({hash})");
+          _logger.Warn($"Unknown scoresaber difficulty. Regard it as ExpertPlus({hash}, {score.Leaderboard?.SongName})");
         }
 
         records.Add(new BestRecord() {
@@ -102,11 +111,7 @@ namespace BetterSort.Accuracy.External {
     }
 
     private static string GetGameMode(string? mode) {
-      return mode switch {
-        "SoloStandard" => "Standard",
-        null => "Standard",
-        _ => mode,
-      };
+      return mode?.Replace("Solo", "") ?? "Standard";
     }
 
     private static BeatmapDifficulty? ConvertToEnum(int? scoresaberDifficulty) {

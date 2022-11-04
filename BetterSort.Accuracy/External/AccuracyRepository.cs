@@ -16,7 +16,7 @@ namespace BetterSort.Accuracy.External {
     Task<StoredData?> Load();
   }
 
-  internal class AccuracyRepository : IAccuracyRepository {
+  public class AccuracyRepository : IAccuracyRepository {
     public AccuracyRepository(IPALogger logger, IClock clock) {
       _logger = logger;
       _clock = clock;

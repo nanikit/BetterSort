@@ -7,12 +7,14 @@ namespace BetterSort.Accuracy.Sorter {
 
   public class AccuracyInstaller : Installer {
     public override void InstallBindings() {
-      Container.Bind<Beatleader>().AsSingle();
-      Container.Bind<Scoresaber>().AsSingle();
-      Container.Bind<ScoreImporterHelper>().AsSingle();
       Container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
+      Container.Bind<ScoreImporterHelper>().AsSingle();
       Container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
       Container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
+      Container.Bind<UnifiedImporter>().AsSingle();
+
+      Container.Bind<Beatleader>().AsSingle();
+      Container.Bind<Scoresaber>().AsSingle();
       Container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
 
       Container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
