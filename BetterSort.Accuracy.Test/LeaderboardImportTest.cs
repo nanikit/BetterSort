@@ -1,6 +1,6 @@
 namespace BetterSort.Accuracy.Test {
   using BetterSort.Accuracy.External;
-  using BetterSort.Accuracy.Test.Mocks;
+  using BetterSort.Accuracy.Sorter;
   using BetterSort.Test.Common.Mocks;
   using SiraUtil.Web;
   using System;
@@ -27,9 +27,7 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<PlainHttpService>().AsSingle();
-      container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
-      container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
-      container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
+      container.Install<AccuracyInstaller>();
 
       _scoresaber = container.Resolve<ScoresaberImporter>();
       _beatLeader = container.Resolve<BeatLeaderImporter>();
@@ -38,16 +36,26 @@ namespace BetterSort.Accuracy.Test {
 
     [Fact]
     public async Task TestScoresaber() {
-      var records = await _scoresaber.GetRecord("76561198159100356", 1).ConfigureAwait(false);
-      Assert.NotEmpty(records.PlayerScores!);
-      Assert.InRange(records.PlayerScores![0].Score!.ModifiedScore, 0, int.MaxValue);
+      var page = await _scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      if (page is not (var records, var maxPage)) {
+        Assert.Fail("Failed to get data");
+        throw new Exception();
+      }
+      Assert.NotEmpty(records);
+      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
+      Assert.InRange(maxPage, 1, int.MaxValue);
     }
 
     [Fact]
     public async Task TestBeatLeader() {
-      var records = await _beatLeader.GetRecord("76561198159100356", 1).ConfigureAwait(false);
-      Assert.NotEmpty(records.Data!);
-      Assert.InRange(records.Data![0].Accuracy, 0, 1);
+      var page = await _beatLeader.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      if (page is not (var records, var maxPage)) {
+        Assert.Fail("Failed to get data");
+        throw new Exception();
+      }
+      Assert.NotEmpty(records);
+      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
+      Assert.InRange(maxPage, 1, int.MaxValue);
     }
   }
 

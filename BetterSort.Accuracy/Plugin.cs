@@ -1,56 +1,32 @@
 namespace BetterSort.Accuracy {
   using BetterSort.Accuracy.External;
   using BetterSort.Accuracy.Sorter;
-  using BetterSort.Common.Compatibility;
   using BetterSort.Common.External;
   using IPA;
-  using Zenject;
+  using SiraUtil.Attributes;
+  using SiraUtil.Zenject;
+  using System.ComponentModel;
   using IPALogger = IPA.Logging.Logger;
 
-  [Plugin(RuntimeOptions.SingleStartInit)]
+  [Plugin(RuntimeOptions.DynamicInit), Slog, NoEnableDisable]
   public class Plugin {
-    /// <summary>
-    /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
-    /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
-    /// Only use [Init] with one Constructor.
-    /// </summary>
+    public static bool IsTest { get; set; }
+
     [Init]
-    public void Setup(IPALogger logger) {
-      _logger = logger;
+    public Plugin(IPALogger logger, Zenjector zenjector) {
+      zenjector.UseHttpService();
+      zenjector.UseLogger(logger);
+
+      logger.Debug("Initialize()");
+
+      zenjector.Install(Location.App, container => {
+        container.Bind<IPALogger>().FromInstance(logger).AsSingle();
+        container.BindInterfacesAndSelfTo<Clock>().AsSingle();
+        container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
+      });
+      zenjector.Install<AccuracyInstaller>(Location.App);
+
+      logger.Info("Initialized.");
     }
-
-    [OnStart]
-    public void Initialize() {
-      if (_logger == null) {
-        return;
-      }
-      _logger.Debug("Initialize()");
-
-      var container = ProjectContext.Instance.Container.CreateSubContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
-      container.BindInterfacesAndSelfTo<Clock>().AsSingle();
-
-      container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
-      container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
-      container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
-      container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
-      container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
-
-      container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
-      container.Bind<FilterSortAdaptor>().AsSingle();
-      container.Bind<SorterEnvironment>().AsSingle();
-
-      var environment = container.Resolve<SorterEnvironment>();
-      _ = environment.Start(true);
-
-      _logger.Info("Initialized.");
-    }
-
-    [OnExit]
-    public void OnExit() {
-      // No op, just for suppressing BSIPA confirm.
-    }
-
-    private IPALogger? _logger;
   }
 }

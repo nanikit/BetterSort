@@ -15,7 +15,7 @@ namespace BetterSort.Accuracy.Test.Mocks {
 
     private readonly IClock _clock;
 
-    public Task Save(Dictionary<string, Dictionary<string, Dictionary<string, double>>> accuracies) {
+    public Task Save(IDictionary<string, Dictionary<string, Dictionary<string, double>>> accuracies) {
       BestAccuracies = accuracies.ToDictionary(x => x.Key, x => x.Value);
       LastRecordedAt = _clock.Now;
       return Task.CompletedTask;

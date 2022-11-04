@@ -1,25 +1,20 @@
 namespace BetterSort.Accuracy.External {
   using BeatLeader;
   using Newtonsoft.Json;
-  using SiraUtil.Web;
   using System;
   using System.Collections.Generic;
   using System.Threading.Tasks;
   using IPALogger = IPA.Logging.Logger;
 
-  public interface IScoreImporter {
-    Task<List<BestRecord>?> GetPlayerBests();
-  }
-
   public class BeatLeaderImporter : IScoreImporter {
     private readonly IPALogger _logger;
-    private readonly IHttpService _http;
     private readonly ILeaderboardId _id;
+    private readonly ScoreImporterHelper _helper;
 
-    internal BeatLeaderImporter(IPALogger logger, IHttpService http, ILeaderboardId id) {
+    internal BeatLeaderImporter(IPALogger logger, ILeaderboardId id, ScoreImporterHelper helper) {
       _logger = logger;
-      _http = http;
       _id = id;
+      _helper = helper;
     }
 
     public async Task<List<BestRecord>?> GetPlayerBests() {
@@ -33,17 +28,14 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    public async Task<PagedPlayerScores> GetRecord(string platformId, int page) {
-      string url = $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
-      var response = await _http.GetAsync(url).ConfigureAwait(false);
-      if (!response.Successful) {
-        string? error = await response.Error().ConfigureAwait(false);
-        throw new Exception($"http request was not successful: {url}\n{response.Code} {error}");
+    public async Task<(List<BestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
+      string url = GetUrl(platformId, page);
+      string? json = await _helper.GetJsonWithRetry(url).ConfigureAwait(false);
+      if (json == null) {
+        return null;
       }
 
-      string json = await response.ReadAsStringAsync().ConfigureAwait(false);
-      var scores = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
-      return scores;
+      return GetScores(json);
     }
 
     private async Task<List<BestRecord>> GetRecords(string platformId) {
@@ -51,33 +43,14 @@ namespace BetterSort.Accuracy.External {
       for (int page = 1; ; page++) {
         _logger.Debug($"Try getting beatleader page {page}...");
 
-        var paged = await GetRecord(platformId, page).ConfigureAwait(false);
-        var data = paged?.Data;
-        if (paged == null || data == null) {
-          _logger.Warn("Records field is missing. Can't import from beatleader.");
+        var scores = await GetPagedRecord(platformId, page).ConfigureAwait(false);
+        if (scores is not (var data, var maxPage)) {
           break;
         }
-        foreach (var score in data) {
-          string? hash = score.Leaderboard?.Song?.Hash;
-          if (hash == null) {
-            _logger.Warn("Cannot get song hash from beatleader. skip.");
-            continue;
-          }
-          var difficulty = DifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
-          if (difficulty == null) {
-            _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");
-          }
 
-          records.Add(new BestRecord() {
-            SongHash = hash.ToUpperInvariant(),
-            Mode = score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
-            Difficulty = difficulty ?? BeatmapDifficulty.ExpertPlus,
-            Accuracy = score.Accuracy,
-            Score = score.ModifiedScore,
-          });
-        }
-        int maxPage = (int)Math.Ceiling((double)paged.Metadata!.Total / paged.Metadata.ItemsPerPage);
+        records.AddRange(data);
         if (page >= maxPage) {
+          _logger.Info("Beatleader score last page reached.");
           break;
         }
       }
@@ -85,8 +58,44 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-  }
+    private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
+      var records = new List<BestRecord>();
 
+      var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
+      var data = page.Data;
+      if (data == null) {
+        _logger.Warn("Records field is missing. Can't import from beatleader.");
+        return null;
+      }
+
+      foreach (var score in data) {
+        string? hash = score.Leaderboard?.Song?.Hash;
+        if (hash == null) {
+          _logger.Warn("Cannot get song hash from beatleader. skip.");
+          continue;
+        }
+        var difficulty = DifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
+        if (difficulty == null) {
+          _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");
+        }
+
+        records.Add(new BestRecord() {
+          SongHash = hash.ToUpperInvariant(),
+          Mode = score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
+          Difficulty = difficulty ?? BeatmapDifficulty.ExpertPlus,
+          Accuracy = score.Accuracy,
+          Score = score.ModifiedScore,
+        });
+      }
+
+      int maxPage = (int)Math.Ceiling((double)page.Metadata!.Total / page.Metadata.ItemsPerPage);
+      return (records, maxPage);
+    }
+
+    private static string GetUrl(string platformId, int page) {
+      return $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
+    }
+  }
 }
 
 namespace BeatLeader {

@@ -28,8 +28,8 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
-      container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
-      container.Bind<FilterSortAdaptor>().AsSingle();
+
+      container.Install<AccuracyInstaller>();
       _container = container;
 
       _sorter = container.Resolve<AccuracySorter>();

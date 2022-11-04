@@ -15,11 +15,17 @@ namespace BetterSort.Accuracy.External {
     }
 
     private readonly IPALogger _logger;
+    private string? _id;
 
     public async Task<string?> GetUserId() {
+      if (_id != null) {
+        return _id;
+      }
+
       // Link error occurs by method unit. So guard by separating method.
       try {
-        return await GetPlatformId().ConfigureAwait(false);
+        _id = await GetPlatformId().ConfigureAwait(false);
+        return _id;
       }
       catch (Exception exception) {
         _logger.Error(exception);
@@ -27,7 +33,8 @@ namespace BetterSort.Accuracy.External {
       }
       // Try workaround if missing bs utils.
       try {
-        return GetSteamId();
+        _id = GetSteamId();
+        return _id;
       }
       catch (Exception exception) {
         _logger.Error(exception);

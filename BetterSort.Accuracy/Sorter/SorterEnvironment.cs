@@ -1,6 +1,7 @@
 using BetterSongList;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Compatibility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,32 +13,38 @@ namespace BetterSort.Accuracy.Sorter {
   public class SorterEnvironment {
     public SorterEnvironment(
       IPALogger logger, IAccuracyRepository repository, IPlayEventSource playEventSource,
-      AccuracySorter sorter, FilterSortAdaptor adaptor, List<IScoreImporter> importers) {
+      FilterSortAdaptor adaptor, List<IScoreImporter> importers) {
       _logger = logger;
       _repository = repository;
       _playEventSource = playEventSource;
-      _sorter = sorter;
       _adaptor = adaptor;
       _importers = importers;
+
+      _ = Initialize();
     }
 
-    public async Task Start(bool register) {
-      _playEventSource.OnSongPlayed += RecordHistory;
+    public async Task Initialize() {
+      try {
+        _playEventSource.OnSongPlayed += RecordHistory;
+        _logger.Info($"Enter {nameof(SorterEnvironment)}.{nameof(Initialize)}.");
 
-      if (register) {
-        await CollectOrImport().ConfigureAwait(false);
-        SortMethods.RegisterCustomSorter(_adaptor);
-        _logger.Debug("Registered last play date sorter.");
+        if (!Plugin.IsTest) {
+          await CollectOrImport().ConfigureAwait(false);
+          SortMethods.RegisterCustomSorter(_adaptor);
+          _logger.Debug("Registered last play date sorter.");
+        }
+        else {
+          _logger.Debug("Skip last play date sorter registration.");
+        }
       }
-      else {
-        _logger.Debug("Skip last play date sorter registration.");
+      catch (Exception ex) {
+        _logger.Error(ex);
       }
     }
 
     private readonly IPALogger _logger;
     private readonly IAccuracyRepository _repository;
     private readonly IPlayEventSource _playEventSource;
-    private readonly AccuracySorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
     private readonly List<IScoreImporter> _importers;
 
