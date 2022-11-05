@@ -1,3 +1,4 @@
+using BetterSort.Accuracy.Sorter;
 using IPA.Utilities.Async;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
+
   internal class ScoreHelper {
     private readonly IPALogger _logger;
 
@@ -13,7 +15,7 @@ namespace BetterSort.Accuracy.External {
       _logger = logger;
     }
 
-    public async Task<IDifficultyBeatmap?> GetDifficultyBeatmap(string levelId, string characteristic, BeatmapDifficulty difficulty) {
+    public async Task<IDifficultyBeatmap?> GetDifficultyBeatmap(string levelId, string characteristic, RecordDifficulty difficulty) {
       var model = await UnityMainThreadTaskScheduler.Factory.StartNew(
         () => Object.FindObjectOfType<BeatmapLevelsModel>()
       ).ConfigureAwait(false);
@@ -33,7 +35,7 @@ namespace BetterSort.Accuracy.External {
       var preview = previews.FirstOrDefault(x => x.levelID == levelId);
       var mapSet = preview?.previewDifficultyBeatmapSets?.FirstOrDefault(x => x.beatmapCharacteristic.serializedName == characteristic);
       var characteristicSO = mapSet?.beatmapCharacteristic;
-      var gameDiff = ToGameDifficulty(difficulty);
+      var gameDiff = difficulty.ToGameDifficulty();
       if (characteristicSO == null || gameDiff is not global::BeatmapDifficulty diff) {
         _logger.Info($"Level difficulty is not found. Give up finding difficulty: {levelId} {characteristic} {difficulty}");
         return null;
@@ -61,17 +63,6 @@ namespace BetterSort.Accuracy.External {
       }
 
       return ScoreModel.ComputeMaxMultipliedScoreForBeatmap(data);
-    }
-
-    global::BeatmapDifficulty? ToGameDifficulty(BeatmapDifficulty difficulty) {
-      return difficulty switch {
-        BeatmapDifficulty.Easy => global::BeatmapDifficulty.Easy,
-        BeatmapDifficulty.Normal => global::BeatmapDifficulty.Normal,
-        BeatmapDifficulty.Hard => global::BeatmapDifficulty.Hard,
-        BeatmapDifficulty.Expert => global::BeatmapDifficulty.Expert,
-        BeatmapDifficulty.ExpertPlus => global::BeatmapDifficulty.ExpertPlus,
-        _ => null,
-      };
     }
   }
 }

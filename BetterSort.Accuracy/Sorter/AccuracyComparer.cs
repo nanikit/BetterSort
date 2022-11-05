@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BetterSort.Accuracy.Sorter {
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
-  internal record class LevelRecord(string Mode, string Difficulty, double Accuracy);
+  internal record class LevelRecord(string Mode, RecordDifficulty Difficulty, double Accuracy);
 
   internal class LevelAccuracyComparer : IComparer<ILevelPreview> {
     public Dictionary<ILevelPreview, LevelRecord> LevelMap { get; set; } = new();
@@ -39,7 +39,7 @@ namespace BetterSort.Accuracy.Sorter {
       if (_records.TryGetValue(preview.LevelId, out var modes) && modes.Count > 0) {
         foreach (var mode in modes) {
           foreach (var difficultyScore in mode.Value) {
-            string difficulty = difficultyScore.Key;
+            var difficulty = difficultyScore.Key;
             double accuracy = difficultyScore.Value;
             var clone = preview.Clone();
             LevelMap.Add(clone, new(mode.Key, difficulty, accuracy));

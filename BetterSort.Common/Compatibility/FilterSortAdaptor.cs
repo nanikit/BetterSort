@@ -34,9 +34,11 @@ namespace BetterSort.Common.Compatibility {
       _logger.Trace($"FilterSortAdaptor.DoSort({levels.Count()}, {ascending}) is called.");
       _result = new();
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
+      _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called NotifyChange");
 
       // Actually it sorts synchronously so sort is done already. Timeout is just for safety.
       bool isComplete = _result.Task.Wait(1000);
+      _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called Wait");
       if (!isComplete) {
         _logger.Error($"Timeout exceeded. Current implementation doesn't support asynchronocity.");
         return;

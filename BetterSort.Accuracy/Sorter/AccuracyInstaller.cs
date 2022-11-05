@@ -15,7 +15,7 @@ namespace BetterSort.Accuracy.Sorter {
 
       Container.Bind<Beatleader>().AsSingle();
       Container.Bind<Scoresaber>().AsSingle();
-      Container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
+      Container.BindInterfacesAndSelfTo<BsUtilsInterop>().AsSingle();
 
       Container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
       Container.Bind<FilterSortAdaptor>().AsSingle();

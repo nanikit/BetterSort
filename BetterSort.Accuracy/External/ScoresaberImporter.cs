@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy.External {
+  using BetterSort.Accuracy.Sorter;
   using Newtonsoft.Json;
   using Scoresaber;
   using System;
@@ -96,7 +97,7 @@ namespace BetterSort.Accuracy.External {
         records.Add(new BestRecord() {
           SongHash = hash,
           Mode = GetGameMode(score.Leaderboard?.Difficulty?.GameMode),
-          Difficulty = difficulty ?? BeatmapDifficulty.ExpertPlus,
+          Difficulty = difficulty ?? RecordDifficulty.ExpertPlus,
           Accuracy = accuracy,
           Score = score.Score?.ModifiedScore ?? 0,
         });
@@ -114,13 +115,13 @@ namespace BetterSort.Accuracy.External {
       return mode?.Replace("Solo", "") ?? "Standard";
     }
 
-    private static BeatmapDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
+    private static RecordDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
       return scoresaberDifficulty switch {
-        1 => BeatmapDifficulty.Easy,
-        3 => BeatmapDifficulty.Normal,
-        5 => BeatmapDifficulty.Hard,
-        7 => BeatmapDifficulty.Expert,
-        9 => BeatmapDifficulty.ExpertPlus,
+        1 => RecordDifficulty.Easy,
+        3 => RecordDifficulty.Normal,
+        5 => RecordDifficulty.Hard,
+        7 => RecordDifficulty.Expert,
+        9 => RecordDifficulty.ExpertPlus,
         _ => null,
       };
     }

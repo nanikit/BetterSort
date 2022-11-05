@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 using System.Collections.Generic;
+using BetterSort.Accuracy.Sorter;
 
 namespace BetterSort.Accuracy.External {
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
   public class UnifiedImporter {
     private readonly IPALogger _logger;
@@ -34,10 +35,10 @@ namespace BetterSort.Accuracy.External {
     }
 
     public async Task<BestRecords> CollectRecordsFromOnline() {
-      var accuracies = new Dictionary<string, Dictionary<string, Dictionary<string, double>>>();
+      var accuracies = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>();
       var records = await ImportRecords().ConfigureAwait(false);
       foreach (var record in records) {
-        string difficulty = record.Difficulty.ToString();
+        var difficulty = record.Difficulty;
         string levelHash = $"custom_level_{record.SongHash?.ToUpperInvariant()}";
         double accuracy = record.Accuracy;
 

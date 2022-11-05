@@ -64,8 +64,8 @@ namespace BetterSort.Accuracy.Test {
     [Fact]
     public async Task TestImport() {
       Directory.CreateDirectory("UserData");
-      var importer = _container.Resolve<UnifiedImporter>();
-      await importer.CollectOrImport().ConfigureAwait(false);
+      var records = await _container.Resolve<UnifiedImporter>().CollectRecordsFromOnline().ConfigureAwait(false);
+      await _container.Resolve<AccuracyRepository>().Save(records).ConfigureAwait(false);
     }
   }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<string, double>>>;
+  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
   public interface IAccuracyRepository {
     Task Save(BestRecords accuracies);
@@ -23,7 +23,7 @@ namespace BetterSort.Accuracy.External {
     }
 
     public Task Save(BestRecords accuracies) {
-      var sorted = new SortedDictionary<string, Dictionary<string, Dictionary<string, double>>>(
+      var sorted = new SortedDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>(
         accuracies,
         new BeatmapAccuracyComparer(accuracies)
       );
@@ -42,6 +42,7 @@ namespace BetterSort.Accuracy.External {
 
     public Task<StoredData?> Load() {
       if (_cache != null) {
+        _logger.Debug($"{nameof(AccuracyRepository)}.{nameof(Load)}: return cache.");
         return Task.FromResult<StoredData?>(_cache);
       }
 

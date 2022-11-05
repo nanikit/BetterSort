@@ -1,5 +1,6 @@
 namespace BetterSort.Accuracy.External {
   using BeatLeader;
+  using BetterSort.Accuracy.Sorter;
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace BetterSort.Accuracy.External {
         records.Add(new BestRecord() {
           SongHash = hash.ToUpperInvariant(),
           Mode = score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
-          Difficulty = difficulty ?? BeatmapDifficulty.ExpertPlus,
+          Difficulty = difficulty ?? RecordDifficulty.ExpertPlus,
           Accuracy = score.Accuracy,
           Score = score.ModifiedScore,
         });
