@@ -2,8 +2,10 @@ using BetterSongList;
 using BetterSongList.HarmonyPatches;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Compatibility;
+using BetterSort.Common.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
@@ -28,6 +30,7 @@ namespace BetterSort.Accuracy.Sorter {
       try {
         _bsInterop.OnSongPlayed += RecordHistoryWithGuard;
         _bsInterop.OnSongSelected += SelectDifficultyWithGuard;
+        _sorter.OnResultChanged += UpdatePlaylistManager;
         _logger.Info($"Enter {nameof(SorterEnvironment)}.{nameof(Initialize)}.");
 
         if (!Plugin.IsTest) {
@@ -51,9 +54,18 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly UnifiedImporter _importer;
     private readonly AccuracySorter _sorter;
 
+    private void UpdatePlaylistManager(ISortFilterResult? result) {
+      if (result != null) {
+        _bsInterop.SetPlaylistItem(result.Levels.Select(x => (x as LevelPreview)!.Preview).ToList());
+      }
+    }
+
     private async void SelectDifficultyWithGuard(int index, IPreviewBeatmapLevel level) {
       try {
         await SelectDifficulty(index, level).ConfigureAwait(false);
+      }
+      catch (DirectoryNotFoundException notFound) {
+        _logger.Info($"Suppress IO exception, it may occur when delete beatmap; {notFound.Message}");
       }
       catch (Exception ex) {
         _logger.Error(ex);
@@ -66,24 +78,20 @@ namespace BetterSort.Accuracy.Sorter {
         return;
       }
 
-      if (index >= _sorter.Mapping.Count) {
-        _logger.Error($"{nameof(SelectDifficulty)}: Index {index} is out of sorted item count. Quit. ({level})");
+      if (index < 0 || _sorter.Mapping.Count <= index) {
+        _logger.Debug($"{nameof(SelectDifficulty)}: Not played level. Skip. ({index} {level.levelID} {level.songName})");
         return;
       }
 
       var record = _sorter.Mapping[index];
-      if (record == null) {
-        _logger.Debug($"{nameof(SelectDifficulty)}: Not played level. Skip. ({level}");
-        return;
-      }
-
       string mode = record.Mode;
       var characteristic = level.previewDifficultyBeatmapSets.Select(x => x.beatmapCharacteristic).FirstOrDefault(x => x.serializedName == mode);
       if (characteristic == null) {
-        _logger.Warn($"{nameof(SelectDifficulty)}: Matching characteristic is not found. Quit. ({level}");
+        _logger.Warn($"{nameof(SelectDifficulty)}: Matching characteristic is not found. Quit. ({level.levelID}, {mode})");
         return;
       }
 
+      _logger.Debug($"{nameof(SelectDifficulty)}: Set {index} {level.songName} {mode} {record.Difficulty} {record.Accuracy}");
       await _bsInterop.SetModeAndDifficulty(characteristic, record.Difficulty).ConfigureAwait(false);
     }
 

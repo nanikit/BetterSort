@@ -53,9 +53,9 @@ namespace BetterSort.Accuracy.External {
 
       try {
         string json = File.ReadAllText(_path);
-        var data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {data.BestRecords?.Count.ToString() ?? "no"} records");
-        return Task.FromResult<StoredData?>(data);
+        _cache = JsonConvert.DeserializeObject<StoredData>(json);
+        _logger.Info($"Loaded {_cache.BestRecords?.Count.ToString() ?? "no"} records");
+        return Task.FromResult<StoredData?>(_cache);
       }
       catch (Exception exception) {
         _logger.Warn(exception);

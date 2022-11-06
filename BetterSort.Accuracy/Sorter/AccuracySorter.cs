@@ -35,7 +35,7 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    internal List<LevelRecord?> Mapping { get; private set; } = new();
+    internal List<LevelRecord> Mapping { get; private set; } = new();
 
     private readonly IPALogger _logger;
     private readonly IAccuracyRepository _repository;
@@ -51,8 +51,15 @@ namespace BetterSort.Accuracy.Sorter {
 
       var comparer = new LevelAccuracyComparer(records.BestRecords);
       var ordered = _triggeredLevels.SelectMany(comparer.Inflate).OrderBy(x => x, comparer).ToList();
-      var legend = AccuracyLegendMaker.GetLegend(ordered, comparer.LevelMap);
-      Mapping = ordered.Select(x => comparer.LevelMap.TryGetValue(x, out var record) ? record : null).ToList();
+      Mapping.Clear();
+      foreach (var preview in ordered) {
+        if (comparer.LevelMap.TryGetValue(preview, out var record)) {
+          Mapping.Add(record);
+        } else {
+          break;
+        }
+      }
+      var legend = AccuracyLegendMaker.GetLegend(Mapping, ordered.Count);
       _logger.Debug($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}");
       return new SortFilterResult(ordered, legend);
     }
