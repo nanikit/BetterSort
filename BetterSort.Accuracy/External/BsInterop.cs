@@ -113,7 +113,9 @@ namespace BetterSort.Accuracy.External {
 
     private static void HandleLevelCollectionViewControllerDidSelectLevelPrefix(LevelCollectionViewController viewController, IPreviewBeatmapLevel level) {
       var view = viewController.GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView");
-      int index = view.GetField<int, LevelCollectionTableView>("_selectedRow") - 1;
+      int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
+      bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
+      int index = hasHeader ? row - 1 : row;
       foreach (var action in _onSongSelecteds) {
         action(index, level);
       }
