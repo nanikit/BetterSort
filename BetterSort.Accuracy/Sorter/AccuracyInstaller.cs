@@ -1,5 +1,4 @@
 using BetterSort.Accuracy.External;
-using BetterSort.Common.Compatibility;
 using Zenject;
 
 namespace BetterSort.Accuracy.Sorter {
@@ -18,7 +17,7 @@ namespace BetterSort.Accuracy.Sorter {
       Container.BindInterfacesAndSelfTo<BsUtilsInterop>().AsSingle();
 
       Container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
-      Container.Bind<FilterSortAdaptor>().AsSingle();
+      Container.BindInterfacesAndSelfTo<UIAwareSorter>().AsSingle();
       Container.Bind<SorterEnvironment>().AsSingle().NonLazy();
     }
   }

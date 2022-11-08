@@ -15,22 +15,27 @@ namespace BetterSort.Accuracy.External {
 
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 
+  public delegate void OnSongSelectedHandler(int index, IPreviewBeatmapLevel level);
+
   public interface IBsInterop : IDisposable {
     event Action<PlayRecord> OnSongPlayed;
-    event Action<int, IPreviewBeatmapLevel> OnSongSelected;
 
     Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty);
     void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels);
+
+    event OnSongSelectedHandler OnSongSelected;
   }
 
   internal class BsUtilsInterop : IBsInterop {
-    private static readonly List<Action<int, IPreviewBeatmapLevel>> _onSongSelecteds = new();
-
     public event Action<PlayRecord> OnSongPlayed = delegate { };
 
-    public event Action<int, IPreviewBeatmapLevel> OnSongSelected {
+    private static OnSongSelectedHandler? _onSongSelected;
+
+    public event OnSongSelectedHandler OnSongSelected {
       add {
-        if (_onSongSelecteds.Count == 0) {
+        _logger.Debug($"{nameof(OnSongSelected)} add");
+        if (_onSongSelected == null) {
+          _logger.Debug($"{nameof(OnSongSelected)} add harmony");
           _harmony.Patch(
             original: AccessTools.Method(
               typeof(LevelCollectionNavigationController),
@@ -42,15 +47,19 @@ namespace BetterSort.Accuracy.External {
             ))
           );
         }
-        _onSongSelecteds.Add(value);
+        _onSongSelected += value;
       }
       remove {
-        _onSongSelecteds.Remove(value);
-        if (_onSongSelecteds.Count == 0) {
-          _harmony.Unpatch(AccessTools.Method(
-            typeof(LevelCollectionNavigationController),
-            nameof(LevelCollectionNavigationController.HandleLevelCollectionViewControllerDidSelectLevel)
-          ), HarmonyPatchType.Prefix);
+        if (_onSongSelected == null) {
+          _logger.Debug($"{nameof(OnSongSelected)} remove null");
+          return;
+        }
+        _logger.Debug($"{nameof(OnSongSelected)} remove");
+        _onSongSelected -= value;
+        if (_onSongSelected == null) {
+          _logger.Debug($"{nameof(OnSongSelected)} remove hook");
+          string methodName = nameof(LevelCollectionNavigationController.HandleLevelCollectionViewControllerDidSelectLevel);
+          _harmony.Unpatch(typeof(LevelCollectionNavigationController).GetMethod(methodName), HarmonyPatchType.Prefix, _harmony.Id);
         }
       }
     }
@@ -124,9 +133,7 @@ namespace BetterSort.Accuracy.External {
       int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
       bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
       int index = hasHeader ? row - 1 : row;
-      foreach (var action in _onSongSelecteds) {
-        action(index, level);
-      }
+      _onSongSelected?.Invoke(index, level);
     }
 
     private async void DispatchWithAccuracy(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults result) {
@@ -176,7 +183,7 @@ namespace BetterSort.Accuracy.External {
       double accuracy = (double)result.multipliedScore / maxMultiplied;
 
       _logger.Debug($"Dispatch play event: {songName ?? "(null)"} {mode} {diff} {accuracy}");
-      OnSongPlayed(new PlayRecord(levelId, mode, diff, accuracy));
+      OnSongPlayed?.Invoke(new PlayRecord(levelId, mode, diff, accuracy));
     }
   }
 }

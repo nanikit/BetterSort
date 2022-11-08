@@ -12,12 +12,13 @@ using Xunit;
 using Xunit.Abstractions;
 using Zenject;
 using IPALogger = IPA.Logging.Logger;
+using BetterSongList.SortModels;
 
 namespace BetterSort.Accuracy.Test {
   public class SorterTest {
     private readonly IPALogger _logger;
     private readonly DiContainer _container;
-    private readonly FilterSortAdaptor _adaptor;
+    private readonly ISorterCustom _adaptor;
     private readonly InMemoryRepository _repository;
     private readonly AccuracySorter _sorter;
 
@@ -28,12 +29,13 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle().WhenInjectedInto<UIAwareSorter>();
 
       container.Install<AccuracyInstaller>();
       _container = container;
 
       _sorter = container.Resolve<AccuracySorter>();
-      _adaptor = container.Resolve<FilterSortAdaptor>();
+      _adaptor = container.Resolve<ISorterCustom>();
       _repository = container.Resolve<InMemoryRepository>();
     }
 
