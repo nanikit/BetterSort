@@ -4,6 +4,7 @@ using BetterSongList.SortModels;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,7 +75,12 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     private async Task SelectDifficulty(int index, IPreviewBeatmapLevel level) {
-      if (HookLevelCollectionTableSet.sorter != this) {
+      var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
+      if (type == null) {
+        _logger.Warn($"{nameof(SelectDifficulty)}: Can't find current sorter. Skip.");
+      }
+      var sorter = AccessTools.StaticFieldRefAccess<ISorter>(type, "sorter");
+      if (sorter != this) {
         _logger.Debug($"{nameof(SelectDifficulty)}: Not selected this sort. Skip.");
         if (_isHooking) {
           _bsInterop.OnSongSelected -= SelectDifficultyWithGuard;

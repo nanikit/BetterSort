@@ -60,7 +60,7 @@ namespace BetterSort.Accuracy.Sorter {
         }
       }
       var legend = AccuracyLegendMaker.GetLegend(Mapping, ordered.Count);
-      _logger.Debug($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}");
+      _logger.Info($"{nameof(AccuracySorter)}: Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}");
       return new SortFilterResult(ordered, legend);
     }
   }

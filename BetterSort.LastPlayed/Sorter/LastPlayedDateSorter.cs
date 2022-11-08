@@ -56,7 +56,7 @@ namespace BetterSort.LastPlayed.Sorter {
       var ordered = _triggeredLevels.OrderBy(x => x, comparer).ToList();
       var legend = DateLegendMaker.GetLegend(ordered, _clock.Now, LastPlayedDates);
       OnResultChanged(new SortFilterResult(ordered, legend));
-      _logger.Debug($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
+      _logger.Info($"{nameof(LastPlayedDateSorter)}: Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
     }
   }
 }
