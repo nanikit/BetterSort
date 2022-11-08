@@ -82,16 +82,23 @@ namespace BetterSort.Accuracy.External {
 
     public void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels) {
       try {
+        if (!_hasPlaylistManager) {
+          return;
+        }
         var type = Type.GetType("PlaylistManager.HarmonyPatches.LevelCollectionViewController_SetData, PlaylistManager");
         if (type == null) {
-          _logger.Warn($"{nameof(SetPlaylistItem)}: type is null");
+          _logger.Info($"{nameof(SetPlaylistItem)}: type is null, maybe there is no PlaylistManager mod.");
+          _hasPlaylistManager = false;
           return;
         }
         string name = "beatmapLevels";
-        if (!AccessTools.GetFieldNames(type).Contains(name)) {
-          _logger.Warn($"{nameof(SetPlaylistItem)}: field is not found");
+        var field = AccessTools.DeclaredField(type, name);
+        if (field == null) {
+          _logger.Warn($"{nameof(SetPlaylistItem)}: field {name} is not found");
+          _hasPlaylistManager = false;
           return;
         }
+        _logger.Debug($"{nameof(SetPlaylistItem)}: Try updating PlaylistManager levels.");
         AccessTools.StaticFieldRefAccess<IReadOnlyCollection<IPreviewBeatmapLevel>>(type, name) = levels;
       }
       catch (Exception ex) {
@@ -107,6 +114,7 @@ namespace BetterSort.Accuracy.External {
     private readonly Scoresaber _scoresaber;
     private readonly Beatleader _beatleader;
     private readonly Harmony _harmony;
+    private bool _hasPlaylistManager = true;
 
     private void DispatchCharacteristicSelection(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2) {
     }
