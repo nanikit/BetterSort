@@ -1,4 +1,4 @@
-# BetterSort.LastPlayed
+# BetterSort
 
 <img src="docs/preview.webp" alt="preview" width="300"/>
 
@@ -8,7 +8,7 @@ Beat saber mod adding last played date sort feature to [BetterSongList](https://
 
 Use [mod assistant](https://github.com/Assistant/ModAssistant/releases/latest). I'll support that.
 
-If it's not available or new features is added later, download [the latest release](https://github.com/nanikit/BetterSort.LastPlayed/releases/latest).
+If it's not available or new features is added later, download [the latest release](https://github.com/nanikit/BetterSort/releases/latest).
 
 ## Usage
 
