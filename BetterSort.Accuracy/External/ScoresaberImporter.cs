@@ -36,7 +36,7 @@ namespace BetterSort.Accuracy.External {
         return null;
       }
 
-      return await GetScores(json);
+      return GetScores(json);
     }
 
     private async Task<List<BestRecord>> GetRecords(string platformId) {
@@ -59,7 +59,7 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    private async Task<(List<BestRecord> Records, int MaxPage)?> GetScores(string json) {
+    private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
       var records = new List<BestRecord>();
 
       var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
