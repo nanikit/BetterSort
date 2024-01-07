@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy.External {
+
   using BeatLeader;
   using BetterSort.Accuracy.Sorter;
   using Newtonsoft.Json;
@@ -37,6 +38,10 @@ namespace BetterSort.Accuracy.External {
       }
 
       return GetScores(json);
+    }
+
+    private static string GetUrl(string platformId, int page) {
+      return $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
     }
 
     private async Task<List<BestRecord>> GetRecords(string platformId) {
@@ -93,18 +98,16 @@ namespace BetterSort.Accuracy.External {
       int maxPage = (int)Math.Ceiling((double)page.Metadata!.Total / page.Metadata.ItemsPerPage);
       return (records, maxPage);
     }
-
-    private static string GetUrl(string platformId, int page) {
-      return $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
-    }
   }
 }
 
 namespace BeatLeader {
+
   using Newtonsoft.Json;
   using System.Collections.Generic;
 
   public class PagedPlayerScores {
+
     [JsonProperty("metadata")]
     public PageMetadata? Metadata;
 
@@ -113,6 +116,7 @@ namespace BeatLeader {
   }
 
   public class PageMetadata {
+
     [JsonProperty("itemsPerPage")]
     public int ItemsPerPage;
 
@@ -124,6 +128,7 @@ namespace BeatLeader {
   }
 
   public class PlayerScore {
+
     [JsonProperty("leaderboard")]
     public Leaderboard? Leaderboard;
 
@@ -135,6 +140,7 @@ namespace BeatLeader {
   }
 
   public class Leaderboard {
+
     [JsonProperty("id")]
     public string? Id;
 
@@ -146,6 +152,7 @@ namespace BeatLeader {
   }
 
   public class Song {
+
     [JsonProperty("id")]
     public string? Id;
 
@@ -154,6 +161,7 @@ namespace BeatLeader {
   }
 
   public class Difficulty {
+
     [JsonProperty("difficultyName")]
     public string? DifficultyName;
 

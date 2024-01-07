@@ -7,8 +7,12 @@ using System.Threading;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Sorter {
+
   public class AccuracySorter : ISortFilter {
-    public string Name => "Accuracy";
+    private readonly IPALogger _logger;
+    private readonly IAccuracyRepository _repository;
+    private IEnumerable<ILevelPreview>? _triggeredLevels;
+    private bool _isSelected = false;
 
     public AccuracySorter(IPALogger logger, IAccuracyRepository repository) {
       _logger = logger;
@@ -16,6 +20,9 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     public event Action<ISortFilterResult?> OnResultChanged = delegate { };
+
+    public string Name => "Accuracy";
+    internal List<LevelRecord> Mapping { get; private set; } = new();
 
     public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       try {
@@ -35,13 +42,6 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    internal List<LevelRecord> Mapping { get; private set; } = new();
-
-    private readonly IPALogger _logger;
-    private readonly IAccuracyRepository _repository;
-    private IEnumerable<ILevelPreview>? _triggeredLevels;
-    private bool _isSelected = false;
-
     private SortFilterResult Sort() {
       var records = _repository.Load().Result;
       if (records == null) {
@@ -55,7 +55,8 @@ namespace BetterSort.Accuracy.Sorter {
       foreach (var preview in ordered) {
         if (comparer.LevelMap.TryGetValue(preview, out var record)) {
           Mapping.Add(record);
-        } else {
+        }
+        else {
           break;
         }
       }

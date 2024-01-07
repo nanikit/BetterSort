@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace BetterSort.Accuracy.Sorter {
+
   [JsonConverter(typeof(StringEnumConverter))]
   public enum RecordDifficulty {
     Easy = 1,
@@ -12,6 +13,7 @@ namespace BetterSort.Accuracy.Sorter {
   }
 
   public static class DifficultyExtension {
+
     public static RecordDifficulty? ConvertFromString(string? beatleaderDifficulty) {
       return beatleaderDifficulty switch {
         "Easy" => RecordDifficulty.Easy,

@@ -1,20 +1,21 @@
+using BetterSongList.SortModels;
+
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Accuracy.Test.Mocks;
-using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
 using BetterSort.Test.Common.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Zenject;
 using IPALogger = IPA.Logging.Logger;
-using BetterSongList.SortModels;
 
 namespace BetterSort.Accuracy.Test {
+
   public class SorterTest {
     private readonly IPALogger _logger;
     private readonly DiContainer _container;
@@ -69,7 +70,6 @@ namespace BetterSort.Accuracy.Test {
       });
       Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }
-
 
     private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       TaskCompletionSource<ISortFilterResult?> completer = new();

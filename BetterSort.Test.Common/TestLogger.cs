@@ -1,4 +1,5 @@
 namespace BetterSort.Test.Common {
+
   using Xunit.Abstractions;
   using IPALogger = IPA.Logging.Logger;
 
@@ -15,6 +16,7 @@ namespace BetterSort.Test.Common {
   }
 
   internal class XUnitLogger : ITestOutputHelper {
+
     public void WriteLine(string message) {
     }
 

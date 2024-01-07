@@ -1,6 +1,7 @@
 using System;
 
 namespace BetterSort.Accuracy.External {
+
   using BetterSort.Accuracy.Sorter;
   using BetterSort.Common.External;
   using BS_Utils.Utilities;
@@ -18,18 +19,39 @@ namespace BetterSort.Accuracy.External {
   public delegate void OnSongSelectedHandler(int index, IPreviewBeatmapLevel level);
 
   public interface IBsInterop : IDisposable {
+
     event Action<PlayRecord> OnSongPlayed;
 
-    Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty);
-    void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels);
-
     event OnSongSelectedHandler OnSongSelected;
+
+    Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty);
+
+    void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels);
   }
 
   internal class BsUtilsInterop : IBsInterop {
-    public event Action<PlayRecord> OnSongPlayed = delegate { };
-
     private static OnSongSelectedHandler? _onSongSelected;
+
+    private readonly IPALogger _logger;
+
+    private readonly Scoresaber _scoresaber;
+
+    private readonly Beatleader _beatleader;
+
+    private readonly Harmony _harmony;
+
+    private bool _hasPlaylistManager = true;
+
+    public BsUtilsInterop(IPALogger logger, Scoresaber scoresaber, Beatleader beatleader, Harmony harmony) {
+      _logger = logger;
+      _scoresaber = scoresaber;
+      _beatleader = beatleader;
+      _harmony = harmony;
+      BSEvents.levelCleared += DispatchWithAccuracy;
+      BSEvents.characteristicSelected += DispatchCharacteristicSelection;
+    }
+
+    public event Action<PlayRecord> OnSongPlayed = delegate { };
 
     public event OnSongSelectedHandler OnSongSelected {
       add {
@@ -62,15 +84,6 @@ namespace BetterSort.Accuracy.External {
           _harmony.Unpatch(typeof(LevelCollectionNavigationController).GetMethod(methodName), HarmonyPatchType.Prefix, _harmony.Id);
         }
       }
-    }
-
-    public BsUtilsInterop(IPALogger logger, Scoresaber scoresaber, Beatleader beatleader, Harmony harmony) {
-      _logger = logger;
-      _scoresaber = scoresaber;
-      _beatleader = beatleader;
-      _harmony = harmony;
-      BSEvents.levelCleared += DispatchWithAccuracy;
-      BSEvents.characteristicSelected += DispatchCharacteristicSelection;
     }
 
     public async Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty) {
@@ -119,21 +132,15 @@ namespace BetterSort.Accuracy.External {
       BSEvents.levelCleared -= DispatchWithAccuracy;
     }
 
-    private readonly IPALogger _logger;
-    private readonly Scoresaber _scoresaber;
-    private readonly Beatleader _beatleader;
-    private readonly Harmony _harmony;
-    private bool _hasPlaylistManager = true;
-
-    private void DispatchCharacteristicSelection(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2) {
-    }
-
     private static void HandleLevelCollectionViewControllerDidSelectLevelPrefix(LevelCollectionViewController viewController, IPreviewBeatmapLevel level) {
       var view = viewController.GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView");
       int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
       bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
       int index = hasHeader ? row - 1 : row;
       _onSongSelected?.Invoke(index, level);
+    }
+
+    private void DispatchCharacteristicSelection(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2) {
     }
 
     private async void DispatchWithAccuracy(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults result) {

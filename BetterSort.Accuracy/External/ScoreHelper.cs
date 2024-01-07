@@ -15,6 +15,22 @@ namespace BetterSort.Accuracy.External {
       _logger = logger;
     }
 
+    public async Task<int?> CalculateMaxScore(IDifficultyBeatmap beatmap) {
+      var setup = BS_Utils.Plugin.LevelData?.GameplayCoreSceneSetupData;
+      if (setup == null) {
+        _logger.Info($"Setup data is null, give up calculating maxScore: {beatmap.level.songName}");
+        return null;
+      }
+
+      var data = await beatmap.GetBeatmapDataAsync(setup.environmentInfo, setup.playerSpecificSettings).ConfigureAwait(false);
+      if (data == null) {
+        _logger.Info($"Beatmap data is null, give up calculating maxScore: {beatmap.level.songName}");
+        return null;
+      }
+
+      return ScoreModel.ComputeMaxMultipliedScoreForBeatmap(data);
+    }
+
     public async Task<IDifficultyBeatmap?> GetDifficultyBeatmap(string levelId, string characteristic, RecordDifficulty difficulty) {
       var model = await UnityMainThreadTaskScheduler.Factory.StartNew(
         () => Object.FindObjectOfType<BeatmapLevelsModel>()
@@ -47,22 +63,6 @@ namespace BetterSort.Accuracy.External {
         _logger.Info($"Failed to getting data. Give up finding difficulty: {levelId} {characteristic} {difficulty}");
       }
       return ret;
-    }
-
-    public async Task<int?> CalculateMaxScore(IDifficultyBeatmap beatmap) {
-      var setup = BS_Utils.Plugin.LevelData?.GameplayCoreSceneSetupData;
-      if (setup == null) {
-        _logger.Info($"Setup data is null, give up calculating maxScore: {beatmap.level.songName}");
-        return null;
-      }
-
-      var data = await beatmap.GetBeatmapDataAsync(setup.environmentInfo, setup.playerSpecificSettings).ConfigureAwait(false);
-      if (data == null) {
-        _logger.Info($"Beatmap data is null, give up calculating maxScore: {beatmap.level.songName}");
-        return null;
-      }
-
-      return ScoreModel.ComputeMaxMultipliedScoreForBeatmap(data);
     }
   }
 }

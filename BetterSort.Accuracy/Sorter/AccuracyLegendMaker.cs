@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 
 namespace BetterSort.Accuracy.Sorter {
+
   internal class AccuracyLegendMaker {
+
     public static List<(string, int)> GetLegend(List<LevelRecord> mapping, int length) {
       var legend = new List<(string, int)>();
 
@@ -13,7 +15,7 @@ namespace BetterSort.Accuracy.Sorter {
         legend.Add(((record.Accuracy * 100).ToString("00.00"), index));
       }
       if (mapping.Count < length)
-      legend.Add(("N/A", mapping.Count));
+        legend.Add(("N/A", mapping.Count));
 
       return legend;
     }

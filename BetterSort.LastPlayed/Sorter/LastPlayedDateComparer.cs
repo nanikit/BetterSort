@@ -1,9 +1,16 @@
 namespace BetterSort.LastPlayed.Sorter {
+
   using BetterSort.Common.Interfaces;
   using System;
   using System.Collections.Generic;
 
   internal class LastPlayedDateComparer : IComparer<ILevelPreview>, IComparer<string> {
+
+    /// <summary>
+    /// Level id to instant.
+    /// </summary>
+    private readonly IReadOnlyDictionary<string, DateTime> _lastPlayedDates;
+
     public LastPlayedDateComparer(IReadOnlyDictionary<string, DateTime> lastPlayedDates) {
       _lastPlayedDates = lastPlayedDates;
     }
@@ -34,10 +41,5 @@ namespace BetterSort.LastPlayed.Sorter {
         return 0;
       }
     }
-
-    /// <summary>
-    /// Level id to instant.
-    /// </summary>
-    private readonly IReadOnlyDictionary<string, DateTime> _lastPlayedDates;
   }
 }

@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy.Test {
+
   using BetterSort.Accuracy.External;
   using BetterSort.Accuracy.Sorter;
   using BetterSort.Test.Common.Mocks;
@@ -17,8 +18,8 @@ namespace BetterSort.Accuracy.Test {
   using IPALogger = IPA.Logging.Logger;
 
   public class LeaderboardImportTest {
-    private readonly IPALogger _logger;
     private readonly DiContainer _container;
+    private readonly IPALogger _logger;
 
     public LeaderboardImportTest(ITestOutputHelper output) {
       _logger = new MockLogger(output);
@@ -33,19 +34,6 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<MockId>().FromInstance(mockId).WhenInjectedInto<ScoresaberImporter>();
       container.BindInterfacesAndSelfTo<MockId>().FromInstance(mockId).WhenInjectedInto<BeatLeaderImporter>();
       _container = container;
-    }
-
-    [Fact]
-    public async Task TestScoresaber() {
-      var scoresaber = _container.Resolve<ScoresaberImporter>();
-      var page = await scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
-      if (page is not (var records, var maxPage)) {
-        Assert.Fail("Failed to get data");
-        throw new Exception();
-      }
-      Assert.NotEmpty(records);
-      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
-      Assert.InRange(maxPage, 1, int.MaxValue);
     }
 
     [Fact]
@@ -67,11 +55,42 @@ namespace BetterSort.Accuracy.Test {
       var records = await _container.Resolve<UnifiedImporter>().CollectRecordsFromOnline().ConfigureAwait(false);
       await _container.Resolve<AccuracyRepository>().Save(records).ConfigureAwait(false);
     }
+
+    [Fact]
+    public async Task TestScoresaber() {
+      var scoresaber = _container.Resolve<ScoresaberImporter>();
+      var page = await scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      if (page is not (var records, var maxPage)) {
+        Assert.Fail("Failed to get data");
+        throw new Exception();
+      }
+      Assert.NotEmpty(records);
+      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
+      Assert.InRange(maxPage, 1, int.MaxValue);
+    }
   }
 
-  internal class MockId : ILeaderboardId {
-    public Task<string?> GetUserId() {
-      return Task.FromResult<string?>("76561198159100356");
+  public class MockHttpResponse : IHttpResponse {
+    public int Code { get; set; }
+
+    public string? ErrorString { get; set; }
+    public string? Response { get; set; }
+    public bool Successful { get; set; }
+
+    public Task<string?> Error() {
+      return Task.FromResult(ErrorString);
+    }
+
+    public Task<byte[]> ReadAsByteArrayAsync() {
+      throw new NotImplementedException();
+    }
+
+    public Task<Stream> ReadAsStreamAsync() {
+      throw new NotImplementedException();
+    }
+
+    public Task<string> ReadAsStringAsync() {
+      return Task.FromResult(Response ?? "");
     }
   }
 
@@ -83,15 +102,16 @@ namespace BetterSort.Accuracy.Test {
       _logger = logger;
     }
 
-    public string? Token { set { } }
     public string? BaseURL {
-      get => null; set { }
-    }
-    public string? UserAgent {
       get => null; set { }
     }
 
     public IDictionary<string, string> Headers => throw new NotImplementedException();
+    public string? Token { set { } }
+
+    public string? UserAgent {
+      get => null; set { }
+    }
 
     public Task<IHttpResponse> DeleteAsync(string url, CancellationToken? cancellationToken = null) {
       throw new NotImplementedException();
@@ -151,29 +171,10 @@ namespace BetterSort.Accuracy.Test {
     }
   }
 
-  public class MockHttpResponse : IHttpResponse {
-    public int Code { get; set; }
+  internal class MockId : ILeaderboardId {
 
-    public bool Successful { get; set; }
-
-    public string? ErrorString { get; set; }
-
-    public string? Response { get; set; }
-
-    public Task<string?> Error() {
-      return Task.FromResult(ErrorString);
-    }
-
-    public Task<byte[]> ReadAsByteArrayAsync() {
-      throw new NotImplementedException();
-    }
-
-    public Task<Stream> ReadAsStreamAsync() {
-      throw new NotImplementedException();
-    }
-
-    public Task<string> ReadAsStringAsync() {
-      return Task.FromResult(Response ?? "");
+    public Task<string?> GetUserId() {
+      return Task.FromResult<string?>("76561198159100356");
     }
   }
 }

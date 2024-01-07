@@ -1,4 +1,5 @@
 namespace BetterSort.LastPlayed.Sorter {
+
   using BetterSongList;
   using BetterSort.Common.Compatibility;
   using BetterSort.LastPlayed.External;
@@ -7,6 +8,16 @@ namespace BetterSort.LastPlayed.Sorter {
   using IPALogger = IPA.Logging.Logger;
 
   public class SorterEnvironment {
+    private readonly IPALogger _logger;
+
+    private readonly IPlayedDateRepository _repository;
+
+    private readonly IPlayEventSource _playEventSource;
+
+    private readonly LastPlayedDateSorter _sorter;
+
+    private readonly FilterSortAdaptor _adaptor;
+
     public SorterEnvironment(IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
       _logger = logger;
       _repository = repository;
@@ -29,12 +40,6 @@ namespace BetterSort.LastPlayed.Sorter {
         _logger.Debug("Skip last play date sorter registration.");
       }
     }
-
-    private readonly IPALogger _logger;
-    private readonly IPlayedDateRepository _repository;
-    private readonly IPlayEventSource _playEventSource;
-    private readonly LastPlayedDateSorter _sorter;
-    private readonly FilterSortAdaptor _adaptor;
 
     private void RecordHistory(string levelId, DateTime instant) {
       _logger.Debug($"Record play {levelId}: {instant}");

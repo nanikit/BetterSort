@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy.External {
+
   using BS_Utils.Gameplay;
   using Steamworks;
   using System;
@@ -6,16 +7,18 @@ namespace BetterSort.Accuracy.External {
   using IPALogger = IPA.Logging.Logger;
 
   public interface ILeaderboardId {
+
     Task<string?> GetUserId();
   }
 
   public class LeaderboardId : ILeaderboardId {
+    private readonly IPALogger _logger;
+
+    private string? _id;
+
     public LeaderboardId(IPALogger logger) {
       _logger = logger;
     }
-
-    private readonly IPALogger _logger;
-    private string? _id;
 
     public async Task<string?> GetUserId() {
       if (_id != null) {

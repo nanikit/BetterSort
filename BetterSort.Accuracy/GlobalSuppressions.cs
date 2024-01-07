@@ -9,5 +9,6 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0029:Use coalesce expression", Justification = "<Pending>")]
 
 namespace System.Runtime.CompilerServices {
+
   internal class IsExternalInit { }
 }

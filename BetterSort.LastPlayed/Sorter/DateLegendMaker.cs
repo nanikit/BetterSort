@@ -1,9 +1,11 @@
 namespace BetterSort.LastPlayed.Sorter {
+
   using BetterSort.Common.Interfaces;
   using System;
   using System.Collections.Generic;
 
   internal class DateLegendMaker {
+
     public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
       var legend = new List<(string, int)>();
       int lastLogOfUnixDifference = -1;

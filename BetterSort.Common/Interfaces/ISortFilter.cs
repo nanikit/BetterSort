@@ -1,9 +1,16 @@
 namespace BetterSort.Common.Interfaces {
+
   using System;
   using System.Collections.Generic;
   using System.Threading;
 
   public interface ISortFilter {
+
+    /// <summary>
+    /// null means sorter / filter is not usable.
+    /// </summary>
+    event Action<ISortFilterResult?> OnResultChanged;
+
     /// <summary>
     /// Sorter / filter name, appears on dropdown.
     /// </summary>
@@ -15,10 +22,5 @@ namespace BetterSort.Common.Interfaces {
     /// <param name="newLevels">All levels before sort or filter.</param>
     /// <param name="isSelected">Is the result levels should be changed because it is selected?</param>
     void NotifyChange(IEnumerable<ILevelPreview> newLevels, bool isSelected = false, CancellationToken? token = null);
-
-    /// <summary>
-    /// null means sorter / filter is not usable.
-    /// </summary>
-    event Action<ISortFilterResult?> OnResultChanged;
   }
 }

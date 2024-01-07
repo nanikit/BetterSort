@@ -1,4 +1,5 @@
 namespace BetterSort.LastPlayed.Test.Mocks {
+
   using BetterSort.LastPlayed.External;
   using System;
   using System.Collections.Generic;

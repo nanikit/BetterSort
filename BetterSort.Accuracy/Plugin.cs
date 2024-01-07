@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy {
+
   using BetterSort.Accuracy.External;
   using BetterSort.Accuracy.Sorter;
   using BetterSort.Common.External;
@@ -10,7 +11,6 @@ namespace BetterSort.Accuracy {
 
   [Plugin(RuntimeOptions.DynamicInit), Slog, NoEnableDisable]
   public class Plugin {
-    public static bool IsTest { get; set; }
 
     [Init]
     public Plugin(IPALogger logger, Zenjector zenjector) {
@@ -28,5 +28,7 @@ namespace BetterSort.Accuracy {
 
       logger.Info("Initialized.");
     }
+
+    public static bool IsTest { get; set; }
   }
 }

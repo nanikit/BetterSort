@@ -1,10 +1,15 @@
 namespace BetterSort.Common.External {
+
   using IPA.Loader;
   using System;
   using System.Reflection;
   using IPALogger = IPA.Logging.Logger;
 
   public class Scoresaber {
+    private readonly IPALogger _logger;
+
+    private readonly MethodBase? _playbackDisabled;
+
     public Scoresaber(IPALogger logger) {
       _logger = logger;
 
@@ -34,8 +39,5 @@ namespace BetterSort.Common.External {
       }
       return false;
     }
-
-    private readonly MethodBase? _playbackDisabled;
-    private readonly IPALogger _logger;
   }
 }

@@ -15,7 +15,23 @@ using Zenject;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Test {
+
   public class SorterTest {
+    private readonly FilterSortAdaptor _adaptor;
+
+    private readonly FixedClock _clock;
+
+    private readonly DiContainer _container;
+
+    [Inject]
+    private readonly IPALogger _logger;
+
+    private readonly MockEventSource _playSource;
+
+    private readonly InMemoryDateRepository _repository;
+
+    private readonly LastPlayedDateSorter _sorter;
+
     public SorterTest(ITestOutputHelper output) {
       _logger ??= new TestLogger(output);
 
@@ -90,14 +106,12 @@ namespace BetterSort.LastPlayed.Test {
       Assert.Equal(expectation, levels.Select(x => x.LevelId));
     }
 
-    [Inject]
-    private readonly IPALogger _logger;
-    private readonly DiContainer _container;
-    private readonly MockEventSource _playSource;
-    private readonly InMemoryDateRepository _repository;
-    private readonly FilterSortAdaptor _adaptor;
-    private readonly LastPlayedDateSorter _sorter;
-    private readonly FixedClock _clock;
+    private IEnumerable<(MockPreview preview, DateTime date)> GenerateData() {
+      return Enumerable.Range(0, 1000)
+        .Select(i => (
+          preview: new MockPreview($"{i}"),
+          date: _clock.Now.AddSeconds(-Math.Pow(i, 3))));
+    }
 
     private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       TaskCompletionSource<ISortFilterResult?> completer = new();
@@ -116,14 +130,6 @@ namespace BetterSort.LastPlayed.Test {
       }
 
       return result;
-    }
-
-
-    private IEnumerable<(MockPreview preview, DateTime date)> GenerateData() {
-      return Enumerable.Range(0, 1000)
-        .Select(i => (
-          preview: new MockPreview($"{i}"),
-          date: _clock.Now.AddSeconds(-Math.Pow(i, 3))));
     }
   }
 }

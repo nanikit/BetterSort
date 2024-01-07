@@ -1,4 +1,5 @@
 namespace BetterSort.Accuracy.External {
+
   using BetterSort.Accuracy.Sorter;
   using Newtonsoft.Json;
   using Scoresaber;
@@ -8,14 +9,24 @@ namespace BetterSort.Accuracy.External {
   using IPALogger = IPA.Logging.Logger;
 
   public class ScoresaberImporter : IScoreImporter {
-    private readonly IPALogger _logger;
-    private readonly ILeaderboardId _id;
     private readonly ScoreImporterHelper _helper;
+    private readonly ILeaderboardId _id;
+    private readonly IPALogger _logger;
 
     internal ScoresaberImporter(IPALogger logger, ILeaderboardId id, ScoreImporterHelper helper) {
       _logger = logger;
       _id = id;
       _helper = helper;
+    }
+
+    public async Task<(List<BestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
+      string url = GetUrl(platformId, page);
+      string? json = await _helper.GetJsonWithRetry(url).ConfigureAwait(false);
+      if (json == null) {
+        return null;
+      }
+
+      return GetScores(json);
     }
 
     public async Task<List<BestRecord>?> GetPlayerBests() {
@@ -29,14 +40,23 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    public async Task<(List<BestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
-      string url = GetUrl(platformId, page);
-      string? json = await _helper.GetJsonWithRetry(url).ConfigureAwait(false);
-      if (json == null) {
-        return null;
-      }
+    private static RecordDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
+      return scoresaberDifficulty switch {
+        1 => RecordDifficulty.Easy,
+        3 => RecordDifficulty.Normal,
+        5 => RecordDifficulty.Hard,
+        7 => RecordDifficulty.Expert,
+        9 => RecordDifficulty.ExpertPlus,
+        _ => null,
+      };
+    }
 
-      return GetScores(json);
+    private static string GetGameMode(string? mode) {
+      return mode?.Replace("Solo", "") ?? "Standard";
+    }
+
+    private static string GetUrl(string platformId, int page) {
+      return $"https://scoresaber.com/api/player/{platformId}/scores?page={page}&sort=recent";
     }
 
     private async Task<List<BestRecord>> GetRecords(string platformId) {
@@ -106,64 +126,68 @@ namespace BetterSort.Accuracy.External {
       int maxPage = (int)Math.Ceiling((double)page.Metadata!.Total / page.Metadata.ItemsPerPage);
       return (records, maxPage);
     }
-
-    private static string GetUrl(string platformId, int page) {
-      return $"https://scoresaber.com/api/player/{platformId}/scores?page={page}&sort=recent";
-    }
-
-    private static string GetGameMode(string? mode) {
-      return mode?.Replace("Solo", "") ?? "Standard";
-    }
-
-    private static RecordDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
-      return scoresaberDifficulty switch {
-        1 => RecordDifficulty.Easy,
-        3 => RecordDifficulty.Normal,
-        5 => RecordDifficulty.Hard,
-        7 => RecordDifficulty.Expert,
-        9 => RecordDifficulty.ExpertPlus,
-        _ => null,
-      };
-    }
   }
 }
 
 namespace Scoresaber {
+
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;
 
-  public class PagedPlayerScores {
-    [JsonProperty("playerScores")]
-    public List<PlayerScore>? PlayerScores { get; set; }
-
-    [JsonProperty("metadata")]
-    public PageMetadata? Metadata { get; set; }
-
-  }
-
-  public class PageMetadata {
-    [JsonProperty("total")]
-    public int Total { get; set; }
-
-    [JsonProperty("page")]
-    public int Page { get; set; }
-
-    [JsonProperty("itemsPerPage")]
-    public int ItemsPerPage { get; set; }
-  }
-
-  public class PlayerScore {
-    [JsonProperty("score")]
-    public Score? Score { get; set; }
-
-    [JsonProperty("leaderboard")]
-    public Leaderboard? Leaderboard { get; set; }
-  }
-
   public class Leaderboard {
+
+    // "playerScore": null,
+    [JsonProperty("coverImage")]
+    public string? CoverImage { get; set; }
+
+    [JsonProperty("createdDate")]
+    public string? CreatedDate { get; set; }
+
+    [JsonProperty("dailyPlays")]
+    public int DailyPlays { get; set; }
+
+    [JsonProperty("difficulty")]
+    public SongDifficulty? Difficulty { get; set; }
+
     [JsonProperty("id")]
     public int Id { get; set; }
+
+    [JsonProperty("levelAuthorName")]
+    public string? LevelAuthorName { get; set; }
+
+    [JsonProperty("loved")]
+    public bool Loved { get; set; }
+
+    [JsonProperty("lovedDate")]
+    public DateTime? LovedDate { get; set; }
+
+    [JsonProperty("maxPP")]
+    public double MaxPp { get; set; }
+
+    [JsonProperty("maxScore")]
+    public int MaxScore { get; set; }
+
+    [JsonProperty("plays")]
+    public int Plays { get; set; }
+
+    [JsonProperty("positiveModifiers")]
+    public bool PositiveModifiers { get; set; }
+
+    [JsonProperty("qualified")]
+    public bool Qualified { get; set; }
+
+    [JsonProperty("qualifiedDate")]
+    public string? QualifiedDate { get; set; }
+
+    [JsonProperty("ranked")]
+    public bool Ranked { get; set; }
+
+    [JsonProperty("rankedDate")]
+    public string? RankedDate { get; set; }
+
+    [JsonProperty("songAuthorName")]
+    public string? SongAuthorName { get; set; }
 
     [JsonProperty("songHash")]
     public string? SongHash { get; set; }
@@ -174,91 +198,70 @@ namespace Scoresaber {
     [JsonProperty("songSubName")]
     public string? SongSubName { get; set; }
 
-    [JsonProperty("songAuthorName")]
-    public string? SongAuthorName { get; set; }
-
-    [JsonProperty("levelAuthorName")]
-    public string? LevelAuthorName { get; set; }
-
-    [JsonProperty("difficulty")]
-    public SongDifficulty? Difficulty { get; set; }
-
-    [JsonProperty("maxScore")]
-    public int MaxScore { get; set; }
-
-    [JsonProperty("createdDate")]
-    public string? CreatedDate { get; set; }
-    [JsonProperty("rankedDate")]
-    public string? RankedDate { get; set; }
-    [JsonProperty("qualifiedDate")]
-    public string? QualifiedDate { get; set; }
-
-    [JsonProperty("lovedDate")]
-    public DateTime? LovedDate { get; set; }
-
-    [JsonProperty("ranked")]
-    public bool Ranked { get; set; }
-
-    [JsonProperty("qualified")]
-    public bool Qualified { get; set; }
-
-    [JsonProperty("loved")]
-    public bool Loved { get; set; }
-
-    [JsonProperty("maxPP")]
-    public double MaxPp { get; set; }
-
     [JsonProperty("stars")]
     public double Stars { get; set; }
-
-    [JsonProperty("plays")]
-    public int Plays { get; set; }
-
-    [JsonProperty("dailyPlays")]
-    public int DailyPlays { get; set; }
-
-    [JsonProperty("positiveModifiers")]
-    public bool PositiveModifiers { get; set; }
-
-    // "playerScore": null,
-    [JsonProperty("coverImage")]
-    public string? CoverImage { get; set; }
 
     // "difficulties": null,
   }
 
-  public class SongDifficulty {
-    [JsonProperty("leaderboardId")]
-    public int LeaderboardId { get; set; }
+  public class PagedPlayerScores {
 
-    [JsonProperty("difficulty")]
-    public int Difficulty { get; set; }
+    [JsonProperty("metadata")]
+    public PageMetadata? Metadata { get; set; }
 
-    [JsonProperty("gameMode")]
-    public string? GameMode { get; set; }
+    [JsonProperty("playerScores")]
+    public List<PlayerScore>? PlayerScores { get; set; }
+  }
 
-    [JsonProperty("difficultyRaw")]
-    public string? DifficultyRaw { get; set; }
+  public class PageMetadata {
+
+    [JsonProperty("itemsPerPage")]
+    public int ItemsPerPage { get; set; }
+
+    [JsonProperty("page")]
+    public int Page { get; set; }
+
+    [JsonProperty("total")]
+    public int Total { get; set; }
+  }
+
+  public class PlayerScore {
+
+    [JsonProperty("leaderboard")]
+    public Leaderboard? Leaderboard { get; set; }
+
+    [JsonProperty("score")]
+    public Score? Score { get; set; }
   }
 
   public class Score {
-    [JsonProperty("id")]
-    public int Id { get; set; }
 
-    [JsonProperty("rank")]
-    public int Rank { get; set; }
+    [JsonProperty("badCuts")]
+    public int BadCuts { get; set; }
 
     [JsonProperty("baseScore")]
     public int BaseScore { get; set; }
 
+    [JsonProperty("fullCombo")]
+    public bool FullCombo { get; set; }
+
+    [JsonProperty("hasReplay")]
+    public bool HasReplay { get; set; }
+
+    [JsonProperty("hmd")]
+    public int Hmd { get; set; }
+
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("maxCombo")]
+    public int MaxCombo { get; set; }
+
+    [JsonProperty("missedNotes")]
+    public int MissedNotes { get; set; }
+
     [JsonProperty("modifiedScore")]
     public int ModifiedScore { get; set; }
-
-    [JsonProperty("pp")]
-    public double Pp { get; set; }
-
-    [JsonProperty("weight")]
-    public double Weight { get; set; }
 
     [JsonProperty("modifiers")]
     public string? Modifiers { get; set; }
@@ -266,25 +269,31 @@ namespace Scoresaber {
     [JsonProperty("multiplier")]
     public double Multiplier { get; set; }
 
-    [JsonProperty("badCuts")]
-    public int BadCuts { get; set; }
+    [JsonProperty("pp")]
+    public double Pp { get; set; }
 
-    [JsonProperty("missedNotes")]
-    public int MissedNotes { get; set; }
-
-    [JsonProperty("maxCombo")]
-    public int MaxCombo { get; set; }
-
-    [JsonProperty("fullCombo")]
-    public bool FullCombo { get; set; }
-
-    [JsonProperty("hmd")]
-    public int Hmd { get; set; }
+    [JsonProperty("rank")]
+    public int Rank { get; set; }
 
     [JsonProperty("timeSet")]
     public DateTime TimeSet { get; set; }
 
-    [JsonProperty("hasReplay")]
-    public bool HasReplay { get; set; }
+    [JsonProperty("weight")]
+    public double Weight { get; set; }
+  }
+
+  public class SongDifficulty {
+
+    [JsonProperty("difficulty")]
+    public int Difficulty { get; set; }
+
+    [JsonProperty("difficultyRaw")]
+    public string? DifficultyRaw { get; set; }
+
+    [JsonProperty("gameMode")]
+    public string? GameMode { get; set; }
+
+    [JsonProperty("leaderboardId")]
+    public int LeaderboardId { get; set; }
   }
 }

@@ -1,17 +1,15 @@
 namespace BetterSort.Test.Common {
+
   using System;
   using System.Collections.Generic;
+  using System.IO;
   using System.Linq;
   using System.Reflection;
-  using IPALogger = IPA.Logging.Logger;
-  using Zenject;
   using System.Threading.Tasks;
   using Xunit;
-  using System.IO;
   using Xunit.Abstractions;
-
-  [AttributeUsage(AttributeTargets.Method)]
-  public class UnityFact : Attribute { }
+  using Zenject;
+  using IPALogger = IPA.Logging.Logger;
 
   public class TestRunner {
     private readonly IPALogger? _logger;
@@ -20,28 +18,42 @@ namespace BetterSort.Test.Common {
       _logger = logger;
     }
 
+    public static IEnumerable<Type> GetLoadableTypes(Assembly assembly) {
+      try {
+        return assembly.GetTypes();
+      }
+      catch (ReflectionTypeLoadException e) {
+        return e.Types.Where(t => t != null);
+      }
+    }
+
     public void Test(IEnumerable<Assembly> targets) {
       var testMethods = targets.SelectMany(GetTests).ToList();
       _logger?.Info($"{testMethods.Count} tests found. Test start.");
       RunTestsWithConsoleOutput(testMethods);
     }
 
-    private void RunTestsWithConsoleOutput(IEnumerable<MethodInfo> testMethods) {
-      int success = 0;
-      int total = 0;
-      foreach (var result in RunTests(testMethods)) {
-        string? typeName = result.Method.DeclaringType.Name;
-        string? methodName = result.Method.Name;
-        if (result.Exception == null) {
-          _logger?.Info($"PASS: {typeName}.{methodName}");
-          success++;
+    private List<MethodInfo> GetTests(Assembly targetAssembly) {
+      var testAttribute = typeof(FactAttribute);
+      var testAttribute2 = typeof(UnityFact);
+      var testMethods = new List<MethodInfo>();
+      foreach (var type in GetLoadableTypes(targetAssembly)) {
+        if (type.Namespace?.StartsWith("Xunit") == true) {
+          continue;
         }
-        else {
-          _logger?.Error($"\nFAIL: {typeName}.{methodName}\n{result.Exception}");
+
+        try {
+          foreach (var method in type.GetMethods()) {
+            if (Attribute.IsDefined(method, testAttribute) || Attribute.IsDefined(method, testAttribute2)) {
+              testMethods.Add(method);
+            }
+          }
         }
-        total++;
+        catch (FileNotFoundException) {
+          // xUnit repacked type maybe
+        }
       }
-      _logger?.Notice($"Test finished. {success}/{total} tests passed");
+      return testMethods;
     }
 
     private IEnumerable<TestResult> RunTests(IEnumerable<MethodInfo> tests) {
@@ -80,36 +92,25 @@ namespace BetterSort.Test.Common {
       }
     }
 
-    private List<MethodInfo> GetTests(Assembly targetAssembly) {
-      var testAttribute = typeof(FactAttribute);
-      var testAttribute2 = typeof(UnityFact);
-      var testMethods = new List<MethodInfo>();
-      foreach (var type in GetLoadableTypes(targetAssembly)) {
-        if (type.Namespace?.StartsWith("Xunit") == true) {
-          continue;
+    private void RunTestsWithConsoleOutput(IEnumerable<MethodInfo> testMethods) {
+      int success = 0;
+      int total = 0;
+      foreach (var result in RunTests(testMethods)) {
+        string? typeName = result.Method.DeclaringType.Name;
+        string? methodName = result.Method.Name;
+        if (result.Exception == null) {
+          _logger?.Info($"PASS: {typeName}.{methodName}");
+          success++;
         }
-
-        try {
-          foreach (var method in type.GetMethods()) {
-            if (Attribute.IsDefined(method, testAttribute) || Attribute.IsDefined(method, testAttribute2)) {
-              testMethods.Add(method);
-            }
-          }
+        else {
+          _logger?.Error($"\nFAIL: {typeName}.{methodName}\n{result.Exception}");
         }
-        catch (FileNotFoundException) {
-          // xUnit repacked type maybe
-        }
+        total++;
       }
-      return testMethods;
-    }
-
-    public static IEnumerable<Type> GetLoadableTypes(Assembly assembly) {
-      try {
-        return assembly.GetTypes();
-      }
-      catch (ReflectionTypeLoadException e) {
-        return e.Types.Where(t => t != null);
-      }
+      _logger?.Notice($"Test finished. {success}/{total} tests passed");
     }
   }
+
+  [AttributeUsage(AttributeTargets.Method)]
+  public class UnityFact : Attribute { }
 }

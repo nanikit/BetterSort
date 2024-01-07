@@ -1,6 +1,7 @@
 using System;
 
 namespace BetterSort.Common.External {
+
   public interface IClock {
     DateTime Now { get; }
   }

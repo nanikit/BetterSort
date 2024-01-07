@@ -1,19 +1,24 @@
 namespace BetterSort.LastPlayed.Sorter {
+
+  using BetterSort.Common.External;
+  using BetterSort.Common.Interfaces;
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
   using IPALogger = IPA.Logging.Logger;
-  using BetterSort.Common.Interfaces;
-  using BetterSort.Common.External;
 
   public class LastPlayedDateSorter : ISortFilter {
+
     /// <summary>
     /// Level id to instant.
     /// </summary>
     public Dictionary<string, DateTime> LastPlayedDates = new();
 
-    public string Name => "Last played";
+    private readonly IClock _clock;
+    private readonly IPALogger _logger;
+    private bool _isSelected = false;
+    private IEnumerable<ILevelPreview>? _triggeredLevels;
 
     public LastPlayedDateSorter(IClock clock, IPALogger logger) {
       _clock = clock;
@@ -21,6 +26,8 @@ namespace BetterSort.LastPlayed.Sorter {
     }
 
     public event Action<ISortFilterResult?> OnResultChanged = delegate { };
+
+    public string Name => "Last played";
 
     public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       _isSelected = isSelected;
@@ -37,11 +44,6 @@ namespace BetterSort.LastPlayed.Sorter {
     public void RequestRefresh() {
       Sort();
     }
-
-    private readonly IClock _clock;
-    private readonly IPALogger _logger;
-    private IEnumerable<ILevelPreview>? _triggeredLevels;
-    private bool _isSelected = false;
 
     private void Sort() {
       if (!_isSelected) {

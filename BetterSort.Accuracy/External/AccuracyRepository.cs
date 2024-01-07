@@ -8,15 +8,25 @@ using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
+
   using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
   public interface IAccuracyRepository {
+
     Task Save(BestRecords accuracies);
 
     Task<StoredData?> Load();
   }
 
   public class AccuracyRepository : IAccuracyRepository {
+    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
+
+    private readonly IPALogger _logger;
+
+    private readonly IClock _clock;
+
+    private StoredData? _cache;
+
     public AccuracyRepository(IPALogger logger, IClock clock) {
       _logger = logger;
       _clock = clock;
@@ -62,10 +72,5 @@ namespace BetterSort.Accuracy.External {
         return Task.FromResult<StoredData?>(null);
       }
     }
-
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
-    private readonly IPALogger _logger;
-    private readonly IClock _clock;
-    private StoredData? _cache;
   }
 }

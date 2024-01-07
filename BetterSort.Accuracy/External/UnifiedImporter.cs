@@ -1,16 +1,17 @@
+using BetterSort.Accuracy.Sorter;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
-using System.Collections.Generic;
-using BetterSort.Accuracy.Sorter;
 
 namespace BetterSort.Accuracy.External {
+
   using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
   public class UnifiedImporter {
-    private readonly IPALogger _logger;
     private readonly List<IScoreImporter> _importers;
+    private readonly IPALogger _logger;
     private readonly IAccuracyRepository _repository;
 
     internal UnifiedImporter(IPALogger logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
@@ -85,4 +86,3 @@ namespace BetterSort.Accuracy.External {
     }
   }
 }
-

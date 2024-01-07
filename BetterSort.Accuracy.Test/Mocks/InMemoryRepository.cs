@@ -7,14 +7,17 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.Test.Mocks {
+
   internal class InMemoryRepository : IAccuracyRepository {
-    public InMemoryRepository(IClock clock) {
-      _clock = clock;
-    }
-    public Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>> BestAccuracies { get; set; } = new();
     public DateTime? LastRecordedAt;
 
     private readonly IClock _clock;
+
+    public InMemoryRepository(IClock clock) {
+      _clock = clock;
+    }
+
+    public Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>> BestAccuracies { get; set; } = new();
 
     public Task Save(IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>> accuracies) {
       BestAccuracies = accuracies.ToDictionary(x => x.Key, x => x.Value);

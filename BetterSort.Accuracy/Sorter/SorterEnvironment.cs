@@ -6,9 +6,22 @@ using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Sorter {
+
   public class SorterEnvironment {
+    private readonly UIAwareSorter _adaptor;
+
+    private readonly IBsInterop _bsInterop;
+
+    private readonly UnifiedImporter _importer;
+
+    private readonly IPALogger _logger;
+
+    private readonly IAccuracyRepository _repository;
+
+    private readonly AccuracySorter _sorter;
+
     public SorterEnvironment(
-      IPALogger logger, IAccuracyRepository repository, IBsInterop bsInterop,
+                              IPALogger logger, IAccuracyRepository repository, IBsInterop bsInterop,
       UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter
     ) {
       _logger = logger;
@@ -34,22 +47,6 @@ namespace BetterSort.Accuracy.Sorter {
         else {
           _logger.Debug("Skip accuracy sorter registration.");
         }
-      }
-      catch (Exception ex) {
-        _logger.Error(ex);
-      }
-    }
-
-    private readonly IPALogger _logger;
-    private readonly IAccuracyRepository _repository;
-    private readonly IBsInterop _bsInterop;
-    private readonly UIAwareSorter _adaptor;
-    private readonly UnifiedImporter _importer;
-    private readonly AccuracySorter _sorter;
-
-    private async void RecordHistoryWithGuard(PlayRecord record) {
-      try {
-        await RecordHistory(record).ConfigureAwait(false);
       }
       catch (Exception ex) {
         _logger.Error(ex);
@@ -85,6 +82,15 @@ namespace BetterSort.Accuracy.Sorter {
       }
 
       await _repository.Save(records).ConfigureAwait(false);
+    }
+
+    private async void RecordHistoryWithGuard(PlayRecord record) {
+      try {
+        await RecordHistory(record).ConfigureAwait(false);
+      }
+      catch (Exception ex) {
+        _logger.Error(ex);
+      }
     }
   }
 }

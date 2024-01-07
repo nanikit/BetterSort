@@ -1,10 +1,15 @@
 namespace BetterSort.Common.External {
+
   using IPA.Loader;
   using System;
   using System.Reflection;
   using IPALogger = IPA.Logging.Logger;
 
   public class Beatleader {
+    private readonly IPALogger _logger;
+
+    private readonly PropertyInfo? _replayStarted;
+
     public Beatleader(IPALogger logger) {
       _logger = logger;
 
@@ -34,8 +39,5 @@ namespace BetterSort.Common.External {
       }
       return false;
     }
-
-    private readonly PropertyInfo? _replayStarted;
-    private readonly IPALogger _logger;
   }
 }

@@ -2,6 +2,7 @@ using Xunit.Abstractions;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Test.Common.Mocks {
+
   public class MockLogger : IPALogger {
     private readonly ITestOutputHelper _output;
 

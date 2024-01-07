@@ -2,9 +2,11 @@ using BetterSort.Accuracy.External;
 using Zenject;
 
 namespace BetterSort.Accuracy.Sorter {
+
   using BetterSort.Common.External;
 
   public class AccuracyInstaller : Installer {
+
     public override void InstallBindings() {
       Container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
       Container.Bind<ScoreImporterHelper>().AsSingle();

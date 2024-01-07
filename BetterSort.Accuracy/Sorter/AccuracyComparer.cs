@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BetterSort.Accuracy.Sorter {
+
   using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
 
   internal record class LevelRecord(string Mode, RecordDifficulty Difficulty, double Accuracy);
 
   internal class LevelAccuracyComparer : IComparer<ILevelPreview> {
-    public Dictionary<ILevelPreview, LevelRecord> LevelMap { get; set; } = new();
+    private readonly BestRecords _records;
 
     public LevelAccuracyComparer(BestRecords records) {
       _records = records;
     }
+
+    public Dictionary<ILevelPreview, LevelRecord> LevelMap { get; set; } = new();
 
     public int Compare(ILevelPreview a, ILevelPreview b) {
       if (_records == null) {
@@ -52,11 +55,11 @@ namespace BetterSort.Accuracy.Sorter {
       }
       return result;
     }
-
-    private readonly BestRecords _records;
   }
 
   internal class BeatmapAccuracyComparer : IComparer<string> {
+    private readonly BestRecords _records;
+
     public BeatmapAccuracyComparer(BestRecords records) {
       _records = records;
     }
@@ -85,7 +88,5 @@ namespace BetterSort.Accuracy.Sorter {
         return b.CompareTo(a);
       }
     }
-
-    private readonly BestRecords _records;
   }
 }

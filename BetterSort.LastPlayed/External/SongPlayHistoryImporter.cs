@@ -1,4 +1,5 @@
 namespace BetterSort.LastPlayed.External {
+
   using Newtonsoft.Json;
   using System;
   using System.Collections.Generic;
@@ -7,6 +8,12 @@ namespace BetterSort.LastPlayed.External {
   using IPALogger = IPA.Logging.Logger;
 
   public class SongPlayHistoryImporter {
+    private static readonly string _sphJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "SongPlayData.json");
+
+    private static readonly string[] _sphSeparator = new[] { "___" };
+
+    private readonly IPALogger _logger;
+
     public SongPlayHistoryImporter(IPALogger logger) {
       _logger = logger;
     }
@@ -41,11 +48,7 @@ namespace BetterSort.LastPlayed.External {
       return result;
     }
 
-    private static readonly string _sphJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "SongPlayData.json");
-    private static readonly string[] _sphSeparator = new[] { "___" };
-    private readonly IPALogger _logger;
-
-    class Record {
+    private class Record {
 #pragma warning disable 0649
       public long Date;
 #pragma warning restore 0649

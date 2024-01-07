@@ -1,4 +1,5 @@
 namespace BetterSort.Common.Compatibility {
+
   using BetterSongList.Interfaces;
   using BetterSongList.SortModels;
   using BetterSort.Common.Interfaces;
@@ -9,6 +10,14 @@ namespace BetterSort.Common.Compatibility {
   using IPALogger = IPA.Logging.Logger;
 
   public class FilterSortAdaptor : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
+    private readonly IPALogger _logger;
+
+    private readonly ISortFilter _sorter;
+
+    private bool _isVisible = true;
+
+    private TaskCompletionSource<ISortFilterResult?> _result = new();
+
     public FilterSortAdaptor(ISortFilter sorter, IPALogger logger) {
       _logger = logger;
       _sorter = sorter;
@@ -59,11 +68,6 @@ namespace BetterSort.Common.Compatibility {
       return _result.Task.Result?.Legend.Select(x => new KeyValuePair<string, int>(x.Label, x.Index)) ?? Enumerable.Empty<KeyValuePair<string, int>>();
     }
 
-    private readonly IPALogger _logger;
-    private readonly ISortFilter _sorter;
-    private bool _isVisible = true;
-    private TaskCompletionSource<ISortFilterResult?> _result = new();
-
     private void SaveResult(ISortFilterResult? result) {
       _isVisible = result != null;
       _logger.Trace($"FilterSortAdaptor.SaveResult(): _isVisible = {_isVisible}");
@@ -74,4 +78,3 @@ namespace BetterSort.Common.Compatibility {
     }
   }
 }
-
