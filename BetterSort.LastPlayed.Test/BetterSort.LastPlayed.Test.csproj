@@ -4,6 +4,7 @@
   <PropertyGroup>
     <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
     <Product>BetterSort.LastPlayed.Test</Product>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <PropertyGroup>

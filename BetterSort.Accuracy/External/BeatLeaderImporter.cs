@@ -1,12 +1,13 @@
-namespace BetterSort.Accuracy.External {
+using BeatLeader;
+using BetterSort.Accuracy.Sorter;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using IPALogger = IPA.Logging.Logger;
 
-  using BeatLeader;
-  using BetterSort.Accuracy.Sorter;
-  using Newtonsoft.Json;
-  using System;
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Accuracy.External {
 
   public class BeatLeaderImporter : IScoreImporter {
     private readonly IPALogger _logger;
@@ -67,8 +68,8 @@ namespace BetterSort.Accuracy.External {
     private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
       var records = new List<BestRecord>();
 
-      var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
-      var data = page.Data;
+      var page = JsonSerializer.Deserialize<PagedPlayerScores>(json);
+      var data = page!.Data;
       if (data == null) {
         _logger.Warn("Records field is missing. Can't import from beatleader.");
         return null;
@@ -103,69 +104,66 @@ namespace BetterSort.Accuracy.External {
 
 namespace BeatLeader {
 
-  using Newtonsoft.Json;
-  using System.Collections.Generic;
-
   public class PagedPlayerScores {
 
-    [JsonProperty("metadata")]
-    public PageMetadata? Metadata;
+    [JsonPropertyName("metadata")]
+    public PageMetadata? Metadata { get; set; }
 
-    [JsonProperty("data")]
-    public List<PlayerScore>? Data;
+    [JsonPropertyName("data")]
+    public List<PlayerScore>? Data { get; set; }
   }
 
   public class PageMetadata {
 
-    [JsonProperty("itemsPerPage")]
-    public int ItemsPerPage;
+    [JsonPropertyName("itemsPerPage")]
+    public int ItemsPerPage { get; set; }
 
-    [JsonProperty("page")]
-    public int Page;
+    [JsonPropertyName("page")]
+    public int Page { get; set; }
 
-    [JsonProperty("total")]
-    public int Total;
+    [JsonPropertyName("total")]
+    public int Total { get; set; }
   }
 
   public class PlayerScore {
 
-    [JsonProperty("leaderboard")]
-    public Leaderboard? Leaderboard;
+    [JsonPropertyName("leaderboard")]
+    public Leaderboard? Leaderboard { get; set; }
 
-    [JsonProperty("accuracy")]
-    public double Accuracy;
+    [JsonPropertyName("accuracy")]
+    public double Accuracy { get; set; }
 
-    [JsonProperty("modifiedScore")]
-    public int ModifiedScore;
+    [JsonPropertyName("modifiedScore")]
+    public int ModifiedScore { get; set; }
   }
 
   public class Leaderboard {
 
-    [JsonProperty("id")]
-    public string? Id;
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
-    [JsonProperty("song")]
-    public Song? Song;
+    [JsonPropertyName("song")]
+    public Song? Song { get; set; }
 
-    [JsonProperty("difficulty")]
-    public Difficulty? Difficulty;
+    [JsonPropertyName("difficulty")]
+    public Difficulty? Difficulty { get; set; }
   }
 
   public class Song {
 
-    [JsonProperty("id")]
-    public string? Id;
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
-    [JsonProperty("hash")]
-    public string? Hash;
+    [JsonPropertyName("hash")]
+    public string? Hash { get; set; }
   }
 
   public class Difficulty {
 
-    [JsonProperty("difficultyName")]
-    public string? DifficultyName;
+    [JsonPropertyName("difficultyName")]
+    public string? DifficultyName { get; set; }
 
-    [JsonProperty("modeName")]
-    public string? ModeName;
+    [JsonPropertyName("modeName")]
+    public string? ModeName { get; set; }
   }
 }

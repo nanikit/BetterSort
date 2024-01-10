@@ -1,9 +1,8 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace BetterSort.Accuracy.Sorter {
 
-  [JsonConverter(typeof(StringEnumConverter))]
+  [JsonConverter(typeof(JsonStringEnumConverter<RecordDifficulty>))]
   public enum RecordDifficulty {
     Easy = 1,
     Normal = 3,

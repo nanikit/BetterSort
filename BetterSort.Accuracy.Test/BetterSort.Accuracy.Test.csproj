@@ -7,6 +7,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <OutputPath>bin\Debug</OutputPath>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -16,9 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="SiraUtil">
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
     </Reference>
@@ -50,9 +48,6 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="'$(OutputType)' == 'Library'">
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
-  </ItemGroup>
 
   <PropertyGroup>
     <ImportBSMTTargets>True</ImportBSMTTargets>
@@ -67,6 +62,9 @@
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BetterSort.Accuracy" Version="^0.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.25" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />

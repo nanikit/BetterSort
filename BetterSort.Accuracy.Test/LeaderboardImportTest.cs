@@ -1,21 +1,21 @@
-namespace BetterSort.Accuracy.Test {
+using BetterSort.Accuracy.External;
+using BetterSort.Accuracy.Sorter;
+using BetterSort.Test.Common.Mocks;
+using SiraUtil.Web;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+using Zenject;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.Accuracy.External;
-  using BetterSort.Accuracy.Sorter;
-  using BetterSort.Test.Common.Mocks;
-  using SiraUtil.Web;
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Net.Http;
-  using System.Security.Cryptography;
-  using System.Text;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using Xunit;
-  using Xunit.Abstractions;
-  using Zenject;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Accuracy.Test {
 
   public class LeaderboardImportTest {
     private readonly DiContainer _container;
@@ -39,7 +39,7 @@ namespace BetterSort.Accuracy.Test {
     [Fact]
     public async Task TestBeatLeader() {
       var beatLeader = _container.Resolve<BeatLeaderImporter>();
-      var page = await beatLeader.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      var page = await beatLeader.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
       if (page is not (var records, var maxPage)) {
         Assert.Fail("Failed to get data");
         throw new Exception();
@@ -59,7 +59,7 @@ namespace BetterSort.Accuracy.Test {
     [Fact]
     public async Task TestScoresaber() {
       var scoresaber = _container.Resolve<ScoresaberImporter>();
-      var page = await scoresaber.GetPagedRecord("76561198159100356", 1).ConfigureAwait(false);
+      var page = await scoresaber.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
       if (page is not (var records, var maxPage)) {
         Assert.Fail("Failed to get data");
         throw new Exception();
@@ -172,9 +172,10 @@ namespace BetterSort.Accuracy.Test {
   }
 
   internal class MockId : ILeaderboardId {
+    public static readonly string QuitUserId = "76561198387870564";
 
     public Task<string?> GetUserId() {
-      return Task.FromResult<string?>("76561198159100356");
+      return Task.FromResult<string?>(QuitUserId);
     }
   }
 }

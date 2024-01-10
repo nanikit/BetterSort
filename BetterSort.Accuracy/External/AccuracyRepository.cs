@@ -1,9 +1,9 @@
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
@@ -43,7 +43,7 @@ namespace BetterSort.Accuracy.External {
         BestRecords = sorted,
         LastRecordAt = now,
       };
-      string json = JsonConvert.SerializeObject(_cache, Formatting.Indented);
+      string json = JsonSerializer.Serialize(_cache);
       File.WriteAllText(_path, json);
       _logger.Info($"Saved {accuracies.Count} records");
 
@@ -63,8 +63,8 @@ namespace BetterSort.Accuracy.External {
 
       try {
         string json = File.ReadAllText(_path);
-        _cache = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {_cache.BestRecords?.Count.ToString() ?? "no"} records");
+        _cache = JsonSerializer.Deserialize<StoredData>(json);
+        _logger.Info($"Loaded {_cache!.BestRecords?.Count.ToString() ?? "no"} records");
         return Task.FromResult<StoredData?>(_cache);
       }
       catch (Exception exception) {

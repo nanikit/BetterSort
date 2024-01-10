@@ -1,7 +1,7 @@
 using BetterSort.Accuracy.Sorter;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BetterSort.Accuracy.External {
 
@@ -12,13 +12,13 @@ namespace BetterSort.Accuracy.External {
     /// <summary>
     /// Keys are in-game song hash, mode, difficulty in order.
     /// </summary>
-    [JsonProperty("bestRecords")]
+    [JsonPropertyName("bestRecords")]
     public BestRecords BestRecords { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>();
 
-    [JsonProperty("lastRecordAt")]
+    [JsonPropertyName("lastRecordAt")]
     public DateTime? LastRecordAt { get; set; }
 
-    [JsonProperty("version")]
+    [JsonPropertyName("version")]
     public string? Version { get; set; }
   }
 }
