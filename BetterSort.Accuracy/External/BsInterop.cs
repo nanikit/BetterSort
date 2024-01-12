@@ -13,6 +13,7 @@ namespace BetterSort.Accuracy.External {
   using System.Linq;
   using System.Threading.Tasks;
   using UnityEngine;
+  using Zenject;
 
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 
@@ -42,7 +43,7 @@ namespace BetterSort.Accuracy.External {
 
     private bool _hasPlaylistManager = true;
 
-    public BsUtilsInterop(SiraLog logger, Scoresaber scoresaber, Beatleader beatleader, Harmony harmony) {
+    public BsUtilsInterop(SiraLog logger, Scoresaber scoresaber, Beatleader beatleader, [Inject(Id = "BetterSort.Accuracy.Harmony")] Harmony harmony) {
       _logger = logger;
       _scoresaber = scoresaber;
       _beatleader = beatleader;

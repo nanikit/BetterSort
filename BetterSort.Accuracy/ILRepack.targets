@@ -4,6 +4,16 @@
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
       <InputAssemblies Include="$(OutputPath)\BetterSort.Common.dll" />
+
+      <InputAssemblies Include="$(OutputPath)\Microsoft.Bcl.AsyncInterfaces.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Buffers.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Memory.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Numerics.Vectors.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Runtime.CompilerServices.Unsafe.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Text.Encodings.Web.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Text.Json.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.Threading.Tasks.Extensions.dll" />
+      <InputAssemblies Include="$(OutputPath)\System.ValueTuple.dll" />
     </ItemGroup>
  
     <ILRepack
