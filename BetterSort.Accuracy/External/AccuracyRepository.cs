@@ -9,8 +9,6 @@ using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
-
   public interface IAccuracyRepository {
 
     Task Save(BestRecords accuracies);

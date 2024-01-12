@@ -7,8 +7,6 @@ using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
-
   public class UnifiedImporter {
     private readonly List<IScoreImporter> _importers;
     private readonly IPALogger _logger;

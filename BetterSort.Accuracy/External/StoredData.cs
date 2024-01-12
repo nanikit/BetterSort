@@ -5,8 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace BetterSort.Accuracy.External {
 
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
-
   public class StoredData {
 
     /// <summary>

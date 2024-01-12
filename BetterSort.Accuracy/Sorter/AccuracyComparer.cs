@@ -1,11 +1,17 @@
+/// <summary>
+/// Keys are in-game song hash, mode, difficulty in order.
+/// </summary>
+global using BestRecords = System.Collections.Generic.IDictionary<
+  string, System.Collections.Generic.Dictionary<
+    string, System.Collections.Generic.Dictionary<BetterSort.Accuracy.Sorter.RecordDifficulty, double>
+  >
+>;
+
 using BetterSort.Common.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BetterSort.Accuracy.Sorter {
-
-  using BestRecords = IDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>;
-
   internal record class LevelRecord(string Mode, RecordDifficulty Difficulty, double Accuracy);
 
   internal class LevelAccuracyComparer : IComparer<ILevelPreview> {
