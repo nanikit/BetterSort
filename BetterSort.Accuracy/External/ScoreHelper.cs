@@ -1,17 +1,17 @@
 using BetterSort.Accuracy.Sorter;
 using IPA.Utilities.Async;
+using SiraUtil.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
   internal class ScoreHelper {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
-    public ScoreHelper(IPALogger logger) {
+    public ScoreHelper(SiraLog logger) {
       _logger = logger;
     }
 

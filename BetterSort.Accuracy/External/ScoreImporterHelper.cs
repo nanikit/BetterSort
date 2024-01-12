@@ -1,10 +1,9 @@
 namespace BetterSort.Accuracy.External {
-
+  using SiraUtil.Logging;
   using SiraUtil.Web;
   using System;
   using System.Collections.Generic;
   using System.Threading.Tasks;
-  using IPALogger = IPA.Logging.Logger;
 
   public interface IScoreImporter {
 
@@ -13,9 +12,9 @@ namespace BetterSort.Accuracy.External {
 
   public class ScoreImporterHelper {
     private readonly IHttpService _http;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
-    internal ScoreImporterHelper(IPALogger logger, IHttpService http) {
+    internal ScoreImporterHelper(SiraLog logger, IHttpService http) {
       _logger = logger;
       _http = http;
     }

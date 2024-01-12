@@ -1,28 +1,27 @@
-using BetterSongList.HarmonyPatches;
 using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
 using HarmonyLib;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Sorter {
   public class UIAwareSorter : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
     private readonly FilterSortAdaptor _adaptor;
     private readonly AccuracySorter _sorter;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
     private readonly IBsInterop _bsInterop;
     private bool _isHooking;
 
-    public UIAwareSorter(AccuracySorter sorter, IPALogger logger, IBsInterop bsInterop) {
-      _adaptor = new FilterSortAdaptor(sorter, logger);
+    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop) {
+      _adaptor = new FilterSortAdaptor(sorter, logger.Logger!);
       _sorter = sorter;
       _logger = logger;
       _bsInterop = bsInterop;

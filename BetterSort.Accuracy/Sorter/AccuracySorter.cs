@@ -1,19 +1,19 @@
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Interfaces;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Sorter {
 
   public class AccuracySorter : ISortFilter {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
     private readonly IAccuracyRepository _repository;
     private bool _isSelected = false;
 
-    public AccuracySorter(IPALogger logger, IAccuracyRepository repository) {
+    public AccuracySorter(SiraLog logger, IAccuracyRepository repository) {
       _logger = logger;
       _repository = repository;
     }

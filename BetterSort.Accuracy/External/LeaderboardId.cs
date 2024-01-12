@@ -1,10 +1,10 @@
 namespace BetterSort.Accuracy.External {
 
   using BS_Utils.Gameplay;
+  using SiraUtil.Logging;
   using Steamworks;
   using System;
   using System.Threading.Tasks;
-  using IPALogger = IPA.Logging.Logger;
 
   public interface ILeaderboardId {
 
@@ -12,11 +12,11 @@ namespace BetterSort.Accuracy.External {
   }
 
   public class LeaderboardId : ILeaderboardId {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private string? _id;
 
-    public LeaderboardId(IPALogger logger) {
+    public LeaderboardId(SiraLog logger) {
       _logger = logger;
     }
 

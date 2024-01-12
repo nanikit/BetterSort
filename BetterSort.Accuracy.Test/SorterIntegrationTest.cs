@@ -3,6 +3,7 @@ using BetterSort.Accuracy.Sorter;
 using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Common.Interfaces;
 using BetterSort.Test.Common.Mocks;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,11 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Zenject;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Test {
 
   public class SorterIntegrationTest {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
     private readonly ISorterCustom _adaptor;
     private readonly InMemoryRepository _repository;
     private readonly AccuracySorter _sorter;
@@ -25,7 +25,7 @@ namespace BetterSort.Accuracy.Test {
       _logger = new MockLogger(output);
 
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      container.BindInterfacesAndSelfTo<SiraLog>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
       container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle().WhenInjectedInto<UIAwareSorter>();

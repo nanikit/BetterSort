@@ -1,20 +1,20 @@
 using BetterSort.Accuracy.Sorter;
 using Scoresaber;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
   public class ScoresaberImporter : IScoreImporter {
     private readonly ScoreImporterHelper _helper;
     private readonly ILeaderboardId _id;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
-    internal ScoresaberImporter(IPALogger logger, ILeaderboardId id, ScoreImporterHelper helper) {
+    internal ScoresaberImporter(SiraLog logger, ILeaderboardId id, ScoreImporterHelper helper) {
       _logger = logger;
       _id = id;
       _helper = helper;

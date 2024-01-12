@@ -1,11 +1,11 @@
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
@@ -19,13 +19,13 @@ namespace BetterSort.Accuracy.External {
   public class AccuracyRepository : IAccuracyRepository {
     private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly IClock _clock;
 
     private StoredData? _cache;
 
-    public AccuracyRepository(IPALogger logger, IClock clock) {
+    public AccuracyRepository(SiraLog logger, IClock clock) {
       _logger = logger;
       _clock = clock;
     }

@@ -1,9 +1,9 @@
 using BetterSongList;
 using BetterSort.Accuracy.External;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Sorter {
 
@@ -14,14 +14,13 @@ namespace BetterSort.Accuracy.Sorter {
 
     private readonly UnifiedImporter _importer;
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly IAccuracyRepository _repository;
 
     private readonly AccuracySorter _sorter;
 
-    public SorterEnvironment(
-                              IPALogger logger, IAccuracyRepository repository, IBsInterop bsInterop,
+    public SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
       UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter
     ) {
       _logger = logger;

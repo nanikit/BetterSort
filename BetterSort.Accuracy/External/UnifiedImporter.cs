@@ -1,18 +1,18 @@
 using BetterSort.Accuracy.Sorter;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.External {
 
   public class UnifiedImporter {
     private readonly List<IScoreImporter> _importers;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
     private readonly IAccuracyRepository _repository;
 
-    internal UnifiedImporter(IPALogger logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
+    internal UnifiedImporter(SiraLog logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
       _logger = logger;
       _importers = importers;
       _repository = repository;

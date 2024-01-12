@@ -55,7 +55,7 @@ namespace BetterSort.Accuracy.Test {
           "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         },
-        result?.Levels.Select(x => x.LevelId)!
+        result!.Levels.Select(x => x.LevelId)
       );
       Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }

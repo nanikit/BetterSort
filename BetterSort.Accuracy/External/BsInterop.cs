@@ -8,11 +8,11 @@ namespace BetterSort.Accuracy.External {
   using HarmonyLib;
   using IPA.Utilities;
   using IPA.Utilities.Async;
+  using SiraUtil.Logging;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
   using UnityEngine;
-  using IPALogger = IPA.Logging.Logger;
 
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 
@@ -32,7 +32,7 @@ namespace BetterSort.Accuracy.External {
   internal class BsUtilsInterop : IBsInterop {
     private static OnSongSelectedHandler? _onSongSelected;
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly Scoresaber _scoresaber;
 
@@ -42,7 +42,7 @@ namespace BetterSort.Accuracy.External {
 
     private bool _hasPlaylistManager = true;
 
-    public BsUtilsInterop(IPALogger logger, Scoresaber scoresaber, Beatleader beatleader, Harmony harmony) {
+    public BsUtilsInterop(SiraLog logger, Scoresaber scoresaber, Beatleader beatleader, Harmony harmony) {
       _logger = logger;
       _scoresaber = scoresaber;
       _beatleader = beatleader;

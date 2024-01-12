@@ -1,6 +1,7 @@
 using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Test.Common.Mocks;
+using SiraUtil.Logging;
 using SiraUtil.Web;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,18 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Zenject;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Accuracy.Test {
 
   public class LeaderboardImportTest {
     private readonly DiContainer _container;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     public LeaderboardImportTest(ITestOutputHelper output) {
       _logger = new MockLogger(output);
 
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      container.BindInterfacesAndSelfTo<SiraLog>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       container.BindInterfacesAndSelfTo<PlainHttpService>().AsSingle();
       container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
@@ -96,9 +96,9 @@ namespace BetterSort.Accuracy.Test {
 
   public class PlainHttpService : IHttpService {
     private readonly HttpClient _client = new();
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
-    public PlainHttpService(IPALogger logger) {
+    public PlainHttpService(SiraLog logger) {
       _logger = logger;
     }
 
