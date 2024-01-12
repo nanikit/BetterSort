@@ -98,7 +98,7 @@ namespace BetterSort.Accuracy.Sorter {
         return null;
       }
 
-      return IsDescending ? accuracies.Max() : accuracies.Min();
+      return IsDescending ? accuracies.Min() : accuracies.Max();
     }
 
     private int CompareAscending(string a, string b) {

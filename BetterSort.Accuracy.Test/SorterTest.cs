@@ -59,5 +59,33 @@ namespace BetterSort.Accuracy.Test {
       );
       Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }
+
+    [Fact]
+    public void TestDoubleRecords() {
+      var levels = new List<ILevelPreview>() {
+        new MockPreview("custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"),
+        new MockPreview("custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+      };
+      var records = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>() {
+          { "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", new() {
+            { "Standard", new() { { RecordDifficulty.ExpertPlus, 0.90292 } } },
+          }},
+          { "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", new() {
+            { "Standard", new() {
+              { RecordDifficulty.ExpertPlus, 0.80004 },
+              { RecordDifficulty.Expert, 0.92004 } }
+            },
+          }},
+        };
+      var result = AccuracySorter.SortInternal(levels, () => records).Result;
+      Assert.Equal(
+        new List<string> {
+          "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        },
+        result!.Levels.Select(x => x.LevelId)
+      );
+      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("80.00", 1) });
+    }
   }
 }
