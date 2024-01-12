@@ -63,35 +63,56 @@ namespace BetterSort.Accuracy.Sorter {
     }
   }
 
-  internal class BeatmapAccuracyComparer : IComparer<string> {
+  record class BeatmapRecord(ILevelPreview Preview, (double, double)? AccuracyRange);
+
+  /// <summary>
+  /// Compares level ID.
+  /// <code>
+  /// Ascending sort:  ↑ Not played
+  ///                  ↓ Higher max level accuracy
+  /// Descending sort: ↑ Higher min level accuracy
+  ///                  ↓ Not played
+  /// </code>
+  /// </summary>
+  internal class AccuracyComparer : IComparer<string> {
     private readonly BestRecords _records;
 
-    public BeatmapAccuracyComparer(BestRecords records) {
+    public AccuracyComparer(BestRecords records) {
       _records = records;
     }
 
-    /// <summary>
-    /// Use with map id that will be serialized.
-    /// </summary>
+    public bool IsDescending { get; set; }
+
     public int Compare(string a, string b) {
-      if (_records == null) {
-        return b.CompareTo(a);
+      int comparison = CompareAscending(a, b);
+      return IsDescending ? -comparison : comparison;
+    }
+
+    public double? GetAccuracy(string levelId) {
+      if (!_records.TryGetValue(levelId, out var best)) {
+        return null;
       }
 
-      if (_records.TryGetValue(a, out var bestA)) {
-        if (_records.TryGetValue(b, out var bestB)) {
-          double accuracyA = bestA.SelectMany(x => x.Value.Values).Max();
-          double accuracyB = bestB.SelectMany(x => x.Value.Values).Max();
-          int descending = accuracyB.CompareTo(accuracyA);
-          return descending == 0 ? b.CompareTo(a) : descending;
+      double[] accuracies = best.Values.SelectMany(x => x.Values).ToArray();
+      if (accuracies.Length == 0) {
+        return null;
+      }
+
+      return IsDescending ? accuracies.Max() : accuracies.Min();
+    }
+
+    private int CompareAscending(string a, string b) {
+      if (GetAccuracy(a) is double bestA) {
+        if (GetAccuracy(b) is double bestB) {
+          return bestA.CompareTo(bestB);
         }
-        return -1;
+        return 1;
       }
       else {
-        if (_records.ContainsKey(b)) {
-          return 1;
+        if (GetAccuracy(b) is not null) {
+          return -1;
         }
-        return b.CompareTo(a);
+        return a.CompareTo(b);
       }
     }
   }

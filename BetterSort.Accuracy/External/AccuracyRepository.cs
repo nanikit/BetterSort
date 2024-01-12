@@ -33,7 +33,7 @@ namespace BetterSort.Accuracy.External {
     public Task Save(BestRecords accuracies) {
       var sorted = new SortedDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>(
         accuracies,
-        new BeatmapAccuracyComparer(accuracies)
+        new AccuracyComparer(accuracies) { IsDescending = true }
       );
       var now = _clock.Now;
       _cache = new StoredData() {

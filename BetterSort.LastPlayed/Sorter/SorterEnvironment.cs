@@ -33,8 +33,13 @@ namespace BetterSort.LastPlayed.Sorter {
         : new Dictionary<string, DateTime>();
       _playEventSource.OnSongPlayed += RecordHistory;
       if (register) {
-        SortMethods.RegisterCustomSorter(_adaptor);
-        _logger.Debug("Registered last play date sorter.");
+        bool isRegistered = SortMethods.RegisterCustomSorter(_adaptor);
+        if (isRegistered) {
+          _logger.Debug("Registered last play date sorter.");
+        }
+        else {
+          _logger.Warn("Sorter registration failed. Check AllowPluginSortsAndFilters config in BetterSongList.");
+        }
       }
       else {
         _logger.Debug("Skip last play date sorter registration.");

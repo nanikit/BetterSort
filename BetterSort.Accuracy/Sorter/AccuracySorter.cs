@@ -11,7 +11,6 @@ namespace BetterSort.Accuracy.Sorter {
   public class AccuracySorter : ISortFilter {
     private readonly IPALogger _logger;
     private readonly IAccuracyRepository _repository;
-    private IEnumerable<ILevelPreview>? _triggeredLevels;
     private bool _isSelected = false;
 
     public AccuracySorter(IPALogger logger, IAccuracyRepository repository) {
@@ -27,42 +26,49 @@ namespace BetterSort.Accuracy.Sorter {
     public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
       try {
         _isSelected = isSelected;
-        _triggeredLevels = newLevels;
         _logger.Debug($"{nameof(AccuracySorter)}.{nameof(NotifyChange)}: newLevels.Count: {newLevels.Count()}, isSelected: {isSelected}");
 
         if (newLevels == null || !_isSelected) {
           return;
         }
 
-        OnResultChanged(Sort());
+        OnResultChanged(Sort(newLevels));
       }
       catch (Exception ex) {
         _logger.Error(ex);
-        OnResultChanged(new SortFilterResult(_triggeredLevels ?? new List<ILevelPreview>()));
+        OnResultChanged(new SortFilterResult(newLevels ?? new List<ILevelPreview>()));
       }
     }
 
-    private SortFilterResult Sort() {
-      var records = _repository.Load().Result;
-      if (records == null) {
-        _logger.Info($"{nameof(AccuracySorter)}.{nameof(Sort)}: records is null, give it as is.");
-        return new SortFilterResult(_triggeredLevels!);
+    internal static SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords) {
+      if (levels == null) {
+        return new SortResult(null, $"levels is null, give it as is.");
       }
 
-      var comparer = new LevelAccuracyComparer(records.BestRecords);
-      var ordered = _triggeredLevels.SelectMany(comparer.Inflate).OrderBy(x => x, comparer).ToList();
-      Mapping.Clear();
-      foreach (var preview in ordered) {
-        if (comparer.LevelMap.TryGetValue(preview, out var record)) {
-          Mapping.Add(record);
-        }
-        else {
-          break;
-        }
+      var records = getRecords();
+      if (records == null) {
+        return new SortResult(
+          new SortFilterResult(levels),
+          $"records is null, give it as is."
+        );
       }
-      var legend = AccuracyLegendMaker.GetLegend(Mapping, ordered.Count);
-      _logger.Info($"{nameof(AccuracySorter)}: Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}");
-      return new SortFilterResult(ordered, legend);
+
+      var comparer = new AccuracyComparer(records) { IsDescending = true };
+      var ordered = levels.OrderBy(x => x.LevelId, comparer).ToList();
+      var legend = AccuracyLegendMaker.GetLegend(ordered.Select(x => x.LevelId), comparer);
+
+      return new SortResult(
+        new SortFilterResult(ordered, legend),
+        $"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}"
+      );
+    }
+
+    private SortFilterResult? Sort(IEnumerable<ILevelPreview>? levels) {
+      var result = SortInternal(levels, () => _repository.Load().Result?.BestRecords);
+      _logger.Info($"{nameof(AccuracySorter)}.{nameof(Sort)}: {result.Message}");
+      return result.Result;
     }
   }
+
+  record SortResult(SortFilterResult? Result, string? Message);
 }
