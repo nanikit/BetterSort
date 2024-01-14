@@ -41,7 +41,7 @@ namespace BetterSort.Accuracy.External {
         BestRecords = sorted,
         LastRecordAt = now,
       };
-      string json = JsonSerializer.Serialize(_cache);
+      string json = JsonSerializer.Serialize(_cache, new JsonSerializerOptions() { WriteIndented = true });
       File.WriteAllText(_path, json);
       _logger.Info($"Saved {accuracies.Count} records");
 
