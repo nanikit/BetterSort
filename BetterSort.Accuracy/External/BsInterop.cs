@@ -56,9 +56,8 @@ namespace BetterSort.Accuracy.External {
 
     public event OnSongSelectedHandler OnSongSelected {
       add {
-        _logger.Debug($"{nameof(OnSongSelected)} add");
         if (_onSongSelected == null) {
-          _logger.Debug($"{nameof(OnSongSelected)} add harmony");
+          _logger.Debug($"{nameof(OnSongSelected)}: add listener with initializing hook.");
           _harmony.Patch(
             original: AccessTools.Method(
               typeof(LevelCollectionNavigationController),
@@ -70,19 +69,22 @@ namespace BetterSort.Accuracy.External {
             ))
           );
         }
+        else {
+          _logger.Debug($"{nameof(OnSongSelected)}: add listener.");
+        }
+
         _onSongSelected += value;
       }
       remove {
-        if (_onSongSelected == null) {
-          _logger.Debug($"{nameof(OnSongSelected)} remove null");
-          return;
-        }
-        _logger.Debug($"{nameof(OnSongSelected)} remove");
         _onSongSelected -= value;
+
         if (_onSongSelected == null) {
-          _logger.Debug($"{nameof(OnSongSelected)} remove hook");
+          _logger.Debug($"{nameof(OnSongSelected)}: remove listener and hook.");
           string methodName = nameof(LevelCollectionNavigationController.HandleLevelCollectionViewControllerDidSelectLevel);
           _harmony.Unpatch(typeof(LevelCollectionNavigationController).GetMethod(methodName), HarmonyPatchType.Prefix, _harmony.Id);
+        }
+        else {
+          _logger.Debug($"{nameof(OnSongSelected)} remove listener.");
         }
       }
     }

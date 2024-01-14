@@ -3,16 +3,15 @@ using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
 using HarmonyLib;
 using IPA;
-using SiraUtil.Attributes;
 using SiraUtil.Zenject;
-using IPALogger = IPA.Logging.Logger;
 using System.Runtime.CompilerServices;
+using IPALogger = IPA.Logging.Logger;
 
 [assembly: InternalsVisibleTo("BetterSort.Accuracy.Test")]
 
 namespace BetterSort.Accuracy {
 
-  [Plugin(RuntimeOptions.DynamicInit), Slog, NoEnableDisable]
+  [Plugin(RuntimeOptions.DynamicInit), NoEnableDisable]
   public class Plugin {
 
     [Init]

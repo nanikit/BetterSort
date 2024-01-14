@@ -31,26 +31,21 @@ namespace BetterSort.Accuracy.External {
     }
 
     public Task Save(BestRecords accuracies) {
-      var sorted = new SortedDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>(
-        accuracies,
-        new AccuracyComparer(accuracies) { IsDescending = true }
-      );
-      var now = _clock.Now;
-      _cache = new StoredData() {
-        Version = $"{typeof(AccuracyRepository).Assembly.GetName().Version}",
-        BestRecords = sorted,
-        LastRecordAt = now,
-      };
-      string json = JsonSerializer.Serialize(_cache, new JsonSerializerOptions() { WriteIndented = true });
+      var data = GetSortedData(accuracies);
+
+      string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { WriteIndented = true });
       File.WriteAllText(_path, json);
+
       _logger.Info($"Saved {accuracies.Count} records");
+
+      _cache = BypassSortedDictionaryMemoryLeak(accuracies, data);
 
       return Task.CompletedTask;
     }
 
     public Task<StoredData?> Load() {
       if (_cache != null) {
-        _logger.Debug($"{nameof(AccuracyRepository)}.{nameof(Load)}: return cache.");
+        _logger.Debug($"Load from cache.");
         return Task.FromResult<StoredData?>(_cache);
       }
 
@@ -69,6 +64,26 @@ namespace BetterSort.Accuracy.External {
         _logger.Warn(exception);
         return Task.FromResult<StoredData?>(null);
       }
+    }
+
+    private StoredData BypassSortedDictionaryMemoryLeak(BestRecords accuracies, StoredData data) {
+      data.BestRecords = accuracies;
+      return data;
+    }
+
+    private StoredData GetSortedData(BestRecords accuracies) {
+      var sorted = new SortedDictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>(
+        accuracies,
+        new AccuracyComparer(accuracies) { IsDescending = true }
+      );
+
+      var now = _clock.Now;
+      var data = new StoredData() {
+        Version = $"{typeof(AccuracyRepository).Assembly.GetName().Version}",
+        BestRecords = sorted,
+        LastRecordAt = now,
+      };
+      return data;
     }
   }
 }
