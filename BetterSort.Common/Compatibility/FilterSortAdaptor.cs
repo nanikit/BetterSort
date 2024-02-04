@@ -45,7 +45,7 @@ namespace BetterSort.Common.Compatibility {
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
       _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called NotifyChange");
 
-      // Actually it sorts synchronously so sort is done already. Timeout is just for safety.
+      // Actually it sorts synchronously so sort is done already. This is defensive code.
       bool isComplete = _result.Task.Wait(1000);
       _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called Wait");
       if (!isComplete) {

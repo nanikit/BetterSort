@@ -1,8 +1,5 @@
-using BetterSongList;
-using BetterSongList.UI;
 using BetterSort.Common.Compatibility;
 using BetterSort.LastPlayed.External;
-using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using IPALogger = IPA.Logging.Logger;
@@ -11,21 +8,21 @@ namespace BetterSort.LastPlayed.Sorter {
 
   public class SorterEnvironment {
     private readonly IPALogger _logger;
-
     private readonly IPlayedDateRepository _repository;
-
     private readonly IPlayEventSource _playEventSource;
-
     private readonly LastPlayedDateSorter _sorter;
-
     private readonly FilterSortAdaptor _adaptor;
+    private readonly TransformerPluginHelper _pluginHelper;
 
-    public SorterEnvironment(IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource, LastPlayedDateSorter sorter, FilterSortAdaptor adaptor) {
+    public SorterEnvironment(
+      IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource,
+      LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, TransformerPluginHelper pluginHelper) {
       _logger = logger;
       _repository = repository;
       _playEventSource = playEventSource;
       _sorter = sorter;
       _adaptor = adaptor;
+      _pluginHelper = pluginHelper;
     }
 
     public void Start(bool register) {
@@ -35,15 +32,7 @@ namespace BetterSort.LastPlayed.Sorter {
         : new Dictionary<string, DateTime>();
       _playEventSource.OnSongPlayed += RecordHistory;
       if (register) {
-        bool isRegistered = SortMethods.RegisterCustomSorter(_adaptor);
-        if (isRegistered) {
-          var ui = AccessTools.StaticFieldRefAccess<FilterUI>(typeof(FilterUI), "persistentNuts");
-          AccessTools.Method(ui.GetType(), "UpdateTransformerOptionsAndDropdowns").Invoke(ui, null);
-          _logger.Info("Registered accuracy sorter.");
-        }
-        else {
-          _logger.Info("Failed to register last played sorter. Check AllowPluginSortsAndFilters config in BetterSongList.");
-        }
+        _pluginHelper.Register(_adaptor);
       }
       else {
         _logger.Debug("Skip last play date sorter registration.");

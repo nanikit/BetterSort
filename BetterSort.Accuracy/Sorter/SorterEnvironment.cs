@@ -1,7 +1,5 @@
-using BetterSongList;
-using BetterSongList.UI;
 using BetterSort.Accuracy.External;
-using HarmonyLib;
+using BetterSort.Common.Compatibility;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,19 +9,15 @@ namespace BetterSort.Accuracy.Sorter {
 
   public class SorterEnvironment {
     private readonly UIAwareSorter _adaptor;
-
     private readonly IBsInterop _bsInterop;
-
     private readonly UnifiedImporter _importer;
-
     private readonly SiraLog _logger;
-
     private readonly IAccuracyRepository _repository;
-
     private readonly AccuracySorter _sorter;
+    private readonly TransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
-      UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter
+      UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter, TransformerPluginHelper pluginHelper
     ) {
       _logger = logger;
       _repository = repository;
@@ -31,6 +25,7 @@ namespace BetterSort.Accuracy.Sorter {
       _adaptor = adaptor;
       _importer = importer;
       _sorter = sorter;
+      _pluginHelper = pluginHelper;
 
       _ = Initialize();
     }
@@ -38,24 +33,10 @@ namespace BetterSort.Accuracy.Sorter {
     public async Task Initialize() {
       try {
         _bsInterop.OnSongPlayed += RecordHistoryWithGuard;
-        _logger.Info($"Enter {nameof(SorterEnvironment)}.{nameof(Initialize)}.");
+        _logger.Info($"{nameof(Initialize)}.");
 
-        if (!Plugin.IsTest) {
-          await _importer.CollectOrImport().ConfigureAwait(false);
-
-          bool isRegistered = SortMethods.RegisterCustomSorter(_adaptor);
-          if (isRegistered) {
-            var ui = AccessTools.StaticFieldRefAccess<FilterUI>(typeof(FilterUI), "persistentNuts");
-            AccessTools.Method(ui.GetType(), "UpdateTransformerOptionsAndDropdowns").Invoke(ui, null);
-            _logger.Info("Registered accuracy sorter.");
-          }
-          else {
-            _logger.Info("Failed to register accuracy  sorter. Check AllowPluginSortsAndFilters config in BetterSongList.");
-          }
-        }
-        else {
-          _logger.Debug("Skip accuracy sorter registration.");
-        }
+        await _importer.CollectOrImport().ConfigureAwait(false);
+        _pluginHelper.Register(_adaptor);
       }
       catch (Exception ex) {
         _logger.Error(ex);

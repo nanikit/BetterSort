@@ -20,19 +20,17 @@ namespace BetterSort.Accuracy {
 
       zenjector.UseHttpService();
       zenjector.UseLogger(logger);
+      zenjector.Install<CommonEnvironmentInstaller>(Location.App);
       zenjector.Install(Location.App, container => {
         container.Bind<Harmony>()
           .WithId("BetterSort.Accuracy.Harmony")
           .FromInstance(new Harmony("BetterSort.Accuracy"))
           .AsCached();
-        container.BindInterfacesAndSelfTo<Clock>().AsSingle();
         container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
       });
       zenjector.Install<AccuracyInstaller>(Location.App, logger);
 
       logger.Info("Initialized.");
     }
-
-    public static bool IsTest { get; set; }
   }
 }

@@ -20,6 +20,7 @@ namespace BetterSort.LastPlayed {
       _logger.Debug("Initialize()");
 
       var container = ProjectContext.Instance.Container.CreateSubContainer();
+      container.BindInterfacesAndSelfTo<TransformerPluginHelper>().AsSingle();
       container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
       container.BindInterfacesAndSelfTo<Clock>().AsSingle();
 
