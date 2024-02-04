@@ -1,5 +1,7 @@
 using BetterSongList;
+using BetterSongList.UI;
 using BetterSort.Accuracy.External;
+using HarmonyLib;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -40,8 +42,16 @@ namespace BetterSort.Accuracy.Sorter {
 
         if (!Plugin.IsTest) {
           await _importer.CollectOrImport().ConfigureAwait(false);
-          SortMethods.RegisterCustomSorter(_adaptor);
-          _logger.Debug("Registered accuracy sorter.");
+
+          bool isRegistered = SortMethods.RegisterCustomSorter(_adaptor);
+          if (isRegistered) {
+            var ui = AccessTools.StaticFieldRefAccess<FilterUI>(typeof(FilterUI), "persistentNuts");
+            AccessTools.Method(ui.GetType(), "UpdateTransformerOptionsAndDropdowns").Invoke(ui, null);
+            _logger.Info("Registered accuracy sorter.");
+          }
+          else {
+            _logger.Info("Failed to register accuracy  sorter. Check AllowPluginSortsAndFilters config in BetterSongList.");
+          }
         }
         else {
           _logger.Debug("Skip accuracy sorter registration.");

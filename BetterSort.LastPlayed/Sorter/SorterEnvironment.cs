@@ -1,8 +1,10 @@
 namespace BetterSort.LastPlayed.Sorter {
 
   using BetterSongList;
+  using BetterSongList.UI;
   using BetterSort.Common.Compatibility;
   using BetterSort.LastPlayed.External;
+  using HarmonyLib;
   using System;
   using System.Collections.Generic;
   using IPALogger = IPA.Logging.Logger;
@@ -35,10 +37,12 @@ namespace BetterSort.LastPlayed.Sorter {
       if (register) {
         bool isRegistered = SortMethods.RegisterCustomSorter(_adaptor);
         if (isRegistered) {
-          _logger.Debug("Registered last play date sorter.");
+          var ui = AccessTools.StaticFieldRefAccess<FilterUI>(typeof(FilterUI), "persistentNuts");
+          AccessTools.Method(ui.GetType(), "UpdateTransformerOptionsAndDropdowns").Invoke(ui, null);
+          _logger.Info("Registered accuracy sorter.");
         }
         else {
-          _logger.Warn("Sorter registration failed. Check AllowPluginSortsAndFilters config in BetterSongList.");
+          _logger.Info("Failed to register last played sorter. Check AllowPluginSortsAndFilters config in BetterSongList.");
         }
       }
       else {
