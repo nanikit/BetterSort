@@ -12,11 +12,11 @@ namespace BetterSort.LastPlayed.Sorter {
     private readonly IPlayEventSource _playEventSource;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
-    private readonly TransformerPluginHelper _pluginHelper;
+    private readonly ITransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(
       IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource,
-      LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, TransformerPluginHelper pluginHelper) {
+      LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, ITransformerPluginHelper pluginHelper) {
       _logger = logger;
       _repository = repository;
       _playEventSource = playEventSource;

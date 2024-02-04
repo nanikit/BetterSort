@@ -1,9 +1,10 @@
 using BetterSongList.SortModels;
+using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Common.Interfaces;
+using BetterSort.Test.Common;
 using BetterSort.Test.Common.Mocks;
-using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +17,16 @@ using Zenject;
 namespace BetterSort.Accuracy.Test {
 
   public class SorterIntegrationTest {
-    private readonly SiraLog _logger;
     private readonly ISorterCustom _adaptor;
     private readonly InMemoryRepository _repository;
     private readonly AccuracySorter _sorter;
 
     public SorterIntegrationTest(ITestOutputHelper output) {
-      _logger = new MockLogger(output);
-
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<SiraLog>().FromInstance(_logger).AsSingle();
-      container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
+      container.Install<MockEnvironmentInstaller>(new[] { output });
       container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
-      container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle().WhenInjectedInto<UIAwareSorter>();
-
-      container.Install<AccuracyInstaller>();
+      container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle();
+      container.Install<SorterInstaller>();
 
       _sorter = container.Resolve<AccuracySorter>();
       _adaptor = container.Resolve<ISorterCustom>();
@@ -62,8 +58,8 @@ namespace BetterSort.Accuracy.Test {
       var result = await WaitResult(input, isSelected: true).ConfigureAwait(false);
       Assert.Equal(result.Levels.Select(x => x.LevelId), new List<string> {
         "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "custom_level_cccccccccccccccccccccccccccccccccccccccc",
         "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "custom_level_cccccccccccccccccccccccccccccccccccccccc",
       });
       Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }

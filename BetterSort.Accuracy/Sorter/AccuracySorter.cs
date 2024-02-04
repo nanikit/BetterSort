@@ -41,7 +41,7 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    internal SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords) {
+    internal static SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords, List<LevelRecord> mapping) {
       if (levels == null) {
         return new SortResult(null, $"levels is null, give it as is.");
       }
@@ -54,17 +54,17 @@ namespace BetterSort.Accuracy.Sorter {
       var comparer = new LevelAccuracyComparer(records);
       var ordered = levels.SelectMany(comparer.Inflate).OrderBy(x => x, comparer).ToList();
 
-      Mapping.Clear();
+      mapping.Clear();
       foreach (var preview in ordered) {
         if (comparer.LevelMap.TryGetValue(preview, out var record)) {
-          Mapping.Add(record);
+          mapping.Add(record);
         }
         else {
           break;
         }
       }
 
-      var legend = AccuracyLegendMaker.GetLevelLegend(Mapping, ordered.Count);
+      var legend = AccuracyLegendMaker.GetLevelLegend(mapping, ordered.Count);
       return new SortResult(
         new SortFilterResult(ordered, legend),
         $"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}"
@@ -72,11 +72,11 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     private SortFilterResult? Sort(IEnumerable<ILevelPreview>? levels) {
-      var result = SortInternal(levels, () => _repository.Load().Result?.BestRecords);
-      _logger.Info($"{nameof(AccuracySorter)}.{nameof(Sort)}: {result.Message}");
+      var result = SortInternal(levels, () => _repository.Load().Result?.BestRecords, Mapping);
+      _logger.Info(result.Message);
       return result.Result;
     }
   }
 
-  record SortResult(SortFilterResult? Result, string? Message);
+  record SortResult(SortFilterResult? Result, string Message);
 }

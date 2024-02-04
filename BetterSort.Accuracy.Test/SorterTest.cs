@@ -11,14 +11,14 @@ namespace BetterSort.Accuracy.Test {
 
     [Fact]
     public void TestNull() {
-      var result = AccuracySorter.SortInternal(null, () => null);
+      var result = AccuracySorter.SortInternal(null, () => null, new List<LevelRecord>());
       Assert.Null(result.Result);
     }
 
     // BetterSongList can pass empty list.
     [Fact]
     public void TestEmpty() {
-      var result = AccuracySorter.SortInternal(new List<ILevelPreview>(), () => null);
+      var result = AccuracySorter.SortInternal(new List<ILevelPreview>(), () => null, new List<LevelRecord>());
       Assert.Empty(result.Result!.Levels);
     }
 
@@ -31,7 +31,7 @@ namespace BetterSort.Accuracy.Test {
         }},
       };
 
-      var result = AccuracySorter.SortInternal(levels, () => records).Result;
+      var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
       Assert.Equal(
         new List<string> { "custom_level_0000000000000000000000000000000000000000" },
@@ -52,7 +52,7 @@ namespace BetterSort.Accuracy.Test {
           }},
         };
 
-      var result = AccuracySorter.SortInternal(levels, () => records).Result;
+      var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
       Assert.Equal(
         new List<string> {
@@ -82,16 +82,17 @@ namespace BetterSort.Accuracy.Test {
           }},
         };
 
-      var result = AccuracySorter.SortInternal(levels, () => records).Result;
+      var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
       Assert.Equal(
         new List<string> {
+          "custom_level_1111111111111111111111111111111111111111",
           "custom_level_0000000000000000000000000000000000000000",
           "custom_level_1111111111111111111111111111111111111111",
         },
         result!.Levels.Select(x => x.LevelId)
       );
-      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("80.00", 1) });
+      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("92.00", 0), ("90.29", 1), ("80.00", 2) });
     }
   }
 }

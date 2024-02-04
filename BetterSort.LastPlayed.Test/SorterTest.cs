@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Zenject;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Test {
 
@@ -23,9 +22,6 @@ namespace BetterSort.LastPlayed.Test {
 
     private readonly DiContainer _container;
 
-    [Inject]
-    private readonly IPALogger _logger;
-
     private readonly MockEventSource _playSource;
 
     private readonly InMemoryDateRepository _repository;
@@ -33,11 +29,8 @@ namespace BetterSort.LastPlayed.Test {
     private readonly LastPlayedDateSorter _sorter;
 
     public SorterTest(ITestOutputHelper output) {
-      _logger ??= new TestLogger(output);
-
       DiContainer container = new();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
-      container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
+      container.Install<MockEnvironmentInstaller>(new object[] { output });
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
       container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
@@ -61,18 +54,19 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     [Fact]
-    public async Task TestOneshotSort() {
+    public async Task TestOneOffSort() {
       _clock.Now = new DateTime(2022, 3, 1);
 
       var data = GenerateData().ToList();
       _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.LevelId, x => x.date);
 
-      data.ShuffleInPlace();
+      var random = new Random(30000);
+      data = data.OrderBy(x => random.Next()).ToList();
       var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
       Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
+
       var legend = result.Legend.ToList();
-      _logger.Debug(legend.Aggregate("", (acc, x) => $"{acc}, {x}"));
       Assert.Equal(legend, new[] {
         ("00:00", 0), ("12:05", 35),
         (legend[2].Label, 47), (legend[3].Label, 57), (legend[4].Label, 67), (legend[5].Label, 78),

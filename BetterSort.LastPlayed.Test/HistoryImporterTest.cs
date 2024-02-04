@@ -6,7 +6,6 @@ using System.IO;
 using Xunit;
 using Xunit.Abstractions;
 using Zenject;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Test {
 
@@ -40,18 +39,13 @@ namespace BetterSort.LastPlayed.Test {
 
     private static readonly string _testSphPath = @"UserData\SongPlayData.json";
 
-    [Inject]
-    private readonly IPALogger _logger;
-
     private readonly InMemoryDateRepository _ourHistory;
 
     private readonly ImmigrationRepository _repository;
 
     public HistoryImporterTest(ITestOutputHelper output) {
-      _logger ??= new TestLogger(output!);
-
       var container = new DiContainer();
-      container.BindInterfacesAndSelfTo<IPALogger>().FromInstance(_logger).AsSingle();
+      container.Install<MockEnvironmentInstaller>(new object[] { output });
       container.Bind<InMemoryDateRepository>().AsSingle();
       container.BindInterfacesTo<InMemoryDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
       container.BindInterfacesAndSelfTo<SongPlayHistoryImporter>().AsSingle();

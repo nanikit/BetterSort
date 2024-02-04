@@ -14,10 +14,10 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly SiraLog _logger;
     private readonly IAccuracyRepository _repository;
     private readonly AccuracySorter _sorter;
-    private readonly TransformerPluginHelper _pluginHelper;
+    private readonly ITransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
-      UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter, TransformerPluginHelper pluginHelper
+      UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter, ITransformerPluginHelper pluginHelper
     ) {
       _logger = logger;
       _repository = repository;
