@@ -52,7 +52,7 @@ namespace BetterSort.Accuracy.External {
     }
 
     private string? GetSteamId() {
-      if (SteamManager.Initialized) {
+      if (SteamAPI.IsSteamRunning()) {
         var id = SteamUser.GetSteamID();
         return id.ToString();
       }

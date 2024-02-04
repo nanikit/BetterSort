@@ -47,16 +47,23 @@ namespace BetterSort.Accuracy.Sorter {
 
       var records = getRecords();
       if (records == null) {
-        return new SortResult(
-          new SortFilterResult(levels),
-          $"records is null, give it as is."
-        );
+        return new SortResult(new SortFilterResult(levels), "records is null, give it as is.");
       }
 
-      var comparer = new AccuracyComparer(records) { IsDescending = true };
-      var ordered = levels.OrderBy(x => x.LevelId, comparer).ToList();
-      var legend = AccuracyLegendMaker.GetLegend(ordered.Select(x => x.LevelId), comparer);
+      var comparer = new LevelAccuracyComparer(records);
+      var ordered = levels.SelectMany(comparer.Inflate).OrderBy(x => x, comparer).ToList();
 
+      var mapping = new List<LevelRecord>();
+      foreach (var preview in ordered) {
+        if (comparer.LevelMap.TryGetValue(preview, out var record)) {
+          mapping.Add(record);
+        }
+        else {
+          break;
+        }
+      }
+
+      var legend = AccuracyLegendMaker.GetLevelLegend(mapping, ordered.Count);
       return new SortResult(
         new SortFilterResult(ordered, legend),
         $"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}"

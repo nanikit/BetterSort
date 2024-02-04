@@ -61,7 +61,7 @@ namespace BetterSort.Accuracy.External {
           _harmony.Patch(
             original: AccessTools.Method(
               typeof(LevelCollectionNavigationController),
-              nameof(LevelCollectionNavigationController.HandleLevelCollectionViewControllerDidSelectLevel)
+              "HandleLevelCollectionViewControllerDidSelectLevel"
             ),
             prefix: new HarmonyMethod(AccessTools.Method(
               typeof(BsUtilsInterop),
@@ -80,7 +80,7 @@ namespace BetterSort.Accuracy.External {
 
         if (_onSongSelected == null) {
           _logger.Debug($"{nameof(OnSongSelected)}: remove listener and hook.");
-          string methodName = nameof(LevelCollectionNavigationController.HandleLevelCollectionViewControllerDidSelectLevel);
+          string methodName = "HandleLevelCollectionViewControllerDidSelectLevel";
           _harmony.Unpatch(typeof(LevelCollectionNavigationController).GetMethod(methodName), HarmonyPatchType.Prefix, _harmony.Id);
         }
         else {
@@ -146,16 +146,16 @@ namespace BetterSort.Accuracy.External {
     private void DispatchCharacteristicSelection(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2) {
     }
 
-    private async void DispatchWithAccuracy(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults result) {
+    private void DispatchWithAccuracy(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults result) {
       try {
-        await DispatchAccuracy(result).ConfigureAwait(false);
+        DispatchAccuracy(result);
       }
       catch (Exception ex) {
         _logger.Error(ex);
       }
     }
 
-    private async Task DispatchAccuracy(LevelCompletionResults result) {
+    private void DispatchAccuracy(LevelCompletionResults result) {
       if (_scoresaber.IsInReplay()) {
         _logger.Info($"Skip scoresaber replay record.");
         return;
@@ -171,6 +171,8 @@ namespace BetterSort.Accuracy.External {
         return;
       }
 
+      //setup.practiceSettings.
+
       var diffBeatmap = setup.difficultyBeatmap;
       var level = diffBeatmap?.level;
       string? levelId = level?.levelID;
@@ -183,7 +185,6 @@ namespace BetterSort.Accuracy.External {
       }
 
       var transformed = setup.transformedBeatmapData;
-      transformed ??= await (setup.GetTransformedBeatmapDataAsync() ?? Task.FromResult<IReadonlyBeatmapData?>(null)).ConfigureAwait(false);
       if (transformed == null) {
         _logger.Warn($"Skip record because cannot query beatmap: {levelId} {songName}");
         return;
