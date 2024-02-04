@@ -3,6 +3,7 @@ using BetterSort.Common.Interfaces;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 
@@ -40,7 +41,7 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    internal static SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords) {
+    internal SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords) {
       if (levels == null) {
         return new SortResult(null, $"levels is null, give it as is.");
       }
@@ -53,17 +54,17 @@ namespace BetterSort.Accuracy.Sorter {
       var comparer = new LevelAccuracyComparer(records);
       var ordered = levels.SelectMany(comparer.Inflate).OrderBy(x => x, comparer).ToList();
 
-      var mapping = new List<LevelRecord>();
+      Mapping.Clear();
       foreach (var preview in ordered) {
         if (comparer.LevelMap.TryGetValue(preview, out var record)) {
-          mapping.Add(record);
+          Mapping.Add(record);
         }
         else {
           break;
         }
       }
 
-      var legend = AccuracyLegendMaker.GetLevelLegend(mapping, ordered.Count);
+      var legend = AccuracyLegendMaker.GetLevelLegend(Mapping, ordered.Count);
       return new SortResult(
         new SortFilterResult(ordered, legend),
         $"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? "(empty)" : ordered[0].SongName)}"
