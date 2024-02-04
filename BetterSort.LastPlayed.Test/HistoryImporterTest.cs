@@ -1,4 +1,5 @@
 using BetterSort.LastPlayed.External;
+using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Test.Mocks;
 using BetterSort.Test.Common;
 using System;
@@ -46,10 +47,12 @@ namespace BetterSort.LastPlayed.Test {
     public HistoryImporterTest(ITestOutputHelper output) {
       var container = new DiContainer();
       container.Install<MockEnvironmentInstaller>(new object[] { output });
+
       container.Bind<InMemoryDateRepository>().AsSingle();
       container.BindInterfacesTo<InMemoryDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
-      container.BindInterfacesAndSelfTo<SongPlayHistoryImporter>().AsSingle();
-      container.BindInterfacesAndSelfTo<ImmigrationRepository>().AsSingle();
+
+      container.Install<SorterInstaller>();
+
       _ourHistory = container.Resolve<InMemoryDateRepository>();
       _repository = container.Resolve<ImmigrationRepository>();
     }

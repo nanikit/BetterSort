@@ -1,5 +1,6 @@
 using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
+using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Sorter;
 using BetterSort.LastPlayed.Test.Mocks;
 using BetterSort.Test.Common;
@@ -17,15 +18,10 @@ namespace BetterSort.LastPlayed.Test {
 
   public class SorterTest {
     private readonly FilterSortAdaptor _adaptor;
-
     private readonly FixedClock _clock;
-
     private readonly DiContainer _container;
-
     private readonly MockEventSource _playSource;
-
     private readonly InMemoryDateRepository _repository;
-
     private readonly LastPlayedDateSorter _sorter;
 
     public SorterTest(ITestOutputHelper output) {
@@ -33,9 +29,8 @@ namespace BetterSort.LastPlayed.Test {
       container.Install<MockEnvironmentInstaller>(new object[] { output });
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
-      container.BindInterfacesAndSelfTo<LastPlayedDateSorter>().AsSingle();
-      container.Bind<FilterSortAdaptor>().AsSingle();
-      container.Bind<SorterEnvironment>().AsSingle();
+
+      container.Install<SorterInstaller>();
       _clock = container.Resolve<FixedClock>();
       _playSource = container.Resolve<MockEventSource>();
       _sorter = container.Resolve<LastPlayedDateSorter>();
@@ -85,7 +80,7 @@ namespace BetterSort.LastPlayed.Test {
       var data = GenerateData().ToList();
       _repository.LastPlayedDate = data.ToDictionary(x => x.preview.LevelId, x => x.date);
 
-      _container.Resolve<SorterEnvironment>().Start(false);
+      _container.Resolve<SorterEnvironment>().Initialize();
 
       var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 

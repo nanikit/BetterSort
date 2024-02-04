@@ -2,11 +2,12 @@ using BetterSort.Common.Compatibility;
 using BetterSort.LastPlayed.External;
 using System;
 using System.Collections.Generic;
+using Zenject;
 using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Sorter {
 
-  public class SorterEnvironment {
+  public class SorterEnvironment : IInitializable {
     private readonly IPALogger _logger;
     private readonly IPlayedDateRepository _repository;
     private readonly IPlayEventSource _playEventSource;
@@ -25,17 +26,17 @@ namespace BetterSort.LastPlayed.Sorter {
       _pluginHelper = pluginHelper;
     }
 
-    public void Start(bool register) {
-      var data = _repository.Load();
-      _sorter.LastPlayedDates = data?.LastPlays is Dictionary<string, DateTime> lastPlays
-        ? lastPlays
-        : new Dictionary<string, DateTime>();
-      _playEventSource.OnSongPlayed += RecordHistory;
-      if (register) {
+    public void Initialize() {
+      try {
+        var data = _repository.Load();
+        _sorter.LastPlayedDates = data?.LastPlays is Dictionary<string, DateTime> lastPlays
+          ? lastPlays
+          : new Dictionary<string, DateTime>();
+        _playEventSource.OnSongPlayed += RecordHistory;
         _pluginHelper.Register(_adaptor);
       }
-      else {
-        _logger.Debug("Skip last play date sorter registration.");
+      catch (Exception exception) {
+        _logger.Error(exception);
       }
     }
 
