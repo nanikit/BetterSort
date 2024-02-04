@@ -1,7 +1,7 @@
-namespace BetterSort.Test.Common {
+using System;
+using System.Reflection;
 
-  using System;
-  using System.Reflection;
+namespace BetterSort.Test.Common {
 
   public class TestResult {
 

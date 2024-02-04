@@ -1,12 +1,12 @@
-namespace BetterSort.LastPlayed {
+using BetterSort.Common.Compatibility;
+using BetterSort.Common.External;
+using BetterSort.LastPlayed.External;
+using BetterSort.LastPlayed.Sorter;
+using IPA;
+using Zenject;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.Common.Compatibility;
-  using BetterSort.Common.External;
-  using BetterSort.LastPlayed.External;
-  using BetterSort.LastPlayed.Sorter;
-  using IPA;
-  using Zenject;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed {
 
   [Plugin(RuntimeOptions.SingleStartInit)]
   public class Plugin {

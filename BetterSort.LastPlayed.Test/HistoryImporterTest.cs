@@ -1,14 +1,14 @@
-namespace BetterSort.LastPlayed.Test {
+using BetterSort.LastPlayed.External;
+using BetterSort.LastPlayed.Test.Mocks;
+using BetterSort.Test.Common;
+using System;
+using System.IO;
+using Xunit;
+using Xunit.Abstractions;
+using Zenject;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.LastPlayed.External;
-  using BetterSort.LastPlayed.Test.Mocks;
-  using BetterSort.Test.Common;
-  using System;
-  using System.IO;
-  using Xunit;
-  using Xunit.Abstractions;
-  using Zenject;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.Test {
 
   public class HistoryImporterTest {
     private static readonly string _dataPath = @"UserData";

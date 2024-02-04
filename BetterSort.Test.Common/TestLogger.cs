@@ -1,7 +1,7 @@
-namespace BetterSort.Test.Common {
+using Xunit.Abstractions;
+using IPALogger = IPA.Logging.Logger;
 
-  using Xunit.Abstractions;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Test.Common {
 
   public class TestLogger : IPALogger {
     private readonly ITestOutputHelper _output;

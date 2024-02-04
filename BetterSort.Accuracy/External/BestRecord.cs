@@ -1,6 +1,6 @@
-namespace BetterSort.Accuracy.External {
+using BetterSort.Accuracy.Sorter;
 
-  using BetterSort.Accuracy.Sorter;
+namespace BetterSort.Accuracy.External {
 
   public class BestRecord {
     public double Accuracy { get; set; }

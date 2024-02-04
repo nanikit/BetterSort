@@ -1,9 +1,9 @@
-namespace BetterSort.LastPlayed.External {
+using BetterSort.Common.External;
+using BS_Utils.Utilities;
+using System;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.Common.External;
-  using BS_Utils.Utilities;
-  using System;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.External {
 
   public interface IPlayEventSource : IDisposable {
 

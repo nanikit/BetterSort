@@ -1,21 +1,20 @@
+using BetterSort.Accuracy.Sorter;
+using BS_Utils.Gameplay;
+using BS_Utils.Utilities;
+using HarmonyLib;
+using IPA.Utilities;
+using IPA.Utilities.Async;
+using SiraUtil.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Zenject;
 
 namespace BetterSort.Accuracy.External {
-
-  using BetterSort.Accuracy.Sorter;
   using BetterSort.Common.External;
-  using BS_Utils.Gameplay;
-  using BS_Utils.Utilities;
-  using HarmonyLib;
-  using IPA.Utilities;
-  using IPA.Utilities.Async;
-  using SiraUtil.Logging;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Reflection;
-  using System.Threading.Tasks;
   using UnityEngine;
-  using Zenject;
 
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 

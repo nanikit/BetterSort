@@ -1,11 +1,11 @@
-namespace BetterSort.LastPlayed.External {
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using IPALogger = IPA.Logging.Logger;
 
-  using Newtonsoft.Json;
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Linq;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.External {
 
   public class SongPlayHistoryImporter {
     private static readonly string _sphJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "SongPlayData.json");

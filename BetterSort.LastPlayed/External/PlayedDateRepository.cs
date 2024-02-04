@@ -1,12 +1,12 @@
-namespace BetterSort.LastPlayed.External {
+using BetterSort.LastPlayed.Sorter;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.LastPlayed.Sorter;
-  using Newtonsoft.Json;
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Linq;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.External {
 
   public interface IPlayedDateRepository {
 

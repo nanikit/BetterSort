@@ -1,8 +1,8 @@
-namespace BetterSort.LastPlayed.External {
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
-  using Newtonsoft.Json;
-  using System;
-  using System.Collections.Generic;
+namespace BetterSort.LastPlayed.External {
 
   public class StoredData {
 

@@ -1,11 +1,11 @@
-namespace BetterSort.Accuracy.Test {
+using BetterSort.Test.Common;
+using IPA;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.Test.Common;
-  using IPA;
-  using System.Collections.Generic;
-  using System.Reflection;
-  using UnityEngine;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Accuracy.Test {
 
   [Plugin(RuntimeOptions.SingleStartInit)]
   public class Plugin {

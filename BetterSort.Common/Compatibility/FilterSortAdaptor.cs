@@ -1,13 +1,13 @@
-namespace BetterSort.Common.Compatibility {
+using BetterSongList.Interfaces;
+using BetterSongList.SortModels;
+using BetterSort.Common.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSongList.Interfaces;
-  using BetterSongList.SortModels;
-  using BetterSort.Common.Interfaces;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Common.Compatibility {
 
   public class FilterSortAdaptor : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
     private readonly IPALogger _logger;

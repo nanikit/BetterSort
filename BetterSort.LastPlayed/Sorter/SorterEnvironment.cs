@@ -1,13 +1,13 @@
-namespace BetterSort.LastPlayed.Sorter {
+using BetterSongList;
+using BetterSongList.UI;
+using BetterSort.Common.Compatibility;
+using BetterSort.LastPlayed.External;
+using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSongList;
-  using BetterSongList.UI;
-  using BetterSort.Common.Compatibility;
-  using BetterSort.LastPlayed.External;
-  using HarmonyLib;
-  using System;
-  using System.Collections.Generic;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.Sorter {
 
   public class SorterEnvironment {
     private readonly IPALogger _logger;

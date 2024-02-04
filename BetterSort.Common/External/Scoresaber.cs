@@ -1,9 +1,9 @@
-namespace BetterSort.Common.External {
+using IPA.Loader;
+using System;
+using System.Reflection;
+using IPALogger = IPA.Logging.Logger;
 
-  using IPA.Loader;
-  using System;
-  using System.Reflection;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.Common.External {
 
   public class Scoresaber {
     private readonly IPALogger _logger;
@@ -35,7 +35,7 @@ namespace BetterSort.Common.External {
         return _playbackDisabled != null && !(bool)_playbackDisabled.Invoke(null, null);
       }
       catch (Exception exception) {
-        _logger.Debug($"Scoresaber hook exception: {exception}");
+        _logger.Warn($"Scoresaber hook exception: {exception}");
       }
       return false;
     }

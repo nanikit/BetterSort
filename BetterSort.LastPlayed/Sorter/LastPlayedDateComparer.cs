@@ -1,8 +1,8 @@
-namespace BetterSort.LastPlayed.Sorter {
+using BetterSort.Common.Interfaces;
+using System;
+using System.Collections.Generic;
 
-  using BetterSort.Common.Interfaces;
-  using System;
-  using System.Collections.Generic;
+namespace BetterSort.LastPlayed.Sorter {
 
   internal class LastPlayedDateComparer : IComparer<ILevelPreview>, IComparer<string> {
 

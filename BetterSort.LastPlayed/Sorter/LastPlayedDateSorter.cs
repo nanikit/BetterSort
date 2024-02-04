@@ -1,12 +1,12 @@
-namespace BetterSort.LastPlayed.Sorter {
+using BetterSort.Common.External;
+using BetterSort.Common.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using IPALogger = IPA.Logging.Logger;
 
-  using BetterSort.Common.External;
-  using BetterSort.Common.Interfaces;
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Threading;
-  using IPALogger = IPA.Logging.Logger;
+namespace BetterSort.LastPlayed.Sorter {
 
   public class LastPlayedDateSorter : ISortFilter {
 
