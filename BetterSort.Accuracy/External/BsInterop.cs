@@ -4,6 +4,7 @@ namespace BetterSort.Accuracy.External {
 
   using BetterSort.Accuracy.Sorter;
   using BetterSort.Common.External;
+  using BS_Utils.Gameplay;
   using BS_Utils.Utilities;
   using HarmonyLib;
   using IPA.Utilities;
@@ -164,11 +165,9 @@ namespace BetterSort.Accuracy.External {
 
       var setup = BS_Utils.Plugin.LevelData?.GameplayCoreSceneSetupData;
       if (setup == null) {
-        _logger.Warn($"Skip record because cannot query game stats.");
+        _logger.Warn($"Skip record as querying game stats is not possible.");
         return;
       }
-
-      //setup.practiceSettings.
 
       var diffBeatmap = setup.difficultyBeatmap;
       var level = diffBeatmap?.level;
@@ -177,13 +176,24 @@ namespace BetterSort.Accuracy.External {
       string? mode = diffBeatmap?.parentDifficultyBeatmapSet?.beatmapCharacteristic?.serializedName;
       var difficulty = DifficultyExtension.ConvertFromString(diffBeatmap?.difficulty.SerializedName());
       if (levelId == null || difficulty is not RecordDifficulty diff || mode == null) {
-        _logger.Warn($"Skip record because cannot get info: {levelId}, {mode}, {difficulty}, {songName}");
+        _logger.Warn($"Skip record as some game stats are missing: {levelId}, {mode}, {difficulty}, {songName}");
+        return;
+      }
+
+      string levelDescription = $"{levelId} {songName}";
+      if (setup.practiceSettings != null) {
+        _logger.Info($"Skip practice record: {levelDescription}.");
+        return;
+      }
+
+      if (ScoreSubmission.Disabled) {
+        _logger.Info($"Skip record due to score submission being disabled by {ScoreSubmission.LastDisabledModString}: {levelDescription}.");
         return;
       }
 
       var transformed = setup.transformedBeatmapData;
       if (transformed == null) {
-        _logger.Warn($"Skip record because cannot query beatmap: {levelId} {songName}");
+        _logger.Warn($"Skip record as accuracy is not available: {levelDescription}");
         return;
       }
 
