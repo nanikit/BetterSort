@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.Sorter {
+
   public class UIAwareSorter : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
     private readonly FilterSortAdaptor _adaptor;
     private readonly AccuracySorter _sorter;
@@ -20,8 +21,8 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly IBsInterop _bsInterop;
     private bool _isHooking;
 
-    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop) {
-      _adaptor = new FilterSortAdaptor(sorter, logger.Logger!);
+    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop, FilterSortAdaptor adaptor) {
+      _adaptor = adaptor;
       _sorter = sorter;
       _logger = logger;
       _bsInterop = bsInterop;
@@ -106,7 +107,5 @@ namespace BetterSort.Accuracy.Sorter {
       _logger.Debug($"{nameof(SelectDifficulty)}: Set {index} {level.songName} {mode} {record.Difficulty} {record.Accuracy}");
       await _bsInterop.SetModeAndDifficulty(characteristic, record.Difficulty).ConfigureAwait(false);
     }
-
   }
 }
-
