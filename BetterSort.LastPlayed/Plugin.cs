@@ -1,6 +1,5 @@
 using BetterSort.Common;
 using BetterSort.LastPlayed.Installers;
-using BetterSort.LastPlayed.Sorter;
 using IPA;
 using IPA.Logging;
 using SiraUtil.Zenject;

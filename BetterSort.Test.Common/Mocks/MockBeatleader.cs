@@ -1,11 +1,11 @@
 using BetterSort.Common.External;
-using IPA.Logging;
+using SiraUtil.Logging;
 
 namespace BetterSort.Test.Common.Mocks {
 
   public class MockBeatleader : Beatleader {
 
-    public MockBeatleader(Logger logger) : base(logger) {
+    public MockBeatleader(SiraLog logger) : base(logger) {
     }
   }
 }

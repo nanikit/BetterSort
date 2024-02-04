@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.External {
 
@@ -12,9 +12,9 @@ namespace BetterSort.LastPlayed.External {
 
     private static readonly string[] _sphSeparator = new[] { "___" };
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
-    public SongPlayHistoryImporter(IPALogger logger) {
+    public SongPlayHistoryImporter(SiraLog logger) {
       _logger = logger;
     }
 

@@ -1,7 +1,7 @@
 using BetterSort.Common.External;
 using BS_Utils.Utilities;
+using SiraUtil.Logging;
 using System;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.External {
 
@@ -13,7 +13,7 @@ namespace BetterSort.LastPlayed.External {
   internal class BsUtilsEventSource : IPlayEventSource {
     private readonly IClock _clock;
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly Scoresaber _scoresaber;
 
@@ -27,7 +27,7 @@ namespace BetterSort.LastPlayed.External {
 
     private DateTime _startTime;
 
-    public BsUtilsEventSource(IClock clock, IPALogger logger, Scoresaber scoresaber, Beatleader beatleader) {
+    public BsUtilsEventSource(IClock clock, SiraLog logger, Scoresaber scoresaber, Beatleader beatleader) {
       _clock = clock;
       _logger = logger;
       _scoresaber = scoresaber;

@@ -1,16 +1,16 @@
 using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
 using BetterSort.Common.Interfaces;
+using SiraUtil.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Common.Compatibility {
 
   public class FilterSortAdaptor : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly ISortFilter _sorter;
 
@@ -18,7 +18,7 @@ namespace BetterSort.Common.Compatibility {
 
     private TaskCompletionSource<ISortFilterResult?> _result = new();
 
-    public FilterSortAdaptor(ISortFilter sorter, IPALogger logger) {
+    public FilterSortAdaptor(ISortFilter sorter, SiraLog logger) {
       _logger = logger;
       _sorter = sorter;
       _sorter.OnResultChanged += SaveResult;
@@ -31,7 +31,7 @@ namespace BetterSort.Common.Compatibility {
     public bool visible => _isVisible;
 
     public Task Prepare(CancellationToken cancelToken) {
-      _logger.Trace("FilterSortAdaptor.Prepare() is called.");
+      _logger.Trace("Prepare() is called.");
       return Task.CompletedTask;
     }
 
@@ -40,14 +40,14 @@ namespace BetterSort.Common.Compatibility {
     }
 
     public void DoSort(ref IEnumerable<IPreviewBeatmapLevel> levels, bool ascending) {
-      _logger.Trace($"FilterSortAdaptor.DoSort({levels.Count()}, {ascending}) is called.");
+      _logger.Trace($"DoSort({levels.Count()}, {ascending}) is called.");
       _result = new();
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
-      _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called NotifyChange");
+      _logger.Trace($"Called NotifyChange");
 
       // Actually it sorts synchronously so sort is done already. This is defensive code.
       bool isComplete = _result.Task.Wait(1000);
-      _logger.Trace($"{nameof(FilterSortAdaptor)}.{nameof(DoSort)}: Called Wait");
+      _logger.Trace($"Called Wait");
       if (!isComplete) {
         _logger.Error($"Timeout exceeded. Current implementation doesn't support asynchronocity.");
         return;
@@ -55,7 +55,7 @@ namespace BetterSort.Common.Compatibility {
 
       var newLevels = _result.Task.Result?.Levels;
       if (newLevels != null) {
-        _logger.Trace($"FilterSortAdaptor.DoSort() newLevels[0]: {(newLevels?.Count() > 0 ? newLevels.First().SongName : "_empty")}");
+        _logger.Trace($"DoSort() newLevels[0]: {(newLevels?.Count() > 0 ? newLevels.First().SongName : "_empty")}");
         levels = newLevels.OfType<LevelPreview>().Select(preview => preview.Preview).ToList();
       }
       else {
@@ -64,16 +64,16 @@ namespace BetterSort.Common.Compatibility {
     }
 
     public IEnumerable<KeyValuePair<string, int>> BuildLegend(IPreviewBeatmapLevel[] levels) {
-      _logger.Trace($"FilterSortAdaptor.BuildLegend() is called.");
+      _logger.Trace($"BuildLegend() is called.");
       return _result.Task.Result?.Legend.Select(x => new KeyValuePair<string, int>(x.Label, x.Index)) ?? Enumerable.Empty<KeyValuePair<string, int>>();
     }
 
     private void SaveResult(ISortFilterResult? result) {
       _isVisible = result != null;
-      _logger.Trace($"FilterSortAdaptor.SaveResult(): _isVisible = {_isVisible}");
+      _logger.Trace($"SaveResult(): _isVisible = {_isVisible}");
 
       if (!_result.TrySetResult(result)) {
-        _logger.Warn($"FilterSortAdaptor.SaveResult(): TrySetResult failed.");
+        _logger.Warn($"SaveResult(): TrySetResult failed.");
       }
     }
   }

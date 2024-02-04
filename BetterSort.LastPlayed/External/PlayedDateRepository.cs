@@ -1,10 +1,10 @@
 using BetterSort.LastPlayed.Sorter;
 using Newtonsoft.Json;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.External {
 
@@ -15,14 +15,14 @@ namespace BetterSort.LastPlayed.External {
     void Save(IReadOnlyDictionary<string, DateTime> playDates);
   }
 
-  public class ImmigrationRepository : IPlayedDateRepository {
+  public class ImmigrationRepository {
     private readonly SongPlayHistoryImporter _importer;
 
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly IPlayedDateRepository _repository;
 
-    internal ImmigrationRepository(IPALogger logger, IPlayedDateRepository repository, SongPlayHistoryImporter importer) {
+    internal ImmigrationRepository(SiraLog logger, IPlayedDateRepository repository, SongPlayHistoryImporter importer) {
       _logger = logger;
       _repository = repository;
       _importer = importer;
@@ -49,11 +49,11 @@ namespace BetterSort.LastPlayed.External {
   }
 
   internal class PlayedDateRepository : IPlayedDateRepository {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
 
-    public PlayedDateRepository(IPALogger logger) {
+    public PlayedDateRepository(SiraLog logger) {
       _logger = logger;
     }
 

@@ -1,22 +1,22 @@
 using BetterSort.Common.Compatibility;
 using BetterSort.LastPlayed.External;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using Zenject;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Sorter {
 
   public class SorterEnvironment : IInitializable {
-    private readonly IPALogger _logger;
-    private readonly IPlayedDateRepository _repository;
+    private readonly SiraLog _logger;
+    private readonly ImmigrationRepository _repository;
     private readonly IPlayEventSource _playEventSource;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
     private readonly ITransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(
-      IPALogger logger, IPlayedDateRepository repository, IPlayEventSource playEventSource,
+      SiraLog logger, ImmigrationRepository repository, IPlayEventSource playEventSource,
       LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, ITransformerPluginHelper pluginHelper) {
       _logger = logger;
       _repository = repository;

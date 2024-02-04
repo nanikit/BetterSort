@@ -1,10 +1,10 @@
 using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.LastPlayed.Sorter {
 
@@ -16,11 +16,11 @@ namespace BetterSort.LastPlayed.Sorter {
     public Dictionary<string, DateTime> LastPlayedDates = new();
 
     private readonly IClock _clock;
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
     private bool _isSelected = false;
     private IEnumerable<ILevelPreview>? _triggeredLevels;
 
-    public LastPlayedDateSorter(IClock clock, IPALogger logger) {
+    public LastPlayedDateSorter(IClock clock, SiraLog logger) {
       _clock = clock;
       _logger = logger;
     }
@@ -58,7 +58,7 @@ namespace BetterSort.LastPlayed.Sorter {
       var ordered = _triggeredLevels.OrderBy(x => x, comparer).ToList();
       var legend = DateLegendMaker.GetLegend(ordered, _clock.Now, LastPlayedDates);
       OnResultChanged(new SortFilterResult(ordered, legend));
-      _logger.Info($"{nameof(LastPlayedDateSorter)}: Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
+      _logger.Info($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
     }
   }
 }

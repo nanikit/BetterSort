@@ -47,9 +47,7 @@ namespace BetterSort.LastPlayed.Test {
     public HistoryImporterTest(ITestOutputHelper output) {
       var container = new DiContainer();
       container.Install<MockEnvironmentInstaller>(new object[] { output });
-
-      container.Bind<InMemoryDateRepository>().AsSingle();
-      container.BindInterfacesTo<InMemoryDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
+      container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
 
       container.Install<SorterInstaller>();
 

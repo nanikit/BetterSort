@@ -1,16 +1,16 @@
 using IPA.Loader;
+using SiraUtil.Logging;
 using System;
 using System.Reflection;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Common.External {
 
   public class Beatleader {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly PropertyInfo? _replayStarted;
 
-    public Beatleader(IPALogger logger) {
+    public Beatleader(SiraLog logger) {
       _logger = logger;
 
       var beatleader = (PluginMetadata?)PluginManager.GetPluginFromId("BeatLeader");

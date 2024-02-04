@@ -1,16 +1,16 @@
 using IPA.Loader;
+using SiraUtil.Logging;
 using System;
 using System.Reflection;
-using IPALogger = IPA.Logging.Logger;
 
 namespace BetterSort.Common.External {
 
   public class Scoresaber {
-    private readonly IPALogger _logger;
+    private readonly SiraLog _logger;
 
     private readonly MethodBase? _playbackDisabled;
 
-    public Scoresaber(IPALogger logger) {
+    public Scoresaber(SiraLog logger) {
       _logger = logger;
 
       // GetPluginFromId's result can be null but intellisense doesn't catch it.
