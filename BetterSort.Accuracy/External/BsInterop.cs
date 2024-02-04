@@ -11,6 +11,7 @@ namespace BetterSort.Accuracy.External {
   using SiraUtil.Logging;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Reflection;
   using System.Threading.Tasks;
   using UnityEngine;
   using Zenject;
@@ -31,8 +32,8 @@ namespace BetterSort.Accuracy.External {
   }
 
   internal class BsUtilsInterop : IBsInterop {
+    private static readonly MethodInfo _handleLevelCollectionViewControllerDidSelectLevel = AccessTools.Method(typeof(LevelCollectionNavigationController), "HandleLevelCollectionViewControllerDidSelectLevel");
     private static OnSongSelectedHandler? _onSongSelected;
-
     private readonly SiraLog _logger;
 
     private readonly Scoresaber _scoresaber;
@@ -59,10 +60,7 @@ namespace BetterSort.Accuracy.External {
         if (_onSongSelected == null) {
           _logger.Debug($"{nameof(OnSongSelected)}: add listener with initializing hook.");
           _harmony.Patch(
-            original: AccessTools.Method(
-              typeof(LevelCollectionNavigationController),
-              "HandleLevelCollectionViewControllerDidSelectLevel"
-            ),
+            original: _handleLevelCollectionViewControllerDidSelectLevel,
             prefix: new HarmonyMethod(AccessTools.Method(
               typeof(BsUtilsInterop),
               nameof(HandleLevelCollectionViewControllerDidSelectLevelPrefix)
@@ -80,8 +78,7 @@ namespace BetterSort.Accuracy.External {
 
         if (_onSongSelected == null) {
           _logger.Debug($"{nameof(OnSongSelected)}: remove listener and hook.");
-          string methodName = "HandleLevelCollectionViewControllerDidSelectLevel";
-          _harmony.Unpatch(typeof(LevelCollectionNavigationController).GetMethod(methodName), HarmonyPatchType.Prefix, _harmony.Id);
+          _harmony.Unpatch(_handleLevelCollectionViewControllerDidSelectLevel, HarmonyPatchType.Prefix, _harmony.Id);
         }
         else {
           _logger.Debug($"{nameof(OnSongSelected)} remove listener.");
