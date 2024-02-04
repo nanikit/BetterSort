@@ -76,11 +76,13 @@ namespace BetterSort.Accuracy.Sorter {
     private async Task SelectDifficulty(int index, IPreviewBeatmapLevel level) {
       var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
       if (type == null) {
-        _logger.Warn($"{nameof(SelectDifficulty)}: Can't find current sorter. Skip.");
+        _logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
+        return;
       }
+
       var sorter = AccessTools.StaticFieldRefAccess<ISorter>(type, "sorter");
       if (sorter != this) {
-        _logger.Debug($"{nameof(SelectDifficulty)}: Not selected this sort. Skip.");
+        _logger.Debug($"Not selecting this sort while selecting difficulty. {(_isHooking ? "Unhook" : "Skip")}.");
         if (_isHooking) {
           _bsInterop.OnSongSelected -= SelectDifficultyWithGuard;
           _isHooking = false;
@@ -89,7 +91,7 @@ namespace BetterSort.Accuracy.Sorter {
       }
 
       if (index < 0 || _sorter.Mapping.Count <= index) {
-        _logger.Debug($"{nameof(SelectDifficulty)}: Not played level. Skip. ({index} {level.levelID} {level.songName})");
+        _logger.Debug($"User picked a song never played so skip selecting difficulty. ({index} {level.levelID} {level.songName})");
         return;
       }
 
@@ -97,7 +99,7 @@ namespace BetterSort.Accuracy.Sorter {
       string mode = record.Mode;
       var characteristic = level.previewDifficultyBeatmapSets.Select(x => x.beatmapCharacteristic).FirstOrDefault(x => x.serializedName == mode);
       if (characteristic == null) {
-        _logger.Warn($"{nameof(SelectDifficulty)}: Matching characteristic is not found. Quit. ({level.levelID}, {mode})");
+        _logger.Warn($"User picked a song having record but characteristic doesn't match. ({level.levelID}, {mode})");
         return;
       }
 

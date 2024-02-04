@@ -45,7 +45,7 @@ namespace BetterSort.Accuracy.External {
 
     public Task<StoredData?> Load() {
       if (_cache != null) {
-        _logger.Debug($"Load from cache.");
+        _logger.Trace($"Load from cache.");
         return Task.FromResult<StoredData?>(_cache);
       }
 
