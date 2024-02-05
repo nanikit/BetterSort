@@ -27,6 +27,11 @@ namespace BetterSort.LastPlayed.External {
 
       string json = File.ReadAllText(_sphJsonPath);
       var history = JsonConvert.DeserializeObject<IDictionary<string, IList<Record>>>(json);
+      if (history == null) {
+        _logger.Warn("Can't deserialize SongPlayData.json. Skip.");
+        return null;
+      }
+
       foreach (var record in history) {
         string difficulty = record.Key;
         string[] fields = difficulty.Split(_sphSeparator, StringSplitOptions.None);
