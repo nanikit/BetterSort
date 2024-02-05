@@ -2,14 +2,14 @@ using BetterSort.LastPlayed.External;
 using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Test.Mocks;
 using BetterSort.Test.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using Xunit;
-using Xunit.Abstractions;
 using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
+  [TestClass]
   public class HistoryImporterTest {
     private static readonly string _dataPath = @"UserData";
 
@@ -44,9 +44,9 @@ namespace BetterSort.LastPlayed.Test {
 
     private readonly ImmigrationRepository _repository;
 
-    public HistoryImporterTest(ITestOutputHelper output) {
+    public HistoryImporterTest() {
       var container = new DiContainer();
-      container.Install<MockEnvironmentInstaller>(new object[] { output });
+      container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
 
       container.Install<SorterInstaller>();
@@ -55,7 +55,7 @@ namespace BetterSort.LastPlayed.Test {
       _repository = container.Resolve<ImmigrationRepository>();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBothExist() {
       if (Plugin.IsUnityPlayer) {
         // It can overwrite user data. Skip.
@@ -67,21 +67,21 @@ namespace BetterSort.LastPlayed.Test {
       File.WriteAllText(_testSphPath, _testSphFile);
       try {
         var data = _repository.Load();
-        Assert.Equal(0, data?.LastPlays?.Count);
+        Assert.AreEqual(0, data?.LastPlays?.Count);
       }
       finally {
         File.Delete(_testSphPath);
       }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestCompleteEmpty() {
       _ourHistory.LastPlayedDate = null;
       var data = _repository.Load();
-      Assert.Null(data);
+      Assert.IsNull(data);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestImport() {
       if (Plugin.IsUnityPlayer) {
         // It can overwrite user data. Skip.
@@ -93,20 +93,20 @@ namespace BetterSort.LastPlayed.Test {
       File.WriteAllText(_testSphPath, _testSphFile);
       try {
         var data = _repository.Load();
-        Assert.Equal(1, data?.LastPlays?.Count);
+        Assert.AreEqual(1, data?.LastPlays?.Count);
         var expectation = DateTimeOffset.FromUnixTimeMilliseconds(1650035029964).DateTime;
-        Assert.Equal(expectation, data?.LastPlays?["custom_level_5AF29356A4F8591D23215F0BACDC6C4D660EF1D0"]);
+        Assert.AreEqual(expectation, data?.LastPlays?["custom_level_5AF29356A4F8591D23215F0BACDC6C4D660EF1D0"]);
       }
       finally {
         File.Delete(_testSphPath);
       }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestOurHistory() {
       _ourHistory.LastPlayedDate = new();
       var data = _repository.Load();
-      Assert.Equal(0, data?.LastPlays?.Count);
+      Assert.AreEqual(0, data?.LastPlays?.Count);
     }
   }
 }

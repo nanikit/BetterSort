@@ -1,7 +1,4 @@
-using BetterSort.Test.Common;
 using IPA;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
 
@@ -26,7 +23,7 @@ namespace BetterSort.Accuracy.Test {
     [OnStart]
     public void OnApplicationStart() {
       Logger?.Info("Test start.");
-      new TestRunner(Logger).Test(new List<Assembly> { typeof(Plugin).Assembly });
+      //new TestRunner(Logger).Test(new List<Assembly> { typeof(Plugin).Assembly });
       if (IsUnityPlayer) {
         Application.Quit();
       }

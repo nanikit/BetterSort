@@ -5,25 +5,25 @@ using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Common.Interfaces;
 using BetterSort.Test.Common;
 using BetterSort.Test.Common.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
 using Zenject;
 
 namespace BetterSort.Accuracy.Test {
 
+  [TestClass]
   public class SorterIntegrationTest {
     private readonly ISorterCustom _adaptor;
     private readonly InMemoryRepository _repository;
     private readonly AccuracySorter _sorter;
 
-    public SorterIntegrationTest(ITestOutputHelper output) {
+    public SorterIntegrationTest() {
       var container = new DiContainer();
-      container.Install<MockEnvironmentInstaller>(new[] { output });
+      container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
       container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle();
       container.Install<SorterInstaller>();
@@ -34,14 +34,14 @@ namespace BetterSort.Accuracy.Test {
     }
 
     // BetterSongList can pass empty list.
-    [Fact]
+    [TestMethod]
     public void TestEmptyCase() {
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
-      Assert.Empty(data);
+      CollectionAssert.AreEqual(new List<IPreviewBeatmapLevel>(), data.ToList());
     }
 
-    [Fact]
+    [TestMethod]
     public async Task TestComplexCase() {
       _repository.BestAccuracies = new() {
         { "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", new() {
@@ -56,12 +56,12 @@ namespace BetterSort.Accuracy.Test {
         new("custom_level_cccccccccccccccccccccccccccccccccccccccc"),
       };
       var result = await WaitResult(input, isSelected: true).ConfigureAwait(false);
-      Assert.Equal(result.Levels.Select(x => x.LevelId), new List<string> {
+      CollectionAssert.AreEqual(result.Levels.Select(x => x.LevelId).ToList(), new List<string> {
         "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         "custom_level_cccccccccccccccccccccccccccccccccccccccc",
       });
-      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
+      CollectionAssert.AreEqual(result.Legend.ToList(), new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }
 
     private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {

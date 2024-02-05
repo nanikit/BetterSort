@@ -66,7 +66,7 @@ namespace BetterSort.LastPlayed.External {
       try {
         string json = File.ReadAllText(_path);
         var data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {data.LastPlays?.Count.ToString() ?? "no"} records");
+        _logger.Info($"Loaded {data?.LastPlays?.Count.ToString() ?? "no"} records");
         return data;
       }
       catch (Exception exception) {

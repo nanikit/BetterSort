@@ -5,17 +5,17 @@ using BetterSort.LastPlayed.Sorter;
 using BetterSort.LastPlayed.Test.Mocks;
 using BetterSort.Test.Common;
 using BetterSort.Test.Common.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
 using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
+  [TestClass]
   public class SorterTest {
     private readonly FilterSortAdaptor _adaptor;
     private readonly FixedClock _clock;
@@ -24,9 +24,9 @@ namespace BetterSort.LastPlayed.Test {
     private readonly InMemoryDateRepository _repository;
     private readonly LastPlayedDateSorter _sorter;
 
-    public SorterTest(ITestOutputHelper output) {
+    public SorterTest() {
       DiContainer container = new();
-      container.Install<MockEnvironmentInstaller>(new object[] { output });
+      container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
       container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
 
@@ -40,15 +40,15 @@ namespace BetterSort.LastPlayed.Test {
     }
 
     // BetterSongList can pass empty list.
-    [Fact]
+    [TestMethod]
     public void TestEmptySort() {
       _sorter.LastPlayedDates = new();
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
-      Assert.Empty(data);
+      Assert.AreEqual(0, data.Count());
     }
 
-    [Fact]
+    [TestMethod]
     public async Task TestOneOffSort() {
       _clock.Now = new DateTime(2022, 3, 1);
 
@@ -59,22 +59,25 @@ namespace BetterSort.LastPlayed.Test {
       data = data.OrderBy(x => random.Next()).ToList();
       var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
+      CollectionAssert.AreEqual(
+        Enumerable.Range(0, 1000).Select(i => $"{i}").ToList(),
+        result.Levels.Select(x => x.LevelId).ToList()
+      );
 
       var legend = result.Legend.ToList();
-      Assert.Equal(legend, new[] {
+      CollectionAssert.AreEqual(new[] {
         ("00:00", 0), ("12:05", 35),
         (legend[2].Label, 47), (legend[3].Label, 57), (legend[4].Label, 67), (legend[5].Label, 78),
         ("02-20", 89), ("02-16", 102), ("02-11", 115), ("02-03", 130), ("01-23", 146), ("01-08", 165),
         ("12-17", 185), ("11-16", 208), ("10-03", 234), ("08-02", 263), ("05-07", 295), ("2021-01", 331),
         ("2020-07", 372), ("2019-11", 417), ("2018-11", 468), ("2017-07", 526), ("2015-08", 590),
         ("2012-12", 662), ("2009-03", 743), ("2003-10", 834), ("1996-03", 936),
-      });
-      Assert.True(legend.Count <= 28, "Too many legend");
+      }, legend);
+      Assert.IsTrue(legend.Count <= 28, "Too many legend");
     }
 
     // TODO: Test short play skip
-    [Fact]
+    [TestMethod]
     public async Task TestSort() {
       _clock.Now = new DateTime(2022, 3, 1);
       var data = GenerateData().ToList();
@@ -84,7 +87,10 @@ namespace BetterSort.LastPlayed.Test {
 
       var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
-      Assert.Equal(Enumerable.Range(0, 1000).Select(i => $"{i}"), result.Levels.Select(x => x.LevelId));
+      CollectionAssert.AreEqual(
+        Enumerable.Range(0, 1000).Select(i => $"{i}").ToList(),
+        result.Levels.Select(x => x.LevelId).ToList()
+      );
 
       _clock.Now = new DateTime(2022, 3, 1, 7, 0, 0);
       _playSource.SimulatePlay("1", _clock.Now);
@@ -92,7 +98,7 @@ namespace BetterSort.LastPlayed.Test {
       var levels = result.Levels.ToList();
 
       var expectation = new List<int>() { 1, 0 }.Concat(Enumerable.Range(2, 998)).Select(i => $"{i}");
-      Assert.Equal(expectation, levels.Select(x => x.LevelId));
+      CollectionAssert.AreEqual(expectation.ToList(), levels.Select(x => x.LevelId).ToList());
     }
 
     private IEnumerable<(MockPreview preview, DateTime date)> GenerateData() {

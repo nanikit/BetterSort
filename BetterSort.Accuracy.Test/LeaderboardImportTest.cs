@@ -2,21 +2,21 @@ using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Test.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
 using Zenject;
 
 namespace BetterSort.Accuracy.Test {
 
+  [TestClass]
   public class LeaderboardImportTest {
     private readonly DiContainer _container;
 
-    public LeaderboardImportTest(ITestOutputHelper output) {
+    public LeaderboardImportTest() {
       var container = new DiContainer();
-      container.Install<MockEnvironmentInstaller>(new[] { output });
+      container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<FakeHttpService>().AsSingle();
       container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
       container.Install<SorterInstaller>();
@@ -26,7 +26,7 @@ namespace BetterSort.Accuracy.Test {
       _container = container;
     }
 
-    [Fact]
+    [TestMethod]
     public async Task TestBeatLeader() {
       var beatLeader = _container.Resolve<BeatLeaderImporter>();
       var page = await beatLeader.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
@@ -34,19 +34,19 @@ namespace BetterSort.Accuracy.Test {
         Assert.Fail("Failed to get data");
         throw new Exception();
       }
-      Assert.NotEmpty(records);
-      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
-      Assert.InRange(maxPage, 1, int.MaxValue);
+      Assert.AreNotEqual(0, records.Count);
+      Assert.IsTrue(0 <= records[0].Accuracy && records[0].Accuracy <= 1);
+      Assert.IsTrue(0 <= maxPage && maxPage <= int.MaxValue);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task TestImport() {
       Directory.CreateDirectory("UserData");
       var records = await _container.Resolve<UnifiedImporter>().CollectRecordsFromOnline().ConfigureAwait(false);
       await _container.Resolve<AccuracyRepository>().Save(records).ConfigureAwait(false);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task TestScoresaber() {
       var scoresaber = _container.Resolve<ScoresaberImporter>();
       var page = await scoresaber.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
@@ -54,9 +54,9 @@ namespace BetterSort.Accuracy.Test {
         Assert.Fail("Failed to get data");
         throw new Exception();
       }
-      Assert.NotEmpty(records);
-      Assert.InRange(records[0].Accuracy, 0, int.MaxValue);
-      Assert.InRange(maxPage, 1, int.MaxValue);
+      Assert.AreNotEqual(0, records.Count);
+      Assert.IsTrue(0 <= records[0].Accuracy && records[0].Accuracy <= 1);
+      Assert.IsTrue(0 <= maxPage && maxPage <= int.MaxValue);
     }
   }
 

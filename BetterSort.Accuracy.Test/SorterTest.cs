@@ -2,28 +2,29 @@ using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
 using BetterSort.Test.Common.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
-using Xunit;
 
 namespace BetterSort.Accuracy.Test {
 
+  [TestClass]
   public class SorterTest {
 
-    [Fact]
+    [TestMethod]
     public void TestNull() {
       var result = AccuracySorter.SortInternal(null, () => null, new List<LevelRecord>());
-      Assert.Null(result.Result);
+      Assert.IsNull(result.Result);
     }
 
     // BetterSongList can pass empty list.
-    [Fact]
+    [TestMethod]
     public void TestEmpty() {
       var result = AccuracySorter.SortInternal(new List<ILevelPreview>(), () => null, new List<LevelRecord>());
-      Assert.Empty(result.Result!.Levels);
+      CollectionAssert.AreEqual(new List<ILevelPreview>(), result.Result!.Levels.ToList());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSingle() {
       var levels = new List<ILevelPreview>() { new MockPreview("custom_level_0000000000000000000000000000000000000000") };
       var records = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>() {
@@ -34,14 +35,14 @@ namespace BetterSort.Accuracy.Test {
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
-      Assert.Equal(
+      CollectionAssert.AreEqual(
         new List<string> { "custom_level_0000000000000000000000000000000000000000" },
-        result?.Levels.Select(x => x.LevelId)!
+        result?.Levels.Select(x => x.LevelId).ToList()
       );
-      Assert.Equal(new List<(string Label, int Index)>() { ("90.29", 0) }, result?.Legend!);
+      CollectionAssert.AreEqual(new List<(string Label, int Index)>() { ("90.29", 0) }, result?.Legend.ToList());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDouble() {
       var levels = new List<ILevelPreview>() {
         new MockPreview("custom_level_1111111111111111111111111111111111111111"),
@@ -55,17 +56,17 @@ namespace BetterSort.Accuracy.Test {
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
-      Assert.Equal(
+      CollectionAssert.AreEqual(
         new List<string> {
           "custom_level_0000000000000000000000000000000000000000",
           "custom_level_1111111111111111111111111111111111111111",
         },
-        result!.Levels.Select(x => x.LevelId)
+        result!.Levels.Select(x => x.LevelId).ToList()
       );
-      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
+      CollectionAssert.AreEqual(new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) }, result.Legend.ToList());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDoubleRecords() {
       var levels = new List<ILevelPreview>() {
         new MockPreview("custom_level_1111111111111111111111111111111111111111"),
@@ -85,15 +86,15 @@ namespace BetterSort.Accuracy.Test {
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
-      Assert.Equal(
+      CollectionAssert.AreEqual(
         new List<string> {
           "custom_level_1111111111111111111111111111111111111111",
           "custom_level_0000000000000000000000000000000000000000",
           "custom_level_1111111111111111111111111111111111111111",
         },
-        result!.Levels.Select(x => x.LevelId)
+        result!.Levels.Select(x => x.LevelId).ToList()
       );
-      Assert.Equal(result.Legend!, new List<(string Label, int Index)>() { ("92.00", 0), ("90.29", 1), ("80.00", 2) });
+      CollectionAssert.AreEqual(new List<(string Label, int Index)>() { ("92.00", 0), ("90.29", 1), ("80.00", 2) }, result.Legend.ToList());
     }
   }
 }

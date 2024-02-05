@@ -1,7 +1,6 @@
 using BetterSort.Test.Common.Mocks;
 using IPA.Logging;
 using SiraUtil.Logging;
-using Xunit.Abstractions;
 using Zenject;
 
 namespace BetterSort.Test.Common {
@@ -9,8 +8,8 @@ namespace BetterSort.Test.Common {
   public class MockEnvironmentInstaller : Installer {
     private readonly MockLogger _logger;
 
-    public MockEnvironmentInstaller(ITestOutputHelper output) {
-      _logger = new MockLogger(output);
+    public MockEnvironmentInstaller() {
+      _logger = new MockLogger();
     }
 
     public override void InstallBindings() {
