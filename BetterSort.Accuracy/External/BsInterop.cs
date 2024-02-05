@@ -2,38 +2,27 @@ using BetterSort.Accuracy.Sorter;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
 using HarmonyLib;
-using IPA.Utilities;
-using IPA.Utilities.Async;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Zenject;
 
 namespace BetterSort.Accuracy.External {
+
   using BetterSort.Common.External;
-  using UnityEngine;
 
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
-
-  public delegate void OnSongSelectedHandler(int index, IPreviewBeatmapLevel level);
 
   public interface IBsInterop : IDisposable {
 
     event Action<PlayRecord> OnSongPlayed;
-
-    event OnSongSelectedHandler OnSongSelected;
-
-    Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty);
 
     void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels);
   }
 
   internal class BsUtilsInterop : IBsInterop {
     private static readonly MethodInfo _handleLevelCollectionViewControllerDidSelectLevel = AccessTools.Method(typeof(LevelCollectionNavigationController), "HandleLevelCollectionViewControllerDidSelectLevel");
-    private static OnSongSelectedHandler? _onSongSelected;
     private readonly SiraLog _logger;
 
     private readonly Scoresaber _scoresaber;
@@ -50,57 +39,9 @@ namespace BetterSort.Accuracy.External {
       _beatleader = beatleader;
       _harmony = harmony;
       BSEvents.levelCleared += DispatchWithAccuracy;
-      BSEvents.characteristicSelected += DispatchCharacteristicSelection;
     }
 
     public event Action<PlayRecord> OnSongPlayed = delegate { };
-
-    public event OnSongSelectedHandler OnSongSelected {
-      add {
-        if (_onSongSelected == null) {
-          _logger.Debug($"{nameof(OnSongSelected)}: add listener with initializing hook.");
-          _harmony.Patch(
-            original: _handleLevelCollectionViewControllerDidSelectLevel,
-            prefix: new HarmonyMethod(AccessTools.Method(
-              typeof(BsUtilsInterop),
-              nameof(HandleLevelCollectionViewControllerDidSelectLevelPrefix)
-            ))
-          );
-        }
-        else {
-          _logger.Debug($"{nameof(OnSongSelected)}: add listener.");
-        }
-
-        _onSongSelected += value;
-      }
-      remove {
-        _onSongSelected -= value;
-
-        if (_onSongSelected == null) {
-          _logger.Debug($"{nameof(OnSongSelected)}: remove listener and hook.");
-          _harmony.Unpatch(_handleLevelCollectionViewControllerDidSelectLevel, HarmonyPatchType.Prefix, _harmony.Id);
-        }
-        else {
-          _logger.Debug($"{nameof(OnSongSelected)} remove listener.");
-        }
-      }
-    }
-
-    public async Task SetModeAndDifficulty(BeatmapCharacteristicSO mode, RecordDifficulty difficulty) {
-      await UnityMainThreadTaskScheduler.Factory.StartNew(() => {
-        var player = Object.FindObjectOfType<PlayerDataModel>()?.playerData;
-        if (player == null) {
-          _logger.Warn("playerData is null. Quit.");
-          return;
-        }
-
-        player.SetProperty(nameof(PlayerData.lastSelectedBeatmapCharacteristic), mode);
-        player.SetProperty(nameof(PlayerData.lastSelectedBeatmapDifficulty), difficulty.ToGameDifficulty() ?? BeatmapDifficulty.ExpertPlus);
-        var view = Resources.FindObjectsOfTypeAll<StandardLevelDetailView>().FirstOrDefault();
-        var level = view?.GetField<IBeatmapLevel, StandardLevelDetailView>("_level");
-        view?.SetContent(level, difficulty.ToGameDifficulty() ?? BeatmapDifficulty.ExpertPlus, mode, player);
-      }).ConfigureAwait(false);
-    }
 
     public void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels) {
       try {
@@ -130,17 +71,6 @@ namespace BetterSort.Accuracy.External {
 
     public void Dispose() {
       BSEvents.levelCleared -= DispatchWithAccuracy;
-    }
-
-    private static void HandleLevelCollectionViewControllerDidSelectLevelPrefix(LevelCollectionViewController viewController, IPreviewBeatmapLevel level) {
-      var view = viewController.GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView");
-      int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
-      bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
-      int index = hasHeader ? row - 1 : row;
-      _onSongSelected?.Invoke(index, level);
-    }
-
-    private void DispatchCharacteristicSelection(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2) {
     }
 
     private void DispatchWithAccuracy(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults result) {
@@ -173,7 +103,7 @@ namespace BetterSort.Accuracy.External {
       string? levelId = level?.levelID;
       string? songName = level?.songName;
       string? mode = diffBeatmap?.parentDifficultyBeatmapSet?.beatmapCharacteristic?.serializedName;
-      var difficulty = DifficultyExtension.ConvertFromString(diffBeatmap?.difficulty.SerializedName());
+      var difficulty = RecordDifficultyExtension.ConvertFromString(diffBeatmap?.difficulty.SerializedName());
       if (levelId == null || difficulty is not RecordDifficulty diff || mode == null) {
         _logger.Warn($"Skip record as some game stats are missing: {levelId}, {mode}, {difficulty}, {songName}");
         return;

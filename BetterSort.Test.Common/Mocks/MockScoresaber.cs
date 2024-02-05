@@ -3,7 +3,7 @@ using SiraUtil.Logging;
 
 namespace BetterSort.Test.Common.Mocks {
 
-  public class MockScoresaber : Beatleader {
+  public class MockScoresaber : Scoresaber {
 
     public MockScoresaber(SiraLog logger) : base(logger) {
     }

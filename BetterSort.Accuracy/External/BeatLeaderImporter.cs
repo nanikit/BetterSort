@@ -1,5 +1,5 @@
 using BeatLeader;
-using BetterSort.Accuracy.Sorter;
+using BetterSort.Common.External;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -82,7 +82,7 @@ namespace BetterSort.Accuracy.External {
           continue;
         }
 
-        var difficulty = DifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
+        var difficulty = RecordDifficultyExtension.ConvertFromString(score.Leaderboard?.Difficulty?.DifficultyName);
         if (difficulty == null) {
           _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");
         }

@@ -1,4 +1,4 @@
-using BetterSort.Accuracy.Sorter;
+using BetterSort.Common.External;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;

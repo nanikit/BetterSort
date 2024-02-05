@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace BetterSort.Common.Interfaces {
 
   public interface ILevelPreview {

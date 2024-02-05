@@ -1,4 +1,4 @@
-using BetterSort.Accuracy.Sorter;
+using BetterSort.Common.External;
 using Scoresaber;
 using SiraUtil.Logging;
 using System;
@@ -42,14 +42,10 @@ namespace BetterSort.Accuracy.External {
     }
 
     private static RecordDifficulty? ConvertToEnum(int? scoresaberDifficulty) {
-      return scoresaberDifficulty switch {
-        1 => RecordDifficulty.Easy,
-        3 => RecordDifficulty.Normal,
-        5 => RecordDifficulty.Hard,
-        7 => RecordDifficulty.Expert,
-        9 => RecordDifficulty.ExpertPlus,
-        _ => null,
-      };
+      if (scoresaberDifficulty != null && Enum.IsDefined(typeof(RecordDifficulty), scoresaberDifficulty)) {
+        return (RecordDifficulty)scoresaberDifficulty;
+      }
+      return null;
     }
 
     private static string GetGameMode(string? mode) {

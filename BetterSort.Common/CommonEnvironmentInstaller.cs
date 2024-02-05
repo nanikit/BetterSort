@@ -11,6 +11,7 @@ namespace BetterSort.Common {
       Container.BindInterfacesAndSelfTo<Beatleader>().AsSingle();
       Container.BindInterfacesAndSelfTo<Scoresaber>().AsSingle();
       Container.BindInterfacesAndSelfTo<TransformerPluginHelper>().AsSingle();
+      Container.BindInterfacesAndSelfTo<SongSelection>().AsSingle();
     }
   }
 }

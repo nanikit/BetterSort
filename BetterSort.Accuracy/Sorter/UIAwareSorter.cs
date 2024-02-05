@@ -2,6 +2,7 @@ using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.Compatibility;
+using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
 using HarmonyLib;
 using SiraUtil.Logging;
@@ -19,13 +20,15 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly AccuracySorter _sorter;
     private readonly SiraLog _logger;
     private readonly IBsInterop _bsInterop;
+    private readonly ISongSelection _songSelection;
     private bool _isHooking;
 
-    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop, FilterSortAdaptor adaptor) {
+    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop, FilterSortAdaptor adaptor, ISongSelection songSelection) {
       _adaptor = adaptor;
       _sorter = sorter;
       _logger = logger;
       _bsInterop = bsInterop;
+      _songSelection = songSelection;
 
       _sorter.OnResultChanged += UpdatePlaylistManager;
     }
@@ -48,7 +51,7 @@ namespace BetterSort.Accuracy.Sorter {
       _adaptor.DoSort(ref levels, ascending);
       if (!_isHooking) {
         _isHooking = true;
-        _bsInterop.OnSongSelected += SelectDifficultyWithGuard;
+        _songSelection.OnSongSelected += SelectDifficultyWithGuard;
       }
     }
 
@@ -62,9 +65,9 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    private async void SelectDifficultyWithGuard(int index, IPreviewBeatmapLevel level) {
+    private async void SelectDifficultyWithGuard(int index, LevelPreview preview) {
       try {
-        await SelectDifficulty(index, level).ConfigureAwait(false);
+        await SelectDifficulty(index, preview).ConfigureAwait(false);
       }
       catch (DirectoryNotFoundException notFound) {
         _logger.Info($"Suppress IO exception, it may occur when delete beatmap; {notFound.Message}");
@@ -74,7 +77,7 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    private async Task SelectDifficulty(int index, IPreviewBeatmapLevel level) {
+    private async Task SelectDifficulty(int index, LevelPreview preview) {
       var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
       if (type == null) {
         _logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
@@ -85,27 +88,22 @@ namespace BetterSort.Accuracy.Sorter {
       if (sorter != this) {
         _logger.Debug($"Not selecting this sort while selecting difficulty. {(_isHooking ? "Unhook" : "Skip")}.");
         if (_isHooking) {
-          _bsInterop.OnSongSelected -= SelectDifficultyWithGuard;
+          _songSelection.OnSongSelected -= SelectDifficultyWithGuard;
           _isHooking = false;
         }
         return;
       }
 
       if (index < 0 || _sorter.Mapping.Count <= index) {
-        _logger.Debug($"User picked a song never played so skip selecting difficulty. ({index} {level.levelID} {level.songName})");
+        _logger.Debug($"User picked a song never played so skip selecting difficulty. ({index} {preview.LevelId} {preview.SongName})");
         return;
       }
 
       var record = _sorter.Mapping[index];
       string mode = record.Mode;
-      var characteristic = level.previewDifficultyBeatmapSets.Select(x => x.beatmapCharacteristic).FirstOrDefault(x => x.serializedName == mode);
-      if (characteristic == null) {
-        _logger.Warn($"User picked a song having record but characteristic doesn't match. ({level.levelID}, {mode})");
-        return;
-      }
 
-      _logger.Debug($"{nameof(SelectDifficulty)}: Set {index} {level.songName} {mode} {record.Difficulty} {record.Accuracy}");
-      await _bsInterop.SetModeAndDifficulty(characteristic, record.Difficulty).ConfigureAwait(false);
+      _logger.Debug($"{nameof(SelectDifficulty)}: Set {index} {preview.SongName} {mode} {record.Difficulty} {record.Accuracy}");
+      await _songSelection.SelectDifficulty(mode, record.Difficulty, preview);
     }
   }
 }

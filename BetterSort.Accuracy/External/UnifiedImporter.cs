@@ -1,4 +1,4 @@
-using BetterSort.Accuracy.Sorter;
+using BetterSort.Common.External;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;

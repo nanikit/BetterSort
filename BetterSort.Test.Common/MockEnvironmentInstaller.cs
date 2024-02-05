@@ -20,6 +20,7 @@ namespace BetterSort.Test.Common {
       Container.BindInterfacesAndSelfTo<MockBeatleader>().AsSingle();
       Container.BindInterfacesAndSelfTo<MockScoresaber>().AsSingle();
       Container.BindInterfacesAndSelfTo<MockTransformerPluginHelper>().AsSingle();
+      Container.BindInterfacesAndSelfTo<MockSongSelection>().AsSingle();
     }
   }
 }

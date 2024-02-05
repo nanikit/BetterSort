@@ -46,7 +46,7 @@ namespace BetterSort.Accuracy.Test {
       _repository.BestAccuracies = new() {
         { "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", new() {
             { "Standard", new() {
-              { RecordDifficulty.ExpertPlus, 0.90292 }
+              { Common.External.RecordDifficulty.ExpertPlus, 0.90292 }
             }},
         }},
       };
