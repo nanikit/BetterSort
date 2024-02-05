@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace BetterSort.Accuracy.Sorter {
 
   public class SorterEnvironment {
-    private readonly UIAwareSorter _adaptor;
+    private readonly FilterSortAdaptor _adaptor;
     private readonly IBsInterop _bsInterop;
     private readonly UnifiedImporter _importer;
     private readonly SiraLog _logger;
@@ -18,7 +18,7 @@ namespace BetterSort.Accuracy.Sorter {
     private readonly ITransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
-      UIAwareSorter adaptor, UnifiedImporter importer, AccuracySorter sorter, ITransformerPluginHelper pluginHelper
+      FilterSortAdaptor adaptor, UnifiedImporter importer, AccuracySorter sorter, ITransformerPluginHelper pluginHelper
     ) {
       _logger = logger;
       _repository = repository;

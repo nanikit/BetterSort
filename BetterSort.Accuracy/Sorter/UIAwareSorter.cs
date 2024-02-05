@@ -1,7 +1,5 @@
-using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
 using BetterSort.Accuracy.External;
-using BetterSort.Common.Compatibility;
 using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
 using HarmonyLib;
@@ -15,16 +13,14 @@ using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.Sorter {
 
-  public class UIAwareSorter : ISorterCustom, ISorterWithLegend, ITransformerPlugin {
-    private readonly FilterSortAdaptor _adaptor;
+  public class UIAwareSorter : ISortFilter {
     private readonly AccuracySorter _sorter;
     private readonly SiraLog _logger;
     private readonly IBsInterop _bsInterop;
     private readonly ISongSelection _songSelection;
     private bool _isHooking;
 
-    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop, FilterSortAdaptor adaptor, ISongSelection songSelection) {
-      _adaptor = adaptor;
+    public UIAwareSorter(AccuracySorter sorter, SiraLog logger, IBsInterop bsInterop, ISongSelection songSelection) {
       _sorter = sorter;
       _logger = logger;
       _bsInterop = bsInterop;
@@ -33,33 +29,20 @@ namespace BetterSort.Accuracy.Sorter {
       _sorter.OnResultChanged += UpdatePlaylistManager;
     }
 
-    public bool isReady => _adaptor.isReady;
+    public event Action<ISortFilterResult?> OnResultChanged = delegate { };
 
-    public string name => _adaptor.name;
+    public string Name => _sorter.Name;
 
-    public bool visible => _adaptor.visible;
-
-    public IEnumerable<KeyValuePair<string, int>> BuildLegend(IPreviewBeatmapLevel[] levels) {
-      return _adaptor.BuildLegend(levels);
-    }
-
-    public void ContextSwitch(SelectLevelCategoryViewController.LevelCategory levelCategory, IAnnotatedBeatmapLevelCollection? playlist) {
-      _adaptor.ContextSwitch(levelCategory, playlist);
-    }
-
-    public void DoSort(ref IEnumerable<IPreviewBeatmapLevel> levels, bool ascending) {
-      _adaptor.DoSort(ref levels, ascending);
+    public void NotifyChange(IEnumerable<ILevelPreview> newLevels, bool isSelected = false, CancellationToken? token = null) {
+      _sorter.NotifyChange(newLevels, isSelected, token);
       if (!_isHooking) {
         _isHooking = true;
         _songSelection.OnSongSelected += SelectDifficultyWithGuard;
       }
     }
 
-    public Task Prepare(CancellationToken cancelToken) {
-      return _adaptor.Prepare(cancelToken);
-    }
-
     private void UpdatePlaylistManager(ISortFilterResult? result) {
+      OnResultChanged.Invoke(result);
       if (result != null) {
         _bsInterop.SetPlaylistItem(result.Levels.OfType<LevelPreview>().Select(x => x.Preview).ToList());
       }

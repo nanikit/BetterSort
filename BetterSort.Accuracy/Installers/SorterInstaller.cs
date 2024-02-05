@@ -13,9 +13,9 @@ namespace BetterSort.Accuracy.Installers {
       Container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
       Container.Bind<UnifiedImporter>().AsSingle();
 
-      Container.Bind<FilterSortAdaptor>().AsSingle();
-      Container.BindInterfacesAndSelfTo<AccuracySorter>().AsSingle();
+      Container.Bind<AccuracySorter>().AsSingle();
       Container.BindInterfacesAndSelfTo<UIAwareSorter>().AsSingle();
+      Container.BindInterfacesAndSelfTo<FilterSortAdaptor>().AsSingle();
       Container.Bind<SorterEnvironment>().AsSingle().NonLazy();
     }
   }
