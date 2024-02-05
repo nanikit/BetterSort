@@ -1,8 +1,6 @@
-using BetterSongList.SortModels;
 using BetterSort.Accuracy.External;
 using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
-using HarmonyLib;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -61,14 +59,9 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     private async Task SelectDifficulty(int index, LevelPreview preview) {
-      var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
-      if (type == null) {
-        _logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
-        return;
-      }
-
-      var sorter = AccessTools.StaticFieldRefAccess<ISorter>(type, "sorter");
-      if (sorter != this) {
+      // current sorter's type will be FilterSortAdapter, so simple type comparison is confusing.
+      bool isDifferentSort = _songSelection.CurrentSorter?.GetType().Assembly != typeof(UIAwareSorter).Assembly;
+      if (isDifferentSort) {
         _logger.Debug($"Not selecting this sort while selecting difficulty. {(_isHooking ? "Unhook" : "Skip")}.");
         if (_isHooking) {
           _songSelection.OnSongSelected -= SelectDifficultyWithGuard;

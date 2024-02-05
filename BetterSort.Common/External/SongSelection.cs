@@ -1,14 +1,18 @@
+using BetterSongList.SortModels;
 using BetterSort.Common.Interfaces;
+using HarmonyLib;
 using IPA.Utilities;
 using IPA.Utilities.Async;
 using SiraUtil.Affinity;
 using SiraUtil.Logging;
+using System;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace BetterSort.Common.External {
+
+  using UnityEngine;
 
   public delegate void OnSongSelectedHandler(int index, LevelPreview preview);
 
@@ -24,6 +28,8 @@ namespace BetterSort.Common.External {
   public interface ISongSelection {
 
     event OnSongSelectedHandler OnSongSelected;
+
+    ISorter? CurrentSorter { get; }
 
     Task SelectDifficulty(string TypeName, RecordDifficulty difficulty, LevelPreview preview);
   }
@@ -61,6 +67,18 @@ namespace BetterSort.Common.External {
     }
 
     public event OnSongSelectedHandler OnSongSelected = delegate { };
+
+    public ISorter? CurrentSorter {
+      get {
+        var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
+        if (type == null) {
+          _logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
+          return null;
+        }
+
+        return AccessTools.StaticFieldRefAccess<ISorter>(type, "sorter");
+      }
+    }
 
     public async Task SelectDifficulty(string TypeName, RecordDifficulty difficulty, LevelPreview preview) {
       await UnityMainThreadTaskScheduler.Factory.StartNew(
