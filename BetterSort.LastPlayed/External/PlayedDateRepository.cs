@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace BetterSort.LastPlayed.External {
@@ -15,62 +14,29 @@ namespace BetterSort.LastPlayed.External {
     void Save(IReadOnlyDictionary<string, DateTime> playDates);
   }
 
-  public class ImmigrationRepository {
-    private readonly SongPlayHistoryImporter _importer;
-
+  public class PlayedDateRepository : IPlayedDateRepository {
     private readonly SiraLog _logger;
+    private readonly IPlayedDateJsonRepository _jsonRepository;
 
-    private readonly IPlayedDateRepository _repository;
-
-    internal ImmigrationRepository(SiraLog logger, IPlayedDateRepository repository, SongPlayHistoryImporter importer) {
+    public PlayedDateRepository(SiraLog logger, IPlayedDateJsonRepository jsonRepository) {
       _logger = logger;
-      _repository = repository;
-      _importer = importer;
+      _jsonRepository = jsonRepository;
     }
 
     public StoredData? Load() {
-      return _repository.Load() ?? TryImportingSongPlayHistoryData();
-    }
-
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
-      _repository.Save(playDates);
-    }
-
-    private StoredData? TryImportingSongPlayHistoryData() {
-      var history = _importer.Load();
-      if (history == null) {
-        _logger.Debug("Searched SongPlayHistory data but not found. No history restored.");
-        return null;
-      }
-
-      _logger.Debug($"Imported SongPlayHistory data, total count: {history.Count}");
-      return new StoredData() { LastPlays = history };
-    }
-  }
-
-  internal class PlayedDateRepository : IPlayedDateRepository {
-    private readonly SiraLog _logger;
-
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
-
-    public PlayedDateRepository(SiraLog logger) {
-      _logger = logger;
-    }
-
-    public StoredData? Load() {
-      if (!File.Exists(_path)) {
-        _logger.Debug($"Try loading but play history is not exist.");
-        return null;
-      }
-
       try {
-        string json = File.ReadAllText(_path);
+        string? json = _jsonRepository.Load();
+        if (json == null) {
+          _logger.Debug($"Attempting to load, but there is no existing play history.");
+          return null;
+        }
+
         var data = JsonConvert.DeserializeObject<StoredData>(json);
         _logger.Info($"Loaded {data?.LastPlays?.Count.ToString() ?? "no"} records");
         return data;
       }
       catch (Exception exception) {
-        _logger.Warn(exception);
+        _logger.Error(exception);
         return null;
       }
     }
@@ -84,8 +50,14 @@ namespace BetterSort.LastPlayed.External {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
         LastPlays = sorted,
       }, Formatting.Indented);
-      File.WriteAllText(_path, json);
-      _logger.Info($"Saved {playDates.Count} records");
+
+      try {
+        _jsonRepository.Save(json);
+        _logger.Info($"Saved {playDates.Count} records");
+      }
+      catch (Exception exception) {
+        _logger.Error(exception);
+      }
     }
   }
 }

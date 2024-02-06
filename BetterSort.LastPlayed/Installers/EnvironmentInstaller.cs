@@ -7,8 +7,8 @@ namespace BetterSort.LastPlayed.Installers {
 
     public override void InstallBindings() {
       Container.BindInterfacesAndSelfTo<BsUtilsEventSource>().AsSingle();
-      Container.Bind<PlayedDateRepository>().AsSingle();
-      Container.BindInterfacesTo<PlayedDateRepository>().FromResolve().WhenInjectedInto<ImmigrationRepository>();
+      Container.BindInterfacesAndSelfTo<PlayedDateJsonRepository>().AsSingle();
+      Container.BindInterfacesAndSelfTo<PlayedDateRepository>().AsSingle();
     }
   }
 }

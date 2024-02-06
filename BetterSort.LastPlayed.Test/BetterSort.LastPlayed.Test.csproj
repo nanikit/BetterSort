@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\BetterSort.props" />
 
   <PropertyGroup>
     <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
     <Product>BetterSort.LastPlayed.Test</Product>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
