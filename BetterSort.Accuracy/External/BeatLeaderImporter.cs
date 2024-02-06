@@ -1,10 +1,9 @@
 using BeatLeader;
 using BetterSort.Common.External;
+using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
@@ -68,7 +67,7 @@ namespace BetterSort.Accuracy.External {
     private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
       var records = new List<BestRecord>();
 
-      var page = JsonSerializer.Deserialize<PagedPlayerScores>(json);
+      var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
       var data = page!.Data;
       if (data == null) {
         _logger.Warn("Records field is missing. Can't import from beatleader.");
@@ -106,64 +105,64 @@ namespace BeatLeader {
 
   public class PagedPlayerScores {
 
-    [JsonPropertyName("metadata")]
+    [JsonProperty("metadata")]
     public PageMetadata? Metadata { get; set; }
 
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public List<PlayerScore>? Data { get; set; }
   }
 
   public class PageMetadata {
 
-    [JsonPropertyName("itemsPerPage")]
+    [JsonProperty("itemsPerPage")]
     public int ItemsPerPage { get; set; }
 
-    [JsonPropertyName("page")]
+    [JsonProperty("page")]
     public int Page { get; set; }
 
-    [JsonPropertyName("total")]
+    [JsonProperty("total")]
     public int Total { get; set; }
   }
 
   public class PlayerScore {
 
-    [JsonPropertyName("leaderboard")]
+    [JsonProperty("leaderboard")]
     public Leaderboard? Leaderboard { get; set; }
 
-    [JsonPropertyName("accuracy")]
+    [JsonProperty("accuracy")]
     public double Accuracy { get; set; }
 
-    [JsonPropertyName("modifiedScore")]
+    [JsonProperty("modifiedScore")]
     public int ModifiedScore { get; set; }
   }
 
   public class Leaderboard {
 
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("song")]
+    [JsonProperty("song")]
     public Song? Song { get; set; }
 
-    [JsonPropertyName("difficulty")]
+    [JsonProperty("difficulty")]
     public Difficulty? Difficulty { get; set; }
   }
 
   public class Song {
 
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName("hash")]
+    [JsonProperty("hash")]
     public string? Hash { get; set; }
   }
 
   public class Difficulty {
 
-    [JsonPropertyName("difficultyName")]
+    [JsonProperty("difficultyName")]
     public string? DifficultyName { get; set; }
 
-    [JsonPropertyName("modeName")]
+    [JsonProperty("modeName")]
     public string? ModeName { get; set; }
   }
 }

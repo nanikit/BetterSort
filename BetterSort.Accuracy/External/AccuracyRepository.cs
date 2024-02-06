@@ -1,10 +1,10 @@
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
+using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
@@ -33,7 +33,8 @@ namespace BetterSort.Accuracy.External {
     public Task Save(BestRecords accuracies) {
       var data = GetSortedData(accuracies);
 
-      string json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { WriteIndented = true });
+      var indented = new JsonSerializerSettings() { Formatting = Formatting.Indented };
+      string json = JsonConvert.SerializeObject(accuracies, indented);
       File.WriteAllText(_path, json);
 
       _logger.Info($"Saved {accuracies.Count} records");
@@ -56,7 +57,7 @@ namespace BetterSort.Accuracy.External {
 
       try {
         string json = File.ReadAllText(_path);
-        _cache = JsonSerializer.Deserialize<StoredData>(json);
+        _cache = JsonConvert.DeserializeObject<StoredData>(json);
         _logger.Info($"Loaded {_cache!.BestRecords?.Count.ToString() ?? "no"} records");
         return Task.FromResult<StoredData?>(_cache);
       }

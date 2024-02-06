@@ -7,16 +7,16 @@ using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using System;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using UnityEngine;
 
 namespace BetterSort.Common.External {
 
-  using UnityEngine;
-
   public delegate void OnSongSelectedHandler(int index, LevelPreview preview);
 
-  [JsonConverter(typeof(JsonStringEnumConverter<RecordDifficulty>))]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum RecordDifficulty {
     Easy = 1,
     Normal = 3,
@@ -97,7 +97,7 @@ namespace BetterSort.Common.External {
     }
 
     private void SelectDifficultyInternal(string TypeName, RecordDifficulty difficulty, LevelPreview preview) {
-      var player = Object.FindObjectOfType<PlayerDataModel>()?.playerData;
+      var player = UnityEngine.Object.FindObjectOfType<PlayerDataModel>()?.playerData;
       if (player == null) {
         _logger.Warn("playerData is null. Quit.");
         return;
