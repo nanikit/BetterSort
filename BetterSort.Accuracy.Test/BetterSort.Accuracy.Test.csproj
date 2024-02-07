@@ -71,6 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />
-    <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />
+    <ProjectReference Include="..\BetterSort.Common.Test\BetterSort.Common.Test.csproj" />
   </ItemGroup>
 </Project>

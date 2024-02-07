@@ -3,7 +3,7 @@ using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
 using System.Threading.Tasks;
 
-namespace BetterSort.Test.Common.Mocks {
+namespace BetterSort.Common.Test.Mocks {
 
   internal class MockSongSelection : ISongSelection {
 

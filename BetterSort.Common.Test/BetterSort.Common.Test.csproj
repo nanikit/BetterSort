@@ -4,10 +4,10 @@
     <OutputType>Library</OutputType>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSort.Test.Common</RootNamespace>
+    <RootNamespace>BetterSort.Common.Test</RootNamespace>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <Nullable>enable</Nullable>
-    <Product>BetterSort.Test.Common</Product>
+    <Product>BetterSort.Common.Test</Product>
     <Company />
     <Authors></Authors>
     <Copyright></Copyright>

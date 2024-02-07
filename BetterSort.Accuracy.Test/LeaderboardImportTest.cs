@@ -1,7 +1,7 @@
 using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Test.Mocks;
-using BetterSort.Test.Common;
+using BetterSort.Common.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;

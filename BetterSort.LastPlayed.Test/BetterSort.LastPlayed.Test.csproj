@@ -73,6 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BetterSort.LastPlayed\BetterSort.LastPlayed.csproj" />
-    <ProjectReference Include="..\BetterSort.Test.Common\BetterSort.Test.Common.csproj" />
+    <ProjectReference Include="..\BetterSort.Common.Test\BetterSort.Common.Test.csproj" />
   </ItemGroup>
 </Project>

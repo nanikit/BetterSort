@@ -1,6 +1,6 @@
 using BetterSort.Common.Interfaces;
 
-namespace BetterSort.Test.Common.Mocks {
+namespace BetterSort.Common.Test.Mocks {
 
   public class MockPreview : ILevelPreview {
     private readonly string _id;

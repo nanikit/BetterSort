@@ -1,9 +1,9 @@
-using BetterSort.Test.Common.Mocks;
+using BetterSort.Common.Test.Mocks;
 using IPA.Logging;
 using SiraUtil.Logging;
 using Zenject;
 
-namespace BetterSort.Test.Common {
+namespace BetterSort.Common.Test {
 
   public class MockEnvironmentInstaller : Installer {
     private readonly MockLogger _logger;

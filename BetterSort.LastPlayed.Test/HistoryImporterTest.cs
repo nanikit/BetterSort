@@ -1,7 +1,7 @@
 using BetterSort.LastPlayed.External;
 using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Test.Mocks;
-using BetterSort.Test.Common;
+using BetterSort.Common.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;

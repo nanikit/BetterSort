@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy", "Bett
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Common", "BetterSort.Common\BetterSort.Common.csproj", "{E33A3210-EC67-4E24-9927-A3AA00F8E3B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Test.Common", "BetterSort.Test.Common\BetterSort.Test.Common.csproj", "{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Common.Test", "BetterSort.Common.Test\BetterSort.Common.Test.csproj", "{CDA7BC28-44E6-4197-9F64-25F25AE5AD42}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.Accuracy.Test", "BetterSort.Accuracy.Test\BetterSort.Accuracy.Test.csproj", "{1FDA8A17-359C-44C6-B032-2FC119B1CB3B}"
 	ProjectSection(ProjectDependencies) = postProject

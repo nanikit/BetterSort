@@ -1,7 +1,7 @@
 using BetterSort.Common.External;
 using SiraUtil.Logging;
 
-namespace BetterSort.Test.Common.Mocks {
+namespace BetterSort.Common.Test.Mocks {
 
   public class MockScoresaber : Scoresaber {
 

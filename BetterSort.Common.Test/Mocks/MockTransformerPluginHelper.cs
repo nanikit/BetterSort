@@ -2,7 +2,7 @@ using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
 using BetterSort.Common.Compatibility;
 
-namespace BetterSort.Test.Common.Mocks {
+namespace BetterSort.Common.Test.Mocks {
 
   public class MockTransformerPluginHelper : ITransformerPluginHelper {
 

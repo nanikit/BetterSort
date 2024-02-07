@@ -3,7 +3,7 @@
   <Target Name="ILRepacker" BeforeTargets="BSMT_AfterBuild">
     <ItemGroup>
       <InputAssemblies Include="$(OutputPath)\$(AssemblyName).dll" />
-      <InputAssemblies Include="$(OutputPath)\BetterSort.Test.Common.dll" />
+      <InputAssemblies Include="$(OutputPath)\BetterSort.Common.Test.dll" />
     </ItemGroup>
 
     <ILRepack
