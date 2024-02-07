@@ -4,6 +4,7 @@
   <PropertyGroup>
     <RootNamespace>BetterSort.LastPlayed</RootNamespace>
     <Product>BetterSort.LastPlayed</Product>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
