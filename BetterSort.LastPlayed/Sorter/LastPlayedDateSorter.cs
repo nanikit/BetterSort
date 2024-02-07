@@ -1,5 +1,6 @@
 using BetterSort.Common.External;
 using BetterSort.Common.Interfaces;
+using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,18 @@ using System.Linq;
 using System.Threading;
 
 namespace BetterSort.LastPlayed.Sorter {
+  public record class PlayedMap(
+    [JsonProperty("type")] string Type,
+    [JsonProperty("difficulty")] RecordDifficulty Difficulty
+  );
+  public record class LevelPlayData(DateTime Time, PlayedMap? Map);
 
   public class LastPlayedDateSorter : ISortFilter {
 
     /// <summary>
-    /// Level id to instant.
+    /// Level id to play data.
     /// </summary>
-    public Dictionary<string, DateTime> LastPlayedDates = new();
+    public Dictionary<string, LevelPlayData> LastPlays = [];
 
     private readonly IClock _clock;
     private readonly SiraLog _logger;
@@ -41,22 +47,19 @@ namespace BetterSort.LastPlayed.Sorter {
       Sort();
     }
 
-    public void RequestRefresh() {
-      Sort();
-    }
-
     private void Sort() {
       if (!_isSelected) {
         return;
       }
 
-      if (LastPlayedDates == null) {
-        throw new InvalidOperationException($"Precondition: {nameof(LastPlayedDates)} should not be null.");
+      if (LastPlays == null) {
+        throw new InvalidOperationException($"Precondition: {nameof(LastPlays)} should not be null.");
       }
 
-      var comparer = new LastPlayedDateComparer(LastPlayedDates);
-      var ordered = _triggeredLevels.OrderBy(x => x, comparer).ToList();
-      var legend = DateLegendMaker.GetLegend(ordered, _clock.Now, LastPlayedDates);
+      var ordered = _triggeredLevels
+        .OrderByDescending(x => LastPlays.TryGetValue(x.LevelId, out var data) ? data.Time : new DateTime(0))
+        .ToList();
+      var legend = DateLegendMaker.GetLegend(ordered, _clock.Now, LastPlays);
       OnResultChanged(new SortFilterResult(ordered, legend));
       _logger.Info($"Sort finished, ordered[0].Name: {(ordered.Count == 0 ? null : ordered[0].SongName)}");
     }

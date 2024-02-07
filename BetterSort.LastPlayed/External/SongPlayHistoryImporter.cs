@@ -18,6 +18,7 @@ namespace BetterSort.LastPlayed.External {
       _logger = logger;
     }
 
+    // TODO: preserve difficulty information
     public Dictionary<string, DateTime>? Load() {
       if (!File.Exists(_sphJsonPath)) {
         return null;

@@ -1,11 +1,13 @@
 using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
+using BetterSort.LastPlayed.External;
 using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Sorter;
 using BetterSort.LastPlayed.Test.Mocks;
 using BetterSort.Test.Common;
 using BetterSort.Test.Common.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +23,20 @@ namespace BetterSort.LastPlayed.Test {
     private readonly FixedClock _clock;
     private readonly DiContainer _container;
     private readonly MockEventSource _playSource;
-    private readonly InMemoryDateRepository _repository;
+    private readonly InMemoryPlayedDateJsonRepository _repository;
     private readonly LastPlayedDateSorter _sorter;
 
     public SorterTest() {
       DiContainer container = new();
       container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<MockEventSource>().AsSingle();
-      container.BindInterfacesAndSelfTo<InMemoryDateRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<InMemoryPlayedDateJsonRepository>().AsSingle();
 
       container.Install<SorterInstaller>();
       _clock = container.Resolve<FixedClock>();
       _playSource = container.Resolve<MockEventSource>();
       _sorter = container.Resolve<LastPlayedDateSorter>();
-      _repository = container.Resolve<InMemoryDateRepository>();
+      _repository = container.Resolve<InMemoryPlayedDateJsonRepository>();
       _adaptor = container.Resolve<FilterSortAdaptor>();
       _container = container;
     }
@@ -42,7 +44,7 @@ namespace BetterSort.LastPlayed.Test {
     // BetterSongList can pass empty list.
     [TestMethod]
     public void TestEmptySort() {
-      _sorter.LastPlayedDates = new();
+      _sorter.LastPlays = new();
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
       Assert.AreEqual(0, data.Count());
@@ -53,10 +55,10 @@ namespace BetterSort.LastPlayed.Test {
       _clock.Now = new DateTime(2022, 3, 1);
 
       var data = GenerateData().ToList();
-      _sorter.LastPlayedDates = data.ToDictionary(x => x.preview.LevelId, x => x.date);
+      _sorter.LastPlays = data.ToDictionary(x => x.preview.LevelId, x => new LevelPlayData(x.date, null));
 
       var random = new Random(30000);
-      data = data.OrderBy(x => random.Next()).ToList();
+      data = [.. data.OrderBy(x => random.Next())];
       var result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
 
       CollectionAssert.AreEqual(
@@ -81,7 +83,9 @@ namespace BetterSort.LastPlayed.Test {
     public async Task TestSort() {
       _clock.Now = new DateTime(2022, 3, 1);
       var data = GenerateData().ToList();
-      _repository.LastPlayedDate = data.ToDictionary(x => x.preview.LevelId, x => x.date);
+      _repository.Json = JsonConvert.SerializeObject(new StoredData() {
+        LatestRecords = data.Select(x => new LastPlayRecord(x.date, x.preview.LevelId, null)).ToList(),
+      });
 
       _container.Resolve<SorterEnvironment>().Initialize();
 
@@ -93,7 +97,7 @@ namespace BetterSort.LastPlayed.Test {
       );
 
       _clock.Now = new DateTime(2022, 3, 1, 7, 0, 0);
-      _playSource.SimulatePlay("1", _clock.Now);
+      _playSource.SimulatePlay(new LastPlayRecord(_clock.Now, "1", null));
       result = await WaitResult(data.Select(x => x.preview), true).ConfigureAwait(false);
       var levels = result.Levels.ToList();
 

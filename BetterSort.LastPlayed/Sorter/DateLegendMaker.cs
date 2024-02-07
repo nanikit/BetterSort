@@ -6,7 +6,7 @@ namespace BetterSort.LastPlayed.Sorter {
 
   internal class DateLegendMaker {
 
-    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, DateTime> lastPlayedDates) {
+    public static List<(string, int)> GetLegend(IList<ILevelPreview> levels, DateTime now, Dictionary<string, LevelPlayData> lastPlayedDates) {
       var legend = new List<(string, int)>();
       int lastLogOfUnixDifference = -1;
 
@@ -16,13 +16,13 @@ namespace BetterSort.LastPlayed.Sorter {
       for (int i = 0; i < levels.Count; i++) {
         var level = levels[i];
         if (lastPlayedDates.TryGetValue(level.LevelId, out var lastPlayedDate)) {
-          var difference = now - lastPlayedDate;
+          var difference = now - lastPlayedDate.Time;
           double seconds = difference.TotalSeconds;
 
           int logOfDifference = (int)(Math.Log(Math.Max(1, seconds) + logOffset, logBase) - Math.Log(logOffset + 1, logBase));
           if (lastLogOfUnixDifference < logOfDifference) {
             lastLogOfUnixDifference = logOfDifference;
-            legend.Add((FormatTimeLabel(lastPlayedDate, difference), i));
+            legend.Add((FormatTimeLabel(lastPlayedDate.Time, difference), i));
           }
         }
         else {

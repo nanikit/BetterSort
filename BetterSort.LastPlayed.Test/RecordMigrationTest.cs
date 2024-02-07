@@ -1,38 +1,58 @@
+using BetterSort.Common.External;
 using BetterSort.LastPlayed.External;
-using BetterSort.LastPlayed.Installers;
-using BetterSort.Test.Common;
+using BetterSort.LastPlayed.Sorter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Zenject;
+using System;
+using System.Collections.Generic;
 
 namespace BetterSort.LastPlayed.Test {
 
   [TestClass]
   public class RecordMigrationTest {
-    private readonly IPlayedDateRepository _repository;
-    private readonly Mock<IPlayedDateJsonRepository> _mock;
 
-    public RecordMigrationTest() {
-      var container = new DiContainer();
-      container.Install<MockEnvironmentInstaller>();
+    [TestMethod]
+    public void TestEmptyData() {
+      var (data, result) = PlayedDateRepository.MigrateData(new CompatibleData() { });
 
-      _mock = new Mock<IPlayedDateJsonRepository>();
-      container.Bind<IPlayedDateJsonRepository>().FromInstance(_mock.Object);
-      container.BindInterfacesAndSelfTo<PlayedDateRepository>().AsSingle();
-
-      container.Install<SorterInstaller>();
-
-      _repository = container.Resolve<IPlayedDateRepository>();
+      Assert.IsNull(data.LatestRecords);
+      Assert.IsNull(data.Version);
+      Assert.IsNull(result);
     }
 
     [TestMethod]
-    public void TestMigration() {
-      _mock.Setup(library => library.Load())
-          .Returns("""
-{ "lastPlays": { "custom_level_6B6C6FD5204104B70D56E7E43CEEDABD5319D187": "2024-02-06T07:45:42.521672+09:00" } }
-""");
-      var records = _repository.Load();
-      Assert.AreEqual(1, records?.LastPlays?.Count);
+    public void TestFreshData() {
+      string version = "2.1.0";
+      var record = new LastPlayRecord(DateTime.Now, "level_a", new PlayedMap("Standard", RecordDifficulty.ExpertPlus));
+
+      var (data, result) = PlayedDateRepository.MigrateData(
+        new CompatibleData() {
+          LatestRecords = [record],
+          Version = version,
+        }
+      );
+
+      Assert.AreEqual(1, data.LatestRecords!.Count);
+      Assert.AreEqual(record, data.LatestRecords[0]);
+      Assert.AreEqual(version, data.Version);
+      Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void TestOldData() {
+      var now = DateTime.Now;
+      string level = "level_0";
+
+      var (data, result) = PlayedDateRepository.MigrateData(
+        new CompatibleData() {
+          LastPlays = new Dictionary<string, DateTime> { { level, now } },
+        }
+      );
+
+      Assert.AreEqual(1, data.LatestRecords!.Count);
+      Assert.AreEqual(level, data.LatestRecords[0].LevelId);
+      Assert.AreEqual(now, data.LatestRecords[0].Time);
+      Assert.IsNull(data.LatestRecords[0].Map);
+      Assert.AreEqual("Migrated 1 records.", result);
     }
   }
 }

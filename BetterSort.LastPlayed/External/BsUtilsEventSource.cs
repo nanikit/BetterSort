@@ -1,4 +1,5 @@
 using BetterSort.Common.External;
+using BetterSort.LastPlayed.Sorter;
 using BS_Utils.Utilities;
 using SiraUtil.Logging;
 using System;
@@ -7,23 +8,14 @@ namespace BetterSort.LastPlayed.External {
 
   public interface IPlayEventSource : IDisposable {
 
-    event Action<string, DateTime> OnSongPlayed;
+    event Action<LastPlayRecord> OnSongPlayed;
   }
 
   internal class BsUtilsEventSource : IPlayEventSource {
     private readonly IClock _clock;
-
     private readonly SiraLog _logger;
-
     private readonly Scoresaber _scoresaber;
-
     private readonly Beatleader _beatleader;
-
-    private string _selectedLevelId = "";
-
-    private string _selectedSongName = "";
-
-    private float _songDuration;
 
     private DateTime _startTime;
 
@@ -32,23 +24,26 @@ namespace BetterSort.LastPlayed.External {
       _logger = logger;
       _scoresaber = scoresaber;
       _beatleader = beatleader;
-      BSEvents.levelSelected += PreserveSelectedLevel;
       BSEvents.gameSceneLoaded += RecordStartTime;
       BSEvents.LevelFinished += DispatchIfLongEnough;
     }
 
-    public event Action<string, DateTime> OnSongPlayed = delegate { };
+    public event Action<LastPlayRecord> OnSongPlayed = delegate { };
+
+    public static RecordDifficulty? ConvertDifficulty(string? gameDifficulty) {
+      return gameDifficulty switch {
+        "Easy" => RecordDifficulty.Easy,
+        "Normal" => RecordDifficulty.Normal,
+        "Hard" => RecordDifficulty.Hard,
+        "Expert" => RecordDifficulty.Expert,
+        "ExpertPlus" => RecordDifficulty.ExpertPlus,
+        _ => null,
+      };
+    }
 
     public void Dispose() {
       BSEvents.LevelFinished -= DispatchIfLongEnough;
       BSEvents.gameSceneLoaded -= RecordStartTime;
-      BSEvents.levelSelected -= PreserveSelectedLevel;
-    }
-
-    private void PreserveSelectedLevel(LevelCollectionViewController arg1, IPreviewBeatmapLevel level) {
-      _selectedLevelId = level.levelID;
-      _selectedSongName = level.songName;
-      _songDuration = level.songDuration;
     }
 
     private void RecordStartTime() {
@@ -56,10 +51,6 @@ namespace BetterSort.LastPlayed.External {
     }
 
     private void DispatchIfLongEnough(object sender, LevelFinishedEventArgs finished) {
-      if (_selectedLevelId == "") {
-        _logger.Warn("Cannot determine selected level.");
-        return;
-      }
       if (finished is not LevelFinishedWithResultsEventArgs) {
         _logger.Info($"Skip tutorial play record.");
         return;
@@ -73,16 +64,31 @@ namespace BetterSort.LastPlayed.External {
         return;
       }
 
-      var now = _clock.Now;
-      var duration = now - _startTime;
-      bool isPlayedTooShort = duration.TotalSeconds < 10 && _songDuration > 10;
-      if (isPlayedTooShort) {
-        _logger.Info($"Skip record due to too short play: {_selectedSongName}");
+      var setup = BS_Utils.Plugin.LevelData?.GameplayCoreSceneSetupData;
+      if (setup == null) {
+        _logger.Warn($"Skip because cannot query game stats.");
         return;
       }
 
-      _logger.Info($"Dispatch play event: {_selectedSongName}");
-      OnSongPlayed(_selectedLevelId, now);
+      var now = _clock.Now;
+      var duration = now - _startTime;
+      var preview = setup.previewBeatmapLevel;
+      string songName = preview.songName;
+      float songDuration = preview.songDuration;
+      bool isPlayedTooShort = duration.TotalSeconds < 10 && songDuration > 10;
+      if (isPlayedTooShort) {
+        _logger.Info($"Skip record due to too short play: {songName}");
+        return;
+      }
+
+      _logger.Info($"Dispatch play event: {songName}");
+
+      var diffBeatmap = setup.difficultyBeatmap;
+      string levelId = preview.levelID;
+      string type = diffBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
+      var difficulty = ConvertDifficulty(diffBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
+      var lastPlay = new LastPlayRecord(now, levelId, new PlayedMap(type, difficulty));
+      OnSongPlayed(lastPlay);
     }
   }
 }

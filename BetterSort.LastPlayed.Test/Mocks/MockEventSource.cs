@@ -5,13 +5,13 @@ namespace BetterSort.LastPlayed.Test.Mocks {
 
   internal class MockEventSource : IPlayEventSource {
 
-    public event Action<string, DateTime> OnSongPlayed = delegate { };
+    public event Action<LastPlayRecord> OnSongPlayed = delegate { };
 
     public void Dispose() {
     }
 
-    public void SimulatePlay(string levelId, DateTime instant) {
-      OnSongPlayed(levelId, instant);
+    public void SimulatePlay(LastPlayRecord record) {
+      OnSongPlayed(record);
     }
   }
 }

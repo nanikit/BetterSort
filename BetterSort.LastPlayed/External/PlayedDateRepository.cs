@@ -1,4 +1,3 @@
-using BetterSort.LastPlayed.Sorter;
 using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
@@ -7,22 +6,13 @@ using System.Linq;
 
 namespace BetterSort.LastPlayed.External {
 
-  public interface IPlayedDateRepository {
+  public class PlayedDateRepository(SiraLog logger, IPlayedDateJsonRepository jsonRepository) {
+    private readonly SiraLog _logger = logger;
+    private readonly IPlayedDateJsonRepository _jsonRepository = jsonRepository;
 
-    StoredData? Load();
-
-    void Save(IReadOnlyDictionary<string, DateTime> playDates);
-  }
-
-  public class PlayedDateRepository : IPlayedDateRepository {
-    private readonly SiraLog _logger;
-    private readonly IPlayedDateJsonRepository _jsonRepository;
-
-    public PlayedDateRepository(SiraLog logger, IPlayedDateJsonRepository jsonRepository) {
-      _logger = logger;
-      _jsonRepository = jsonRepository;
-    }
-
+    /// <summary>
+    /// Load and migrate data if necessary.
+    /// </summary>
     public StoredData? Load() {
       try {
         string? json = _jsonRepository.Load();
@@ -31,8 +21,14 @@ namespace BetterSort.LastPlayed.External {
           return null;
         }
 
-        var data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {data?.LastPlays?.Count.ToString() ?? "no"} records");
+        var compatibleData = JsonConvert.DeserializeObject<CompatibleData>(json);
+
+        var (data, migrationResult) = MigrateData(compatibleData);
+        if (migrationResult != null) {
+          _logger.Info(migrationResult);
+        }
+
+        _logger.Info($"Loaded {data.LatestRecords?.Count.ToString() ?? "no"} records");
         return data;
       }
       catch (Exception exception) {
@@ -41,14 +37,10 @@ namespace BetterSort.LastPlayed.External {
       }
     }
 
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
-      var sorted = new SortedDictionary<string, DateTime>(
-        playDates.ToDictionary(x => x.Key, x => x.Value),
-        new LastPlayedDateComparer(playDates)
-      );
+    public void Save(IReadOnlyList<LastPlayRecord> playDates) {
       string json = JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LastPlays = sorted,
+        LatestRecords = playDates,
       }, Formatting.Indented);
 
       try {
@@ -58,6 +50,21 @@ namespace BetterSort.LastPlayed.External {
       catch (Exception exception) {
         _logger.Error(exception);
       }
+    }
+
+    internal static (StoredData, string?) MigrateData(CompatibleData? data) {
+      if (data?.LastPlays == null) {
+        return (data ?? new(), null);
+      }
+
+      int count = data.LastPlays.Count;
+      var latest = data.LatestRecords ?? new List<LastPlayRecord>();
+      var records = data.LastPlays
+        .Select(x => new LastPlayRecord(x.Value, x.Key, null))
+        .OrderByDescending(x => x.Time)
+        .ToList();
+      data.LastPlays = null;
+      return (new() { LatestRecords = records }, $"Migrated {count} records.");
     }
   }
 }

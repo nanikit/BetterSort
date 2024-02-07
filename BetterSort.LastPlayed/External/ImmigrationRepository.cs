@@ -1,14 +1,15 @@
-﻿using SiraUtil.Logging;
-using System;
+using SiraUtil.Logging;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BetterSort.LastPlayed.External {
+
   public class ImmigrationRepository {
     private readonly SongPlayHistoryImporter _importer;
     private readonly SiraLog _logger;
-    private readonly IPlayedDateRepository _repository;
+    private readonly PlayedDateRepository _repository;
 
-    internal ImmigrationRepository(SiraLog logger, IPlayedDateRepository repository, SongPlayHistoryImporter importer) {
+    internal ImmigrationRepository(SiraLog logger, PlayedDateRepository repository, SongPlayHistoryImporter importer) {
       _logger = logger;
       _repository = repository;
       _importer = importer;
@@ -18,7 +19,7 @@ namespace BetterSort.LastPlayed.External {
       return _repository.Load() ?? TryImportingSongPlayHistoryData();
     }
 
-    public void Save(IReadOnlyDictionary<string, DateTime> playDates) {
+    public void Save(IReadOnlyList<LastPlayRecord> playDates) {
       _repository.Save(playDates);
     }
 
@@ -30,7 +31,7 @@ namespace BetterSort.LastPlayed.External {
       }
 
       _logger.Debug($"Imported SongPlayHistory data, total count: {history.Count}");
-      return new StoredData() { LastPlays = history };
+      return new StoredData() { LatestRecords = history.Select(x => new LastPlayRecord(x.Value, x.Key, null)).ToList() };
     }
   }
 }
