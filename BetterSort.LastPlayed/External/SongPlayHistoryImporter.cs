@@ -3,6 +3,7 @@ using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BetterSort.LastPlayed.External {
 
@@ -15,23 +16,30 @@ namespace BetterSort.LastPlayed.External {
     // TODO: preserve difficulty information
     public Dictionary<string, DateTime>? Load() {
       string? json = _jsonRepository.LoadPlayHistory();
+      var (data, message) = ConvertSongPlayHistory(json);
+      if (message != null) {
+        _logger.Warn(message);
+      }
+      return data;
+    }
+
+    internal static (Dictionary<string, DateTime>?, string?) ConvertSongPlayHistory(string? json) {
       if (json == null) {
-        _logger.Warn("SongPlayHistory file seems not exists. Skip import.");
-        return null;
+        return (null, "SongPlayHistory file seems not exists. Skip import.");
       }
 
       var result = new Dictionary<string, DateTime>();
       var history = JsonConvert.DeserializeObject<IDictionary<string, IList<Record>>>(json);
       if (history == null) {
-        _logger.Warn("Can't deserialize SongPlayData.json. Skip.");
-        return null;
+        return (null, "Can't deserialize SongPlayData.json. Skip.");
       }
 
+      var builder = new StringBuilder();
       foreach (var record in history) {
         string difficulty = record.Key;
         string[] fields = difficulty.Split(_sphSeparator, StringSplitOptions.None);
         if (fields.Length != 3) {
-          _logger.Warn($"Can't parse {difficulty}. Skip.");
+          builder.AppendLine($"Can't parse {difficulty}. Skip.");
           continue;
         }
 
@@ -45,13 +53,11 @@ namespace BetterSort.LastPlayed.External {
         }
       }
 
-      return result;
+      return (result, builder.ToString());
     }
 
     private class Record {
-#pragma warning disable 0649
       public long Date;
-#pragma warning restore 0649
     }
   }
 }
