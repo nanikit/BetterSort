@@ -9,14 +9,14 @@ namespace BetterSort.LastPlayed.Sorter {
 
   public class SorterEnvironment : IInitializable {
     private readonly SiraLog _logger;
-    private readonly ImmigrationRepository _repository;
+    private readonly PlayedDateRepository _repository;
     private readonly IPlayEventSource _playEventSource;
     private readonly LastPlayedDateSorter _sorter;
     private readonly FilterSortAdaptor _adaptor;
     private readonly ITransformerPluginHelper _pluginHelper;
 
     public SorterEnvironment(
-      SiraLog logger, ImmigrationRepository repository, IPlayEventSource playEventSource,
+      SiraLog logger, PlayedDateRepository repository, IPlayEventSource playEventSource,
       LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, ITransformerPluginHelper pluginHelper) {
       _logger = logger;
       _repository = repository;

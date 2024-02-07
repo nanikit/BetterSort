@@ -10,7 +10,7 @@ using Zenject;
 namespace BetterSort.LastPlayed.Test {
 
   [TestClass]
-  public class HistoryImporterTest {
+  public class HistoryImportTest {
     private static readonly string _dataPath = @"UserData";
 
     private static readonly string _testSphFile = """
@@ -42,10 +42,9 @@ namespace BetterSort.LastPlayed.Test {
     private static readonly string _testSphPath = @"UserData\SongPlayData.json";
 
     private readonly InMemoryPlayedDateJsonRepository _ourHistory;
+    private readonly PlayedDateRepository _repository;
 
-    private readonly ImmigrationRepository _repository;
-
-    public HistoryImporterTest() {
+    public HistoryImportTest() {
       var container = new DiContainer();
       container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<InMemoryPlayedDateJsonRepository>().AsSingle();
@@ -53,7 +52,7 @@ namespace BetterSort.LastPlayed.Test {
       container.Install<SorterInstaller>();
 
       _ourHistory = container.Resolve<InMemoryPlayedDateJsonRepository>();
-      _repository = container.Resolve<ImmigrationRepository>();
+      _repository = container.Resolve<PlayedDateRepository>();
     }
 
     [TestMethod]

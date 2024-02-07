@@ -1,8 +1,11 @@
+using BetterSort.Common.External;
+using BetterSort.LastPlayed.Sorter;
 using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BetterSort.LastPlayed.External {
 
@@ -17,19 +20,24 @@ namespace BetterSort.LastPlayed.External {
       try {
         string? json = _jsonRepository.Load();
         if (json == null) {
-          _logger.Debug($"Attempting to load, but there is no existing play history.");
+          return TryImportingSongPlayHistoryData();
+        }
+
+        try {
+          var compatibleData = JsonConvert.DeserializeObject<CompatibleData>(json);
+          var (data, migrationResult) = MigrateData(compatibleData);
+          if (migrationResult != null) {
+            _logger.Info(migrationResult);
+          }
+
+          _logger.Info($"Loaded {data.LatestRecords?.Count.ToString() ?? "no"} records");
+          return data;
+        }
+        catch (Exception exception) {
+          _logger.Error(exception);
+          _jsonRepository.SaveBackup(json);
           return null;
         }
-
-        var compatibleData = JsonConvert.DeserializeObject<CompatibleData>(json);
-
-        var (data, migrationResult) = MigrateData(compatibleData);
-        if (migrationResult != null) {
-          _logger.Info(migrationResult);
-        }
-
-        _logger.Info($"Loaded {data.LatestRecords?.Count.ToString() ?? "no"} records");
-        return data;
       }
       catch (Exception exception) {
         _logger.Error(exception);
@@ -65,6 +73,79 @@ namespace BetterSort.LastPlayed.External {
         .ToList();
       data.LastPlays = null;
       return (new() { LatestRecords = records }, $"Migrated {count} records.");
+    }
+
+    internal static (List<LastPlayRecord>? Records, string? Message) ConvertSongPlayHistory(string json) {
+      var history = JsonConvert.DeserializeObject<IDictionary<string, IList<Record>>>(json);
+      if (history == null) {
+        return (null, "Can't deserialize SongPlayData.json. Skip.");
+      }
+
+      var result = new Dictionary<string, LastPlayRecord>();
+      var builder = new StringBuilder();
+      string[] _sphSeparator = ["___"];
+      foreach (var record in history) {
+        string key = record.Key;
+        string[] fields = key.Split(_sphSeparator, StringSplitOptions.None);
+        if (fields.Length != 3) {
+          builder.AppendLine($"Can't parse {key}. Skip.");
+          continue;
+        }
+
+        string levelId = fields[0];
+        RecordDifficulty? difficulty = fields[1] switch {
+          "0" => RecordDifficulty.Easy,
+          "1" => RecordDifficulty.Normal,
+          "2" => RecordDifficulty.Hard,
+          "3" => RecordDifficulty.Expert,
+          "4" => RecordDifficulty.ExpertPlus,
+          _ => null,
+        };
+        if (difficulty == null) {
+          builder.AppendLine($"Can't parse difficulty {fields[1]} for {key}. Skip.");
+          continue;
+        }
+        string type = fields[2];
+
+        long lastPlayEpoch = record.Value.Select(x => x.Date).Max();
+        var instant = DateTimeOffset.FromUnixTimeMilliseconds(lastPlayEpoch).DateTime;
+        LastPlayRecord GetNewRecord(RecordDifficulty difficulty) {
+          return new LastPlayRecord(instant, levelId, new PlayedMap(type, difficulty));
+        }
+
+        if (result.TryGetValue(fields[0], out var existing)) {
+          result[fields[0]] = existing.Time > instant ? existing : GetNewRecord(difficulty.Value);
+        }
+        else {
+          result[fields[0]] = GetNewRecord(difficulty.Value);
+        }
+      }
+
+      var records = result.Values.OrderByDescending(x => x.Time).ToList();
+      return (records, builder.ToString());
+    }
+
+    private StoredData? TryImportingSongPlayHistoryData() {
+      string? json = _jsonRepository.LoadPlayHistory();
+      if (json == null) {
+        _logger.Info("Attempting to load, but there is no existing main or SongPlayHistory mod play history.");
+        return null;
+      }
+      var (data, message) = ConvertSongPlayHistory(json);
+      if (message != null) {
+        _logger.Warn(message);
+      }
+      if (data == null) {
+        return null;
+      }
+
+      var history = data.ToDictionary(x => x.LevelId, x => x.Time);
+      _logger.Debug($"Imported SongPlayHistory data, total count: {history.Count}");
+      return new StoredData() { LatestRecords = history.Select(x => new LastPlayRecord(x.Value, x.Key, null)).ToList() };
+    }
+
+    private class Record {
+      public long Date = 0;
     }
   }
 }

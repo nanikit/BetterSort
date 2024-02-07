@@ -7,13 +7,16 @@ namespace BetterSort.LastPlayed.External {
 
     string? Load();
 
+    string? LoadPlayHistory();
+
     void Save(string json);
 
-    string? LoadPlayHistory();
+    void SaveBackup(string json);
   }
 
   internal class HistoryJsonRepository : IHistoryJsonRepository {
     private static readonly string _historyJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "LastPlayedDates.json.dat");
+    private static readonly string _historyJsonPathBackup = $"{_historyJsonPath}.bak";
     private static readonly string _sphJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "SongPlayData.json");
 
     public string? Load() {
@@ -22,6 +25,10 @@ namespace BetterSort.LastPlayed.External {
 
     public void Save(string json) {
       File.WriteAllText(_historyJsonPath, json);
+    }
+
+    public void SaveBackup(string json) {
+      File.WriteAllText(_historyJsonPathBackup, json);
     }
 
     public string? LoadPlayHistory() {

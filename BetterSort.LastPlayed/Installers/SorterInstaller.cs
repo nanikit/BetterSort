@@ -8,8 +8,6 @@ namespace BetterSort.LastPlayed.Installers {
   public class SorterInstaller : Installer {
 
     public override void InstallBindings() {
-      Container.Bind<SongPlayHistoryImporter>().AsSingle();
-      Container.Bind<ImmigrationRepository>().AsSingle();
       Container.Bind<PlayedDateRepository>().AsSingle();
 
       Container.BindInterfacesAndSelfTo<FilterSortAdaptor>().AsSingle();
