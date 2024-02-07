@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace BetterSort.LastPlayed.External {
 
-  public class PlayedDateRepository(SiraLog logger, IPlayedDateJsonRepository jsonRepository) {
+  public class PlayedDateRepository(SiraLog logger, IHistoryJsonRepository jsonRepository) {
     private readonly SiraLog _logger = logger;
-    private readonly IPlayedDateJsonRepository _jsonRepository = jsonRepository;
+    private readonly IHistoryJsonRepository _jsonRepository = jsonRepository;
 
     /// <summary>
     /// Load and migrate data if necessary.

@@ -2,31 +2,25 @@ using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace BetterSort.LastPlayed.External {
 
-  public class SongPlayHistoryImporter {
-    private static readonly string _sphJsonPath = Path.Combine(Environment.CurrentDirectory, "UserData", "SongPlayData.json");
+  public class SongPlayHistoryImporter(SiraLog logger, IHistoryJsonRepository jsonRepository) {
+    private static readonly string[] _sphSeparator = ["___"];
 
-    private static readonly string[] _sphSeparator = new[] { "___" };
-
-    private readonly SiraLog _logger;
-
-    public SongPlayHistoryImporter(SiraLog logger) {
-      _logger = logger;
-    }
+    private readonly SiraLog _logger = logger;
+    private readonly IHistoryJsonRepository _jsonRepository = jsonRepository;
 
     // TODO: preserve difficulty information
     public Dictionary<string, DateTime>? Load() {
-      if (!File.Exists(_sphJsonPath)) {
+      string? json = _jsonRepository.LoadPlayHistory();
+      if (json == null) {
+        _logger.Warn("SongPlayHistory file seems not exists. Skip import.");
         return null;
       }
 
       var result = new Dictionary<string, DateTime>();
-
-      string json = File.ReadAllText(_sphJsonPath);
       var history = JsonConvert.DeserializeObject<IDictionary<string, IList<Record>>>(json);
       if (history == null) {
         _logger.Warn("Can't deserialize SongPlayData.json. Skip.");
