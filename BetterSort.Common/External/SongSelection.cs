@@ -20,7 +20,7 @@ namespace BetterSort.Common.External {
 
     ISorter? CurrentSorter { get; }
 
-    Task SelectDifficulty(string TypeName, RecordDifficulty difficulty, LevelPreview preview);
+    Task SelectDifficulty(string type, RecordDifficulty difficulty, LevelPreview preview);
   }
 
   public class SongSelection(SiraLog logger) : ISongSelection, IAffinity {
@@ -40,9 +40,9 @@ namespace BetterSort.Common.External {
       }
     }
 
-    public async Task SelectDifficulty(string TypeName, RecordDifficulty difficulty, LevelPreview preview) {
+    public async Task SelectDifficulty(string type, RecordDifficulty difficulty, LevelPreview preview) {
       await UnityMainThreadTaskScheduler.Factory.StartNew(
-        () => SelectDifficultyInternal(TypeName, difficulty, preview)
+        () => SelectDifficultyInternal(type, difficulty, preview)
       ).ConfigureAwait(false);
     }
 
@@ -56,7 +56,7 @@ namespace BetterSort.Common.External {
       OnSongSelected.Invoke(index, new LevelPreview(level));
     }
 
-    private void SelectDifficultyInternal(string TypeName, RecordDifficulty difficulty, LevelPreview preview) {
+    private void SelectDifficultyInternal(string type, RecordDifficulty difficulty, LevelPreview preview) {
       var player = UnityEngine.Object.FindObjectOfType<PlayerDataModel>()?.playerData;
       if (player == null) {
         _logger.Warn("playerData is null. Quit.");
@@ -70,23 +70,23 @@ namespace BetterSort.Common.External {
         return;
       }
 
-      var type = preview.Preview.previewDifficultyBeatmapSets.FirstOrDefault(x => x.beatmapCharacteristic.serializedName == TypeName);
-      if (type == null) {
+      var sameType = preview.Preview.previewDifficultyBeatmapSets.FirstOrDefault(x => x.beatmapCharacteristic.serializedName == type);
+      if (sameType == null) {
         string characteristics = string.Join(", ", preview.Preview.previewDifficultyBeatmapSets.Select(x => x.beatmapCharacteristic.serializedName));
-        _logger.Warn($"BeatmapCharacteristic {TypeName} not found in {string.Join(", ", characteristics)}. Quit.");
+        _logger.Warn($"BeatmapCharacteristic {type} not found in {string.Join(", ", characteristics)}. Quit.");
         return;
       }
 
       var diff = difficulty.ToGameDifficulty() ?? BeatmapDifficulty.ExpertPlus;
-      bool hasDifficulty = type.beatmapDifficulties.Contains(diff);
+      bool hasDifficulty = sameType.beatmapDifficulties.Contains(diff);
       if (!hasDifficulty) {
-        _logger.Warn($"BeatmapDifficulty {diff} not found in {string.Join(", ", type.beatmapDifficulties)}. Quit.");
+        _logger.Warn($"BeatmapDifficulty {diff} not found in {string.Join(", ", sameType.beatmapDifficulties)}. Quit.");
         return;
       }
 
-      player.SetProperty(nameof(PlayerData.lastSelectedBeatmapCharacteristic), type.beatmapCharacteristic);
+      player.SetProperty(nameof(PlayerData.lastSelectedBeatmapCharacteristic), sameType.beatmapCharacteristic);
       player.SetProperty(nameof(PlayerData.lastSelectedBeatmapDifficulty), diff);
-      view.SetContent(viewLevel, diff, type.beatmapCharacteristic, player);
+      view.SetContent(viewLevel, diff, sameType.beatmapCharacteristic, player);
     }
   }
 }

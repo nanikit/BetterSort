@@ -12,6 +12,11 @@ namespace BetterSort.Common.Models {
     ExpertPlus = 9,
   }
 
+  public record PlayedMap(
+    [JsonProperty("type")] string Type,
+    [JsonProperty("difficulty")] RecordDifficulty Difficulty
+  );
+
   public static class RecordDifficultyExtension {
 
     public static RecordDifficulty? ConvertFromString(string? beatleaderDifficulty) {

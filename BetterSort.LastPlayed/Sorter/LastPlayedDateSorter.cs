@@ -1,16 +1,11 @@
 using BetterSort.Common.External;
 using BetterSort.Common.Models;
-using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BetterSort.LastPlayed.Sorter {
-  public record class PlayedMap(
-    [JsonProperty("type")] string Type,
-    [JsonProperty("difficulty")] RecordDifficulty Difficulty
-  );
   public record class LevelPlayData(DateTime Time, PlayedMap? Map);
 
   public class LastPlayedDateSorter(IClock clock, SiraLog logger) : ISortFilter {

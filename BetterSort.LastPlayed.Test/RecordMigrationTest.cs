@@ -1,6 +1,5 @@
 using BetterSort.Common.Models;
 using BetterSort.LastPlayed.External;
-using BetterSort.LastPlayed.Sorter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

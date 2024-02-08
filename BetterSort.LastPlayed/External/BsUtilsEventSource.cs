@@ -1,6 +1,5 @@
 using BetterSort.Common.External;
 using BetterSort.Common.Models;
-using BetterSort.LastPlayed.Sorter;
 using BS_Utils.Utilities;
 using SiraUtil.Logging;
 using System;
