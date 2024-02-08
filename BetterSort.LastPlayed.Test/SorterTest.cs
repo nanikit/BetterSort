@@ -43,7 +43,7 @@ namespace BetterSort.LastPlayed.Test {
     // BetterSongList can pass empty list.
     [TestMethod]
     public void TestEmptySort() {
-      _sorter.LastPlays = new();
+      _sorter.LastPlays = [];
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
       Assert.AreEqual(0, data.Count());

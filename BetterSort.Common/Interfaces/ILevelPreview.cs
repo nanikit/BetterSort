@@ -7,18 +7,13 @@ namespace BetterSort.Common.Interfaces {
     ILevelPreview Clone();
   }
 
-  public class LevelPreview : ILevelPreview {
+  public class LevelPreview(IPreviewBeatmapLevel preview) : ILevelPreview {
+    public IPreviewBeatmapLevel Preview { get => preview; }
+    public string LevelId { get => preview.levelID; }
+    public string SongName { get => preview.songName; }
 
-    public LevelPreview(IPreviewBeatmapLevel preview) {
-      Preview = preview;
-    }
-
-    public string LevelId { get => Preview.levelID; }
-    public IPreviewBeatmapLevel Preview { get; private set; }
-    public string SongName { get => Preview.songName; }
-
-    public ILevelPreview Clone() {
-      return new LevelPreview(Preview);
+    ILevelPreview ILevelPreview.Clone() {
+      return new LevelPreview(preview);
     }
   }
 }

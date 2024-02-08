@@ -43,22 +43,22 @@ namespace BetterSort.Accuracy.Test {
     [TestMethod]
     public async Task TestComplexCase() {
       _repository.BestAccuracies = new() {
-        { "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", new() {
+        { "custom_level_1111111111111111111111111111111111111111", new() {
             { "Standard", new() {
               { Common.External.RecordDifficulty.ExpertPlus, 0.90292 }
             }},
         }},
       };
       var input = new List<MockPreview>() {
-        new("custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"),
-        new("custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
-        new("custom_level_cccccccccccccccccccccccccccccccccccccccc"),
+        new("custom_level_2222222222222222222222222222222222222222"),
+        new("custom_level_1111111111111111111111111111111111111111"),
+        new("custom_level_3333333333333333333333333333333333333333"),
       };
       var result = await WaitResult(input, isSelected: true).ConfigureAwait(false);
       CollectionAssert.AreEqual(result.Levels.Select(x => x.LevelId).ToList(), new List<string> {
-        "custom_level_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "custom_level_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "custom_level_cccccccccccccccccccccccccccccccccccccccc",
+        "custom_level_1111111111111111111111111111111111111111",
+        "custom_level_2222222222222222222222222222222222222222",
+        "custom_level_3333333333333333333333333333333333333333",
       });
       CollectionAssert.AreEqual(result.Legend.ToList(), new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
     }

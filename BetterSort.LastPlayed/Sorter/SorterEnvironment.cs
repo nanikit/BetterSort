@@ -7,24 +7,15 @@ using Zenject;
 
 namespace BetterSort.LastPlayed.Sorter {
 
-  public class SorterEnvironment : IInitializable {
-    private readonly SiraLog _logger;
-    private readonly PlayedDateRepository _repository;
-    private readonly IPlayEventSource _playEventSource;
-    private readonly LastPlayedDateSorter _sorter;
-    private readonly FilterSortAdaptor _adaptor;
-    private readonly ITransformerPluginHelper _pluginHelper;
-
-    public SorterEnvironment(
-      SiraLog logger, PlayedDateRepository repository, IPlayEventSource playEventSource,
-      LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, ITransformerPluginHelper pluginHelper) {
-      _logger = logger;
-      _repository = repository;
-      _playEventSource = playEventSource;
-      _sorter = sorter;
-      _adaptor = adaptor;
-      _pluginHelper = pluginHelper;
-    }
+  public class SorterEnvironment(
+    SiraLog logger, PlayedDateRepository repository, IPlayEventSource playEventSource,
+    LastPlayedDateSorter sorter, FilterSortAdaptor adaptor, ITransformerPluginHelper pluginHelper) : IInitializable {
+    private readonly SiraLog _logger = logger;
+    private readonly PlayedDateRepository _repository = repository;
+    private readonly IPlayEventSource _playEventSource = playEventSource;
+    private readonly LastPlayedDateSorter _sorter = sorter;
+    private readonly FilterSortAdaptor _adaptor = adaptor;
+    private readonly ITransformerPluginHelper _pluginHelper = pluginHelper;
 
     public void Initialize() {
       try {

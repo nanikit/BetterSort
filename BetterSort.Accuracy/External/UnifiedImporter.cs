@@ -79,7 +79,7 @@ namespace BetterSort.Accuracy.External {
 
       var records = imports
         .Where(x => x.Status == TaskStatus.RanToCompletion)
-        .SelectMany(x => x.Result ?? new()).ToList();
+        .SelectMany(x => x.Result ?? []).ToList();
       return records;
     }
   }

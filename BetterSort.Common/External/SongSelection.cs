@@ -59,12 +59,8 @@ namespace BetterSort.Common.External {
     }
   }
 
-  public class SongSelection : ISongSelection, IAffinity {
-    private readonly SiraLog _logger;
-
-    public SongSelection(SiraLog logger) {
-      _logger = logger;
-    }
+  public class SongSelection(SiraLog logger) : ISongSelection, IAffinity {
+    private readonly SiraLog _logger = logger;
 
     public event OnSongSelectedHandler OnSongSelected = delegate { };
 

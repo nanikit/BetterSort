@@ -16,19 +16,14 @@ namespace BetterSort.Accuracy.External {
     Task<StoredData?> Load();
   }
 
-  public class AccuracyRepository : IAccuracyRepository {
+  public class AccuracyRepository(SiraLog logger, IClock clock) : IAccuracyRepository {
     private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
 
-    private readonly SiraLog _logger;
+    private readonly SiraLog _logger = logger;
 
-    private readonly IClock _clock;
+    private readonly IClock _clock = clock;
 
     private StoredData? _cache;
-
-    public AccuracyRepository(SiraLog logger, IClock clock) {
-      _logger = logger;
-      _clock = clock;
-    }
 
     public Task Save(BestRecords accuracies) {
       var data = GetSortedData(accuracies);

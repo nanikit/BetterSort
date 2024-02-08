@@ -12,12 +12,8 @@ namespace BetterSort.Common.Compatibility {
     void Register<T>(T plugin) where T : ITransformerPlugin, ISorterCustom;
   }
 
-  public class TransformerPluginHelper : ITransformerPluginHelper {
-    private readonly SiraLog _logger;
-
-    public TransformerPluginHelper(SiraLog logger) {
-      _logger = logger;
-    }
+  public class TransformerPluginHelper(SiraLog logger) : ITransformerPluginHelper {
+    private readonly SiraLog _logger = logger;
 
     public virtual void Register<T>(T plugin) where T : ITransformerPlugin, ISorterCustom {
       bool isRegistered = SortMethods.RegisterCustomSorter(plugin);

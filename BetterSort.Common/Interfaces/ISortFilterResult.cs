@@ -11,16 +11,8 @@ namespace BetterSort.Common.Interfaces {
     IEnumerable<ILevelPreview> Levels { get; }
   }
 
-  public class SortFilterResult : ISortFilterResult {
-    private readonly IEnumerable<(string Label, int Index)>? _legend;
-    private readonly IEnumerable<ILevelPreview> _levels;
-
-    public SortFilterResult(IEnumerable<ILevelPreview> levels, IEnumerable<(string Label, int Index)>? legend = null) {
-      _levels = levels;
-      _legend = legend;
-    }
-
-    public IEnumerable<(string Label, int Index)>? Legend => _legend;
-    public IEnumerable<ILevelPreview> Levels => _levels;
+  public record SortFilterResult(
+    IEnumerable<ILevelPreview> Levels,
+    IEnumerable<(string Label, int Index)>? Legend = null) : ISortFilterResult {
   }
 }

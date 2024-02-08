@@ -14,14 +14,10 @@ using System.Linq;
 namespace BetterSort.Accuracy.Sorter {
   internal record class LevelRecord(string Mode, RecordDifficulty Difficulty, double Accuracy);
 
-  internal class LevelAccuracyComparer : IComparer<ILevelPreview> {
-    private readonly BestRecords _records;
+  internal class LevelAccuracyComparer(BestRecords records) : IComparer<ILevelPreview> {
+    private readonly BestRecords _records = records;
 
-    public LevelAccuracyComparer(BestRecords records) {
-      _records = records;
-    }
-
-    public Dictionary<ILevelPreview, LevelRecord> LevelMap { get; set; } = new();
+    public Dictionary<ILevelPreview, LevelRecord> LevelMap { get; set; } = [];
 
     public int Compare(ILevelPreview a, ILevelPreview b) {
       if (_records == null) {
@@ -74,12 +70,8 @@ namespace BetterSort.Accuracy.Sorter {
   ///                  ↓ Not played
   /// </code>
   /// </summary>
-  internal class AccuracyComparer : IComparer<string> {
-    private readonly BestRecords _records;
-
-    public AccuracyComparer(BestRecords records) {
-      _records = records;
-    }
+  internal class AccuracyComparer(BestRecords records) : IComparer<string> {
+    private readonly BestRecords _records = records;
 
     public bool IsDescending { get; set; }
 

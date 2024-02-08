@@ -8,20 +8,15 @@ using System.Linq;
 
 namespace BetterSort.Accuracy.Sorter {
 
-  public class AccuracySorter : ISortFilter {
-    private readonly SiraLog _logger;
-    private readonly IAccuracyRepository _repository;
+  public class AccuracySorter(SiraLog logger, IAccuracyRepository repository) : ISortFilter {
+    private readonly SiraLog _logger = logger;
+    private readonly IAccuracyRepository _repository = repository;
     private bool _isSelected = false;
-
-    public AccuracySorter(SiraLog logger, IAccuracyRepository repository) {
-      _logger = logger;
-      _repository = repository;
-    }
 
     public event Action<ISortFilterResult?> OnResultChanged = delegate { };
 
     public string Name => "Accuracy";
-    internal List<LevelRecord> Mapping { get; private set; } = new();
+    internal List<LevelRecord> Mapping { get; private set; } = [];
 
     public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false) {
       try {

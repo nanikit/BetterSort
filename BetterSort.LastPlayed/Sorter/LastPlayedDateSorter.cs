@@ -13,22 +13,17 @@ namespace BetterSort.LastPlayed.Sorter {
   );
   public record class LevelPlayData(DateTime Time, PlayedMap? Map);
 
-  public class LastPlayedDateSorter : ISortFilter {
+  public class LastPlayedDateSorter(IClock clock, SiraLog logger) : ISortFilter {
 
     /// <summary>
     /// Level id to play data.
     /// </summary>
     public Dictionary<string, LevelPlayData> LastPlays = [];
 
-    private readonly IClock _clock;
-    private readonly SiraLog _logger;
+    private readonly IClock _clock = clock;
+    private readonly SiraLog _logger = logger;
     private bool _isSelected = false;
     private IEnumerable<ILevelPreview>? _triggeredLevels;
-
-    public LastPlayedDateSorter(IClock clock, SiraLog logger) {
-      _clock = clock;
-      _logger = logger;
-    }
 
     public event Action<ISortFilterResult?> OnResultChanged = delegate { };
 
