@@ -4,6 +4,7 @@ using BetterSort.LastPlayed.Sorter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BetterSort.LastPlayed.Test {
 
@@ -12,47 +13,54 @@ namespace BetterSort.LastPlayed.Test {
 
     [TestMethod]
     public void TestEmptyData() {
-      var (data, result) = PlayedDateRepository.MigrateData(new CompatibleData() { });
+      var (records, isMigrated) = PlayedDateRepository.MigrateData("{}");
 
-      Assert.IsNull(data.LatestRecords);
-      Assert.IsNull(data.Version);
-      Assert.IsNull(result);
+      Assert.AreEqual(new CompatibleData(), records);
+      Assert.IsFalse(isMigrated);
     }
 
     [TestMethod]
     public void TestFreshData() {
-      string version = "2.1.0";
-      var record = new LastPlayRecord(DateTime.Now, "level_a", new PlayedMap("Standard", RecordDifficulty.ExpertPlus));
+      var (records, isMigrated) = PlayedDateRepository.MigrateData("""
+{
+  "latestRecords": [
+    {
+      "time": "2022-04-01T12:00:00Z",
+      "levelId": "custom_level_111110000000091D23215F0BACDC6C4D660EF1D0",
+      "map": { "type": "Standard", "difficulty": "ExpertPlus" }
+    }
+  ],
+  "version": "2.1.0"
+}
+""");
 
-      var (data, result) = PlayedDateRepository.MigrateData(
-        new CompatibleData() {
-          LatestRecords = [record],
-          Version = version,
-        }
-      );
-
-      Assert.AreEqual(1, data.LatestRecords!.Count);
-      Assert.AreEqual(record, data.LatestRecords[0]);
-      Assert.AreEqual(version, data.Version);
-      Assert.IsNull(result);
+      CollectionAssert.AreEquivalent(new List<LastPlayRecord> {
+        new(
+          DateTime.Parse("2022-04-01T12:00:00Z").ToUniversalTime(),
+          "custom_level_111110000000091D23215F0BACDC6C4D660EF1D0",
+          new PlayedMap("Standard", RecordDifficulty.ExpertPlus)
+        )
+      }, records.LatestRecords.ToList());
+      Assert.AreEqual("2.1.0", records.Version);
+      Assert.IsFalse(isMigrated);
     }
 
     [TestMethod]
     public void TestOldData() {
-      var now = DateTime.Now;
-      string level = "level_0";
+      var (records, isMigrated) = PlayedDateRepository.MigrateData("""
+{
+  "lastPlays": {
+    "custom_level_6B6C6FD5204104B70D56E7E43CEEDABD5319D187": "2024-02-06T07:45:42.521672+09:00",
+  },
+  "version": "2.1.0"
+}
+""");
 
-      var (data, result) = PlayedDateRepository.MigrateData(
-        new CompatibleData() {
-          LastPlays = new Dictionary<string, DateTime> { { level, now } },
-        }
-      );
-
-      Assert.AreEqual(1, data.LatestRecords!.Count);
-      Assert.AreEqual(level, data.LatestRecords[0].LevelId);
-      Assert.AreEqual(now, data.LatestRecords[0].Time);
-      Assert.IsNull(data.LatestRecords[0].Map);
-      Assert.AreEqual("Migrated 1 records.", result);
+      CollectionAssert.AreEquivalent(new List<LastPlayRecord> {
+        new(DateTime.Parse("2024-02-06T07:45:42.521672+09:00"), "custom_level_6B6C6FD5204104B70D56E7E43CEEDABD5319D187")
+      }, records.LatestRecords.ToList());
+      Assert.AreEqual("2.1.0", records.Version);
+      Assert.IsTrue(isMigrated);
     }
   }
 }

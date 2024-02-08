@@ -24,13 +24,8 @@ namespace BetterSort.LastPlayed.External {
         }
 
         try {
-          var compatibleData = JsonConvert.DeserializeObject<CompatibleData>(json);
-          var (data, migrationResult) = MigrateData(compatibleData);
-          if (migrationResult != null) {
-            _logger.Info(migrationResult);
-          }
-
-          _logger.Info($"Loaded {data.LatestRecords?.Count.ToString() ?? "no"} records");
+          var (data, isMigrated) = MigrateData(json);
+          _logger.Info($"{(isMigrated ? $"Loaded" : "Migrated")} {data.LatestRecords?.Count.ToString() ?? "no"} records.");
           return data;
         }
         catch (Exception exception) {
@@ -60,9 +55,10 @@ namespace BetterSort.LastPlayed.External {
       }
     }
 
-    internal static (StoredData, string?) MigrateData(CompatibleData? data) {
+    internal static (StoredData records, bool isMigrated) MigrateData(string json) {
+      var data = JsonConvert.DeserializeObject<CompatibleData>(json);
       if (data?.LastPlays == null) {
-        return (data ?? new(), null);
+        return (data ?? new(), false);
       }
 
       int count = data.LastPlays.Count;
@@ -72,7 +68,7 @@ namespace BetterSort.LastPlayed.External {
         .OrderByDescending(x => x.Time)
         .ToList();
       data.LastPlays = null;
-      return (new() { LatestRecords = records }, $"Migrated {count} records.");
+      return (new() { LatestRecords = records, Version = data.Version }, true);
     }
 
     internal static (List<LastPlayRecord>? Records, string? Message) ConvertSongPlayHistory(string json) {
