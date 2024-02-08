@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
 
 namespace BetterSort.Accuracy.Sorter {
 
@@ -24,7 +23,7 @@ namespace BetterSort.Accuracy.Sorter {
     public string Name => "Accuracy";
     internal List<LevelRecord> Mapping { get; private set; } = new();
 
-    public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+    public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false) {
       try {
         _isSelected = isSelected;
         _logger.Debug($"{nameof(AccuracySorter)}.{nameof(NotifyChange)}: newLevels.Count: {newLevels.Count()}, isSelected: {isSelected}");

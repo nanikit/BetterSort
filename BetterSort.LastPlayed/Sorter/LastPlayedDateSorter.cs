@@ -5,7 +5,6 @@ using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace BetterSort.LastPlayed.Sorter {
   public record class PlayedMap(
@@ -35,7 +34,7 @@ namespace BetterSort.LastPlayed.Sorter {
 
     public string Name => "Last played";
 
-    public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+    public void NotifyChange(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false) {
       _isSelected = isSelected;
       _logger.Debug($"NotifyChange called: newLevels.Count: {newLevels.Count()}, isSelected: {isSelected}");
 

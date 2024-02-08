@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.Sorter {
@@ -31,8 +30,8 @@ namespace BetterSort.Accuracy.Sorter {
 
     public string Name => _sorter.Name;
 
-    public void NotifyChange(IEnumerable<ILevelPreview> newLevels, bool isSelected = false, CancellationToken? token = null) {
-      _sorter.NotifyChange(newLevels, isSelected, token);
+    public void NotifyChange(IEnumerable<ILevelPreview> newLevels, bool isSelected = false) {
+      _sorter.NotifyChange(newLevels, isSelected);
       if (!_isHooking) {
         _isHooking = true;
         _songSelection.OnSongSelected += SelectDifficultyWithGuard;

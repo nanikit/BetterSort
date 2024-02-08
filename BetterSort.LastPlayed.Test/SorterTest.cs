@@ -1,17 +1,16 @@
 using BetterSort.Common.Compatibility;
 using BetterSort.Common.Interfaces;
+using BetterSort.Common.Test;
+using BetterSort.Common.Test.Mocks;
 using BetterSort.LastPlayed.External;
 using BetterSort.LastPlayed.Installers;
 using BetterSort.LastPlayed.Sorter;
 using BetterSort.LastPlayed.Test.Mocks;
-using BetterSort.Common.Test;
-using BetterSort.Common.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Zenject;
 
@@ -112,14 +111,14 @@ namespace BetterSort.LastPlayed.Test {
           date: _clock.Now.AddSeconds(-Math.Pow(i, 3))));
     }
 
-    private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false, CancellationToken? token = null) {
+    private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false) {
       TaskCompletionSource<ISortFilterResult?> completer = new();
       void SetResult(ISortFilterResult? res) {
         completer.TrySetResult(res);
       }
       _sorter.OnResultChanged += SetResult;
 
-      _sorter.NotifyChange(newLevels, isSelected, token);
+      _sorter.NotifyChange(newLevels, isSelected);
 
       var result = await completer.Task.ConfigureAwait(false);
       _sorter.OnResultChanged -= SetResult;
