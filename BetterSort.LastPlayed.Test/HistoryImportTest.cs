@@ -11,7 +11,6 @@ using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
-  // TODO: convert existing to use static
   // TODO: test backup
   [TestClass]
   public class HistoryImportTest {
@@ -62,19 +61,26 @@ namespace BetterSort.LastPlayed.Test {
 """;
 
     private static readonly string _testSphFile3 = """
-{"custom_level_5AF29356A4F8591D23215F0BACDC6C4D660EF1D0___4___Standard": [
+{"custom_level_8EAD9FC51CFB027CEF489F1BDC629A3CE0384CA9___0___Standard": [
   {
-    "Date": 1649863230123,
-    "ModifiedScore": 1195860,
-    "RawScore": 1195860,
+    "Date": 1668356816205,
+    "ModifiedScore": 336441,
+    "RawScore": 672882,
     "LastNote": -1,
     "Param": 2
   },
   {
-    "Date": 1649950920391,
-    "ModifiedScore": 1197658,
-    "RawScore": 1197658,
+    "Date": 1705325739302,
+    "ModifiedScore": 757148,
+    "RawScore": 757148,
     "LastNote": -1,
+    "Param": 0
+  },
+  {
+    "Date": 1701354482759,
+    "ModifiedScore": 662399,
+    "RawScore": 662399,
+    "LastNote": 1382,
     "Param": 2
   }
 ]}
@@ -141,6 +147,18 @@ namespace BetterSort.LastPlayed.Test {
       var data = _repository.Load();
 
       CollectionAssert.AreEqual(_testHistory, data?.LatestRecords.ToList());
+    }
+
+    [TestMethod]
+    public void TestSameMapPlay() {
+      var (records, message) = PlayedDateRepository.ConvertSongPlayHistory(_testSphFile3);
+
+      var time = DateTimeOffset.FromUnixTimeMilliseconds(1705325739302).DateTime;
+      var sphRecord = new List<LastPlayRecord>() {
+        new(time, "custom_level_8EAD9FC51CFB027CEF489F1BDC629A3CE0384CA9", new("Standard", RecordDifficulty.Easy))
+      };
+      CollectionAssert.AreEqual(sphRecord, records);
+      Assert.IsNull(message);
     }
   }
 }

@@ -122,7 +122,7 @@ namespace BetterSort.LastPlayed.External {
       }
 
       var records = result.Values.OrderByDescending(x => x.Time).ToList();
-      return (records, builder.ToString());
+      return (records, builder.Length == 0 ? null : builder.ToString());
     }
 
     private StoredData? TryImportingSongPlayHistoryData() {
