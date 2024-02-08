@@ -1,4 +1,5 @@
-using BetterSort.Accuracy.Sorter;
+using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
 using HarmonyLib;
@@ -9,9 +10,6 @@ using System.Reflection;
 using Zenject;
 
 namespace BetterSort.Accuracy.External {
-
-  using BetterSort.Common.External;
-
   public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 
   public interface IBsInterop : IDisposable {
@@ -25,7 +23,7 @@ namespace BetterSort.Accuracy.External {
     private static readonly MethodInfo _handleLevelCollectionViewControllerDidSelectLevel = AccessTools.Method(typeof(LevelCollectionNavigationController), "HandleLevelCollectionViewControllerDidSelectLevel");
     private readonly SiraLog _logger;
 
-    private readonly Scoresaber _scoresaber;
+    private readonly Common.External.Scoresaber _scoresaber;
 
     private readonly Beatleader _beatleader;
 
@@ -33,7 +31,7 @@ namespace BetterSort.Accuracy.External {
 
     private bool _hasPlaylistManager = true;
 
-    public BsUtilsInterop(SiraLog logger, Scoresaber scoresaber, Beatleader beatleader, [Inject(Id = "BetterSort.Accuracy.Harmony")] Harmony harmony) {
+    public BsUtilsInterop(SiraLog logger, Common.External.Scoresaber scoresaber, Beatleader beatleader, [Inject(Id = "BetterSort.Accuracy.Harmony")] Harmony harmony) {
       _logger = logger;
       _scoresaber = scoresaber;
       _beatleader = beatleader;

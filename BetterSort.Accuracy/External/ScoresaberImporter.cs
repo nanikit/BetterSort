@@ -1,4 +1,4 @@
-using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using Newtonsoft.Json;
 using Scoresaber;
 using SiraUtil.Logging;

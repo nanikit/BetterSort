@@ -1,4 +1,4 @@
-using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -3,10 +3,9 @@
 /// </summary>
 global using BestRecords = System.Collections.Generic.IDictionary<
   string, System.Collections.Generic.Dictionary<
-    string, System.Collections.Generic.Dictionary<BetterSort.Common.External.RecordDifficulty, double>
+    string, System.Collections.Generic.Dictionary<BetterSort.Common.Models.RecordDifficulty, double>
   >
 >;
-using BetterSort.Common.External;
 using BetterSort.Common.Models;
 using System.Collections.Generic;
 using System.Linq;

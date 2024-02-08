@@ -1,4 +1,4 @@
-using BetterSort.Common.External;
+using BetterSort.Common.Models;
 
 namespace BetterSort.Accuracy.External {
 

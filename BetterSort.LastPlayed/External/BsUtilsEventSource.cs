@@ -1,4 +1,5 @@
 using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using BetterSort.LastPlayed.Sorter;
 using BS_Utils.Utilities;
 using SiraUtil.Logging;
@@ -29,17 +30,6 @@ namespace BetterSort.LastPlayed.External {
     }
 
     public event Action<LastPlayRecord> OnSongPlayed = delegate { };
-
-    public static RecordDifficulty? ConvertDifficulty(string? gameDifficulty) {
-      return gameDifficulty switch {
-        "Easy" => RecordDifficulty.Easy,
-        "Normal" => RecordDifficulty.Normal,
-        "Hard" => RecordDifficulty.Hard,
-        "Expert" => RecordDifficulty.Expert,
-        "ExpertPlus" => RecordDifficulty.ExpertPlus,
-        _ => null,
-      };
-    }
 
     public void Dispose() {
       BSEvents.LevelFinished -= DispatchIfLongEnough;
@@ -86,7 +76,7 @@ namespace BetterSort.LastPlayed.External {
       var diffBeatmap = setup.difficultyBeatmap;
       string levelId = preview.levelID;
       string type = diffBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
-      var difficulty = ConvertDifficulty(diffBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
+      var difficulty = RecordDifficultyExtension.ConvertFromString(diffBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
       var lastPlay = new LastPlayRecord(now, levelId, new PlayedMap(type, difficulty));
       OnSongPlayed(lastPlay);
     }

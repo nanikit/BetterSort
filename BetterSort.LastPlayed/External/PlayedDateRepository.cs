@@ -1,4 +1,4 @@
-using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using BetterSort.LastPlayed.Sorter;
 using Newtonsoft.Json;
 using SiraUtil.Logging;

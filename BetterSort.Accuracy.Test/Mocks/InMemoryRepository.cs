@@ -1,6 +1,6 @@
 using BetterSort.Accuracy.External;
-using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
+using BetterSort.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
