@@ -1,7 +1,9 @@
 using BetterSort.Common.External;
 using BetterSort.Common.Test;
+using BetterSort.Common.Test.Mocks;
 using BetterSort.LastPlayed.External;
 using BetterSort.LastPlayed.Installers;
+using IPA.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -11,7 +13,6 @@ using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
-  // TODO: test backup
   [TestClass]
   public class HistoryImportTest {
 
@@ -88,6 +89,7 @@ namespace BetterSort.LastPlayed.Test {
 
     private readonly Mock<IHistoryJsonRepository> _mockJson;
     private readonly PlayedDateRepository _repository;
+    private readonly MockLogger _logger;
 
     public HistoryImportTest() {
       var container = new DiContainer();
@@ -99,6 +101,7 @@ namespace BetterSort.LastPlayed.Test {
 
       _mockJson = mockJsonRepository;
       _repository = container.Resolve<PlayedDateRepository>();
+      _logger = (container.Resolve<Logger>() as MockLogger)!;
     }
 
     [TestMethod]
@@ -147,6 +150,20 @@ namespace BetterSort.LastPlayed.Test {
       var data = _repository.Load();
 
       CollectionAssert.AreEqual(_testHistory, data?.LatestRecords.ToList());
+    }
+
+    [TestMethod]
+    public void TestBackupWhenError() {
+      _mockJson.Reset();
+      string corruptedData = "corrupted data";
+      _mockJson.Setup(repository => repository.Load()).Returns(corruptedData);
+      _mockJson.Setup(repository => repository.LoadPlayHistory()).Returns(() => null);
+
+      var data = _repository.Load();
+
+      Assert.IsNull(data);
+      _mockJson.Verify(repository => repository.SaveBackup(corruptedData), Times.Once);
+      _logger.Logs.Any(log => log.Level == Logger.Level.Error);
     }
 
     [TestMethod]
