@@ -1,6 +1,6 @@
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.External;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using BetterSort.Common.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BetterSort.Common.Interfaces {
+namespace BetterSort.Common.Models {
 
   public interface ISortFilter {
 

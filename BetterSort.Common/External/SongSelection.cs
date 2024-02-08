@@ -1,15 +1,15 @@
 using BetterSongList.SortModels;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using HarmonyLib;
 using IPA.Utilities;
 using IPA.Utilities.Async;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using UnityEngine;
 
 namespace BetterSort.Common.External {

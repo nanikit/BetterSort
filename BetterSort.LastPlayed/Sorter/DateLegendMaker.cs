@@ -1,4 +1,4 @@
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using System;
 using System.Collections.Generic;
 

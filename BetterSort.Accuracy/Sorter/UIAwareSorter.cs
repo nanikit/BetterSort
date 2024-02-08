@@ -1,6 +1,6 @@
 using BetterSort.Accuracy.External;
 using BetterSort.Common.External;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;

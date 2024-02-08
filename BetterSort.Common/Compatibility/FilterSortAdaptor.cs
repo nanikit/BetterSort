@@ -1,6 +1,6 @@
 using BetterSongList.Interfaces;
 using BetterSongList.SortModels;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using SiraUtil.Logging;
 using System.Collections.Generic;
 using System.Linq;

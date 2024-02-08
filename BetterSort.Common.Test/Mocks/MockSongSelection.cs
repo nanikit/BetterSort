@@ -1,6 +1,6 @@
 using BetterSongList.SortModels;
 using BetterSort.Common.External;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using System.Threading.Tasks;
 
 namespace BetterSort.Common.Test.Mocks {

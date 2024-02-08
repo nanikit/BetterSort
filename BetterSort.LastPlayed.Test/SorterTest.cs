@@ -1,5 +1,5 @@
 using BetterSort.Common.Compatibility;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using BetterSort.Common.Test;
 using BetterSort.Common.Test.Mocks;
 using BetterSort.LastPlayed.External;

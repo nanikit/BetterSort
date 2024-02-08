@@ -2,7 +2,7 @@ using BetterSongList.SortModels;
 using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Accuracy.Test.Mocks;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using BetterSort.Common.Test;
 using BetterSort.Common.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

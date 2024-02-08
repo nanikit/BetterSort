@@ -7,7 +7,7 @@ global using BestRecords = System.Collections.Generic.IDictionary<
   >
 >;
 using BetterSort.Common.External;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using System.Collections.Generic;
 using System.Linq;
 

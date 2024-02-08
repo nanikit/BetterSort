@@ -1,4 +1,4 @@
-namespace BetterSort.Common.Interfaces {
+namespace BetterSort.Common.Models {
 
   public interface ILevelPreview {
     string LevelId { get; }

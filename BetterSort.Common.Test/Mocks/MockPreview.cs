@@ -1,4 +1,4 @@
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 
 namespace BetterSort.Common.Test.Mocks {
 

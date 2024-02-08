@@ -1,5 +1,5 @@
 using BetterSort.Common.External;
-using BetterSort.Common.Interfaces;
+using BetterSort.Common.Models;
 using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
