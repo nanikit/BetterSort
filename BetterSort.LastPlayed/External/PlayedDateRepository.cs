@@ -131,17 +131,17 @@ namespace BetterSort.LastPlayed.External {
         _logger.Info("Attempting to load, but there is no existing main or SongPlayHistory mod play history.");
         return null;
       }
-      var (data, message) = ConvertSongPlayHistory(json);
+
+      var (records, message) = ConvertSongPlayHistory(json);
       if (message != null) {
         _logger.Warn(message);
       }
-      if (data == null) {
+      if (records == null) {
         return null;
       }
 
-      var history = data.ToDictionary(x => x.LevelId, x => x.Time);
-      _logger.Debug($"Imported SongPlayHistory data, total count: {history.Count}");
-      return new StoredData() { LatestRecords = history.Select(x => new LastPlayRecord(x.Value, x.Key, null)).ToList() };
+      _logger.Debug($"Imported SongPlayHistory data, total count: {records.Count}");
+      return new StoredData() { LatestRecords = records };
     }
 
     private class Record {
