@@ -20,7 +20,7 @@ namespace BetterSort.LastPlayed.Sorter {
     public void Initialize() {
       try {
         var data = _repository.Load();
-        _sorter.LastPlays = data?.LatestRecords.ToDictionary(
+        _sorter.PlayRecords = data?.LatestRecords.ToDictionary(
           data => data.LevelId,
           data => new LevelPlayData(data.Time, data.Map)
         ) ?? [];
@@ -34,8 +34,8 @@ namespace BetterSort.LastPlayed.Sorter {
 
     private void RecordHistory(LastPlayRecord record) {
       _logger.Debug($"Record play {record.LevelId}: {record.Map?.Difficulty}");
-      _sorter.LastPlays[record.LevelId] = new LevelPlayData(record.Time, record.Map);
-      var updatedRecords = _sorter.LastPlays.Select(x => new LastPlayRecord(x.Value.Time, x.Key, x.Value.Map));
+      _sorter.PlayRecords[record.LevelId] = new LevelPlayData(record.Time, record.Map);
+      var updatedRecords = _sorter.PlayRecords.Select(x => new LastPlayRecord(x.Value.Time, x.Key, x.Value.Map));
       var list = updatedRecords.OrderBy(list => list.Time).ToList();
       _repository.Save(list);
     }
