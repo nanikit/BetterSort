@@ -5,31 +5,21 @@ using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Zenject;
 
 namespace BetterSort.Accuracy.Sorter {
 
-  public class SorterEnvironment {
-    private readonly FilterSortAdaptor _adaptor;
-    private readonly IBsInterop _bsInterop;
-    private readonly UnifiedImporter _importer;
-    private readonly SiraLog _logger;
-    private readonly IAccuracyRepository _repository;
-    private readonly ITransformerPluginHelper _pluginHelper;
+  public class SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
+    FilterSortAdaptor adaptor, UnifiedImporter importer, ITransformerPluginHelper pluginHelper
+  ) : IInitializable {
+    private readonly FilterSortAdaptor _adaptor = adaptor;
+    private readonly IBsInterop _bsInterop = bsInterop;
+    private readonly UnifiedImporter _importer = importer;
+    private readonly SiraLog _logger = logger;
+    private readonly IAccuracyRepository _repository = repository;
+    private readonly ITransformerPluginHelper _pluginHelper = pluginHelper;
 
-    public SorterEnvironment(SiraLog logger, IAccuracyRepository repository, IBsInterop bsInterop,
-      FilterSortAdaptor adaptor, UnifiedImporter importer, ITransformerPluginHelper pluginHelper
-    ) {
-      _logger = logger;
-      _repository = repository;
-      _bsInterop = bsInterop;
-      _adaptor = adaptor;
-      _importer = importer;
-      _pluginHelper = pluginHelper;
-
-      _ = Initialize();
-    }
-
-    public async Task Initialize() {
+    public async void Initialize() {
       try {
         _bsInterop.OnSongPlayed += RecordHistoryWithGuard;
         _logger.Info($"{nameof(Initialize)}.");

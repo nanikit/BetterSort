@@ -18,7 +18,7 @@ namespace BetterSort.Accuracy.Installers {
       Container.BindInterfacesAndSelfTo<UIAwareSorter>().AsSingle();
       Container.BindInterfacesAndSelfTo<DifficultySelectingSorter>().AsSingle().WhenInjectedInto<FilterSortAdaptor>();
       Container.BindInterfacesAndSelfTo<FilterSortAdaptor>().AsSingle();
-      Container.Bind<SorterEnvironment>().AsSingle().NonLazy();
+      Container.BindInterfacesAndSelfTo<SorterEnvironment>().AsSingle().NonLazy();
     }
   }
 }
