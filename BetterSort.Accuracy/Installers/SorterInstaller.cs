@@ -1,6 +1,7 @@
 using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Sorter;
 using BetterSort.Common.Compatibility;
+using BetterSort.Common.Flows;
 using Zenject;
 
 namespace BetterSort.Accuracy.Installers {
@@ -15,6 +16,7 @@ namespace BetterSort.Accuracy.Installers {
 
       Container.Bind<AccuracySorter>().AsSingle();
       Container.BindInterfacesAndSelfTo<UIAwareSorter>().AsSingle();
+      Container.BindInterfacesAndSelfTo<DifficultySelectingSorter>().AsSingle().WhenInjectedInto<FilterSortAdaptor>();
       Container.BindInterfacesAndSelfTo<FilterSortAdaptor>().AsSingle();
       Container.Bind<SorterEnvironment>().AsSingle().NonLazy();
     }

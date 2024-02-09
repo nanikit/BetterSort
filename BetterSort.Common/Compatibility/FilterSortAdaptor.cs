@@ -45,11 +45,8 @@ namespace BetterSort.Common.Compatibility {
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
       _logger.Trace($"Called NotifyChange");
 
-      // Actually it sorts synchronously so sort is done already. This is defensive code.
-      bool isComplete = _result.Task.Wait(1000);
-      _logger.Trace($"Called Wait");
-      if (!isComplete) {
-        _logger.Error($"Timeout exceeded. Current implementation doesn't support asynchronocity.");
+      if (!_result.Task.IsCompleted) {
+        _logger.Error($"Cannot get sort result. Current implementation doesn't support asynchronocity.");
         return;
       }
 

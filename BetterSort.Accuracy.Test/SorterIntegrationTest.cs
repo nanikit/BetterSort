@@ -1,15 +1,12 @@
 using BetterSongList.SortModels;
 using BetterSort.Accuracy.Installers;
-using BetterSort.Accuracy.Sorter;
 using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Common.Models;
 using BetterSort.Common.Test;
 using BetterSort.Common.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Zenject;
 
 namespace BetterSort.Accuracy.Test {
@@ -17,8 +14,8 @@ namespace BetterSort.Accuracy.Test {
   [TestClass]
   public class SorterIntegrationTest {
     private readonly ISorterCustom _adaptor;
+    private readonly ISorterWithLegend _legend;
     private readonly InMemoryRepository _repository;
-    private readonly AccuracySorter _sorter;
 
     public SorterIntegrationTest() {
       var container = new DiContainer();
@@ -27,8 +24,8 @@ namespace BetterSort.Accuracy.Test {
       container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle();
       container.Install<SorterInstaller>();
 
-      _sorter = container.Resolve<AccuracySorter>();
       _adaptor = container.Resolve<ISorterCustom>();
+      _legend = container.Resolve<ISorterWithLegend>();
       _repository = container.Resolve<InMemoryRepository>();
     }
 
@@ -36,12 +33,14 @@ namespace BetterSort.Accuracy.Test {
     [TestMethod]
     public void TestEmptyCase() {
       var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
+
       _adaptor.DoSort(ref data, true);
+
       CollectionAssert.AreEqual(new List<IPreviewBeatmapLevel>(), data.ToList());
     }
 
     [TestMethod]
-    public async Task TestComplexCase() {
+    public void TestComplexCase() {
       _repository.BestAccuracies = new() {
         { "custom_level_1111111111111111111111111111111111111111", new() {
             { "Standard", new() {
@@ -49,37 +48,21 @@ namespace BetterSort.Accuracy.Test {
             }},
         }},
       };
-      var input = new List<MockPreview>() {
-        new("custom_level_2222222222222222222222222222222222222222"),
-        new("custom_level_1111111111111111111111111111111111111111"),
-        new("custom_level_3333333333333333333333333333333333333333"),
-      };
-      var result = await WaitResult(input, isSelected: true).ConfigureAwait(false);
-      CollectionAssert.AreEqual(result.Levels.Select(x => x.LevelId).ToList(), new List<string> {
+      var input = new IPreviewBeatmapLevel[] {
+        MockPreview.GetMockPreviewBeatmapLevel("custom_level_2222222222222222222222222222222222222222"),
+        MockPreview.GetMockPreviewBeatmapLevel("custom_level_1111111111111111111111111111111111111111"),
+        MockPreview.GetMockPreviewBeatmapLevel("custom_level_3333333333333333333333333333333333333333"),
+      }.AsEnumerable();
+
+      _adaptor.DoSort(ref input, true);
+      var legend = _legend.BuildLegend(input.ToArray());
+
+      CollectionAssert.AreEqual(new List<string> {
         "custom_level_1111111111111111111111111111111111111111",
         "custom_level_2222222222222222222222222222222222222222",
         "custom_level_3333333333333333333333333333333333333333",
-      });
-      CollectionAssert.AreEqual(result.Legend.ToList(), new List<(string Label, int Index)>() { ("90.29", 0), ("N/A", 1) });
-    }
-
-    private async Task<ISortFilterResult> WaitResult(IEnumerable<ILevelPreview>? newLevels, bool isSelected = false) {
-      TaskCompletionSource<ISortFilterResult?> completer = new();
-      void SetResult(ISortFilterResult? res) {
-        completer.TrySetResult(res);
-      }
-      _sorter.OnResultChanged += SetResult;
-
-      _sorter.NotifyChange(newLevels, isSelected);
-
-      var result = await completer.Task.ConfigureAwait(false);
-      _sorter.OnResultChanged -= SetResult;
-      if (result == null) {
-        Assert.Fail("result is null");
-        throw new Exception();
-      }
-
-      return result;
+      }, input.Select(x => x.levelID).ToList());
+      CollectionAssert.AreEqual(new List<KeyValuePair<string, int>>() { new("90.29", 0), new("N/A", 1) }, legend.ToList());
     }
   }
 }
