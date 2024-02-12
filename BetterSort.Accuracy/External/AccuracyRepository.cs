@@ -115,8 +115,7 @@ namespace BetterSort.Accuracy.External {
     }
 
     private static string SerializeRecords(StoredData data) {
-      var indented = new JsonSerializerSettings() { Formatting = Formatting.Indented };
-      return JsonConvert.SerializeObject(data, indented);
+      return JsonConvert.SerializeObject(data, Formatting.Indented);
     }
   }
 }

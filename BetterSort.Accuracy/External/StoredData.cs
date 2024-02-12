@@ -20,6 +20,7 @@ namespace BetterSort.Accuracy.External {
     public string? Version { get; set; }
   }
 
+  [JsonConverter(typeof(SingleLineConverter))]
   public record BestRecord(
     [property: JsonProperty("levelId")]
     string LevelId,
@@ -56,4 +57,29 @@ namespace BetterSort.Accuracy.External {
     RecordDifficulty Difficulty,
     double Accuracy
   );
+
+  internal class SingleLineConverter : JsonConverter<BestRecord> {
+
+    public override bool CanRead {
+      get { return false; }
+    }
+
+    public override void WriteJson(JsonWriter writer, BestRecord? value, JsonSerializer serializer) {
+      if (value == null) {
+        writer.WriteNull();
+        return;
+      }
+
+      writer.WriteStartObject();
+      writer.WriteRaw($$"""
+ "levelId": {{JsonConvert.ToString(value.LevelId)}}, "type": {{JsonConvert.ToString(value.Type)}}, "difficulty": "{{value.Difficulty}}", "accuracy": {{value.Accuracy}}
+""");
+      writer.WriteWhitespace(" ");
+      writer.WriteEndObject();
+    }
+
+    public override BestRecord ReadJson(JsonReader reader, Type objectType, BestRecord? existingValue, bool hasExistingValue, JsonSerializer serializer) {
+      throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+    }
+  }
 }

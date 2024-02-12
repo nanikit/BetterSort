@@ -77,12 +77,7 @@ namespace BetterSort.Accuracy.Test {
       Assert.AreEqual($$"""
 {
   "bestRecords": [
-    {
-      "levelId": "custom_level_000",
-      "type": "Standard",
-      "difficulty": "ExpertPlus",
-      "accuracy": 0.90292
-    }
+    { "levelId": "custom_level_000", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
   "lastRecordAt": "2022-03-02T09:00:00+09:00",
   "version": "1.0.0.0"
@@ -100,18 +95,8 @@ namespace BetterSort.Accuracy.Test {
       Assert.AreEqual($$"""
 {
   "bestRecords": [
-    {
-      "levelId": "custom_level_111",
-      "type": "Standard",
-      "difficulty": "Expert",
-      "accuracy": 0.92192
-    },
-    {
-      "levelId": "custom_level_111",
-      "type": "Standard",
-      "difficulty": "ExpertPlus",
-      "accuracy": 0.90292
-    }
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "Expert", "accuracy": 0.92192 },
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
   "lastRecordAt": "2022-03-01T09:00:00+09:00",
   "version": "1.0.0.0"
@@ -129,24 +114,9 @@ namespace BetterSort.Accuracy.Test {
       Assert.AreEqual($$"""
 {
   "bestRecords": [
-    {
-      "levelId": "custom_level_111",
-      "type": "Standard",
-      "difficulty": "Expert",
-      "accuracy": 0.92192
-    },
-    {
-      "levelId": "custom_level_222",
-      "type": "Lawless",
-      "difficulty": "Hard",
-      "accuracy": 0.91
-    },
-    {
-      "levelId": "custom_level_111",
-      "type": "Standard",
-      "difficulty": "ExpertPlus",
-      "accuracy": 0.90292
-    }
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "Expert", "accuracy": 0.92192 },
+    { "levelId": "custom_level_222", "type": "Lawless", "difficulty": "Hard", "accuracy": 0.91 },
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
   "lastRecordAt": "2022-03-01T09:00:00+09:00",
   "version": "1.0.0.0"
