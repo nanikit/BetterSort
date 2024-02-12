@@ -4,7 +4,6 @@
   <PropertyGroup>
     <RootNamespace>BetterSort.Accuracy</RootNamespace>
     <Product>BetterSort.Accuracy</Product>
-    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

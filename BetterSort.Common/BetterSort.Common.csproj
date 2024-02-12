@@ -4,7 +4,6 @@
   <PropertyGroup>
     <RootNamespace>BetterSort.Common</RootNamespace>
     <Product>BetterSort.Common</Product>
-    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>

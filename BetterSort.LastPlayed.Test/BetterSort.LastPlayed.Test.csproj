@@ -5,7 +5,6 @@
     <RootNamespace>BetterSort.LastPlayed.Test</RootNamespace>
     <Product>BetterSort.LastPlayed.Test</Product>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>

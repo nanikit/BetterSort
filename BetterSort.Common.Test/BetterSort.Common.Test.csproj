@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <RootNamespace>BetterSort.Common.Test</RootNamespace>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
