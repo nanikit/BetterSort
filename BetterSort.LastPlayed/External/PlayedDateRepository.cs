@@ -40,10 +40,7 @@ namespace BetterSort.LastPlayed.External {
     }
 
     public void Save(IReadOnlyList<LastPlayRecord> playDates) {
-      string json = JsonConvert.SerializeObject(new StoredData() {
-        Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LatestRecords = playDates,
-      }, Formatting.Indented);
+      string json = Serialize(playDates);
 
       try {
         _jsonRepository.Save(json);
@@ -118,6 +115,13 @@ namespace BetterSort.LastPlayed.External {
 
       var records = result.Values.OrderByDescending(x => x.Time).ToList();
       return (records, builder.Length == 0 ? null : builder.ToString());
+    }
+
+    internal static string Serialize(IReadOnlyList<LastPlayRecord> playDates) {
+      return JsonConvert.SerializeObject(new StoredData() {
+        Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
+        LatestRecords = playDates,
+      }, Formatting.Indented);
     }
 
     private StoredData? TryImportingSongPlayHistoryData() {
