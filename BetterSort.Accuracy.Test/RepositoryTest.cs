@@ -126,5 +126,27 @@ namespace BetterSort.Accuracy.Test {
       Assert.AreEqual(3, data.BestRecords.Count);
       Assert.AreEqual(_version, data.Version);
     }
+
+    [TestMethod]
+    public void TestIdempotency() {
+      var (_, data) = AccuracyRepository.GetPersistentData(_doubleRecords, _fixedTime);
+      var sorterData = AccuracyRepository.GetSorterData(data.BestRecords);
+      (string json, data) = AccuracyRepository.GetPersistentData(sorterData, _fixedTime);
+
+      Assert.AreEqual($$"""
+{
+  "bestRecords": [
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "Expert", "accuracy": 0.92192 },
+    { "levelId": "custom_level_222", "type": "Lawless", "difficulty": "Hard", "accuracy": 0.91 },
+    { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
+  ],
+  "lastRecordAt": "2022-03-01T09:00:00+09:00",
+  "version": "1.0.0.0"
+}
+""", json);
+      Assert.AreEqual(_fixedTime, data.LastRecordAt);
+      Assert.AreEqual(3, data.BestRecords.Count);
+      Assert.AreEqual(_version, data.Version);
+    }
   }
 }
