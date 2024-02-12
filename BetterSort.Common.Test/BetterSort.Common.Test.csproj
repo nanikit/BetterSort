@@ -1,26 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <OutputType>Library</OutputType>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RootNamespace>BetterSort.Common.Test</RootNamespace>
-    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-    <Nullable>enable</Nullable>
-    <Product>BetterSort.Common.Test</Product>
-    <Company />
-    <Authors></Authors>
-    <Copyright></Copyright>
-    <RepositoryType></RepositoryType>
-    <RepositoryUrl></RepositoryUrl>
-    <Description></Description>
-    <Platforms>x64</Platforms>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  </PropertyGroup>
+  <Import Project="..\BetterSort.props" />
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <OutputPath>bin\Debug</OutputPath>
+  <PropertyGroup>
+    <RootNamespace>BetterSort.Common.Test</RootNamespace>
+    <Product>BetterSort.Common.Test</Product>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,11 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta7</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="coverlet.collector" Version="3.2.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
