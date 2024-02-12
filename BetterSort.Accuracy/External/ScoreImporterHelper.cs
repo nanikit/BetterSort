@@ -7,7 +7,7 @@ namespace BetterSort.Accuracy.External {
 
   public interface IScoreImporter {
 
-    Task<List<BestRecord>?> GetPlayerBests();
+    Task<List<OnlineBestRecord>?> GetPlayerBests();
   }
 
   public class ScoreImporterHelper {

@@ -68,7 +68,7 @@ namespace BetterSort.Accuracy.External {
       return accuracies;
     }
 
-    private async Task<List<BestRecord>> ImportRecords() {
+    private async Task<List<OnlineBestRecord>> ImportRecords() {
       var imports = _importers.Select(x => x.GetPlayerBests()).ToArray();
       try {
         await Task.WhenAll(imports).ConfigureAwait(false);

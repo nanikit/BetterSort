@@ -19,7 +19,7 @@ namespace BetterSort.Accuracy.External {
       _helper = helper;
     }
 
-    public async Task<List<BestRecord>?> GetPlayerBests() {
+    public async Task<List<OnlineBestRecord>?> GetPlayerBests() {
       string? id = await _id.GetUserId().ConfigureAwait(false);
       if (id == null) {
         _logger.Info("Cannot get user ID. Abort data import.");
@@ -30,7 +30,7 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    public async Task<(List<BestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
+    public async Task<(List<OnlineBestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
       string url = GetUrl(platformId, page);
       string? json = await _helper.GetJsonWithRetry(url).ConfigureAwait(false);
       if (json == null) {
@@ -44,8 +44,8 @@ namespace BetterSort.Accuracy.External {
       return $"https://api.beatleader.xyz/player/{platformId}/scores?page={page}&sortBy=date&order=desc";
     }
 
-    private async Task<List<BestRecord>> GetRecords(string platformId) {
-      var records = new List<BestRecord>();
+    private async Task<List<OnlineBestRecord>> GetRecords(string platformId) {
+      var records = new List<OnlineBestRecord>();
       for (int page = 1; ; page++) {
         _logger.Debug($"Try getting beatleader page {page}...");
 
@@ -64,8 +64,8 @@ namespace BetterSort.Accuracy.External {
       return records;
     }
 
-    private (List<BestRecord> Records, int MaxPage)? GetScores(string json) {
-      var records = new List<BestRecord>();
+    private (List<OnlineBestRecord> Records, int MaxPage)? GetScores(string json) {
+      var records = new List<OnlineBestRecord>();
 
       var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
       var data = page!.Data;
@@ -86,13 +86,13 @@ namespace BetterSort.Accuracy.External {
           _logger.Warn($"Unknown beatleader difficulty. Regard it as ExpertPlus({hash})");
         }
 
-        records.Add(new BestRecord() {
-          SongHash = hash.ToUpperInvariant(),
-          Mode = score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
-          Difficulty = difficulty ?? RecordDifficulty.ExpertPlus,
-          Accuracy = score.Accuracy,
-          Score = score.ModifiedScore,
-        });
+        records.Add(new OnlineBestRecord(
+          Accuracy: score.Accuracy,
+          SongHash: hash.ToUpperInvariant(),
+          Mode: score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
+          Difficulty: difficulty ?? RecordDifficulty.ExpertPlus,
+          Score: score.ModifiedScore
+        ));
       }
 
       int maxPage = (int)Math.Ceiling((double)page.Metadata!.Total / page.Metadata.ItemsPerPage);
