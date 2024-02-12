@@ -36,8 +36,7 @@ namespace BetterSort.LastPlayed.Sorter {
       _logger.Debug($"Record play {record.LevelId}: {record.Map?.Difficulty}");
       _sorter.PlayRecords[record.LevelId] = new LevelPlayData(record.Time, record.Map);
       var updatedRecords = _sorter.PlayRecords.Select(x => new LastPlayRecord(x.Value.Time, x.Key, x.Value.Map));
-      var list = updatedRecords.OrderBy(list => list.Time).ToList();
-      _repository.Save(list);
+      _repository.Save(updatedRecords);
     }
   }
 }

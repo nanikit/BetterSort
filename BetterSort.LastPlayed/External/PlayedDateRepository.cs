@@ -39,12 +39,12 @@ namespace BetterSort.LastPlayed.External {
       }
     }
 
-    public void Save(IReadOnlyList<LastPlayRecord> playDates) {
+    public void Save(IEnumerable<LastPlayRecord> playDates) {
       string json = Serialize(playDates);
 
       try {
         _jsonRepository.Save(json);
-        _logger.Info($"Saved {playDates.Count} records");
+        _logger.Info($"Saved {playDates.Count()} records");
       }
       catch (Exception exception) {
         _logger.Error(exception);
@@ -117,10 +117,10 @@ namespace BetterSort.LastPlayed.External {
       return (records, builder.Length == 0 ? null : builder.ToString());
     }
 
-    internal static string Serialize(IReadOnlyList<LastPlayRecord> playDates) {
+    internal static string Serialize(IEnumerable<LastPlayRecord> playDates) {
       return JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LatestRecords = playDates,
+        LatestRecords = playDates.OrderByDescending(x => x.Time).ToList(),
       }, Formatting.Indented);
     }
 

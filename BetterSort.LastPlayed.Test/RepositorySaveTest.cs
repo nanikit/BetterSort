@@ -39,8 +39,8 @@ namespace BetterSort.LastPlayed.Test {
     [TestMethod]
     public void TestDoubleData() {
       string json = PlayedDateRepository.Serialize([
+        new(DateTime.Parse("2024-02-03T07:00:00.000000+09:00"), "custom_level_100", new PlayedMap("Lawless", RecordDifficulty.Easy)),
         new(DateTime.Parse("2024-02-06T07:00:00.000000+09:00"), "custom_level_000", new PlayedMap("Standard", RecordDifficulty.ExpertPlus)),
-        new(DateTime.Parse("2024-02-03T07:00:00.000000+09:00"), "custom_level_100", new PlayedMap("Lawless", RecordDifficulty.Easy))
       ]);
 
       Assert.AreEqual($$"""
