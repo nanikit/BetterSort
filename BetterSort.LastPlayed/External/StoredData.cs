@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace BetterSort.LastPlayed.External {
-  public record class CompatibleData : StoredData {
+  public record CompatibleData : StoredData {
     /// <summary>
     /// This is for compatibility with old data. Use LatestRecords instead.
     /// </summary>
@@ -12,7 +12,7 @@ namespace BetterSort.LastPlayed.External {
     public IDictionary<string, DateTime>? LastPlays { get; set; }
   }
 
-  public record class StoredData {
+  public record StoredData {
     [JsonProperty("latestRecords")]
     public IReadOnlyList<LastPlayRecord>? LatestRecords { get; set; }
 
@@ -20,9 +20,9 @@ namespace BetterSort.LastPlayed.External {
     public string? Version { get; set; }
   }
 
-  public record class LastPlayRecord(
-    [JsonProperty("time")] DateTime Time,
-    [JsonProperty("levelId")] string LevelId,
-    [JsonProperty("map")] PlayedMap? Map = null
+  public record LastPlayRecord(
+    [property: JsonProperty("time")] DateTime Time,
+    [property: JsonProperty("levelId")] string LevelId,
+    [property: JsonProperty("map")] PlayedMap? Map = null
   );
 }

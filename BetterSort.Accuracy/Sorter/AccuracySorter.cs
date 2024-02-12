@@ -35,14 +35,14 @@ namespace BetterSort.Accuracy.Sorter {
       }
     }
 
-    internal static SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<BestRecords?> getRecords, List<LevelRecord> mapping) {
+    internal static SortResult SortInternal(IEnumerable<ILevelPreview>? levels, Func<SorterData?> getRecords, List<LevelRecord> mapping) {
       if (levels == null) {
         return new SortResult(null, $"levels is null, give it as is.");
       }
 
       var records = getRecords();
       if (records == null) {
-        return new SortResult(new SortFilterResult(levels), "records is null, give it as is.");
+        return new SortResult(new SortFilterResult(levels), $"records is null, give it as is.");
       }
 
       var comparer = new LevelAccuracyComparer(records);
@@ -66,7 +66,7 @@ namespace BetterSort.Accuracy.Sorter {
     }
 
     private SortFilterResult? Sort(IEnumerable<ILevelPreview>? levels) {
-      var result = SortInternal(levels, () => _repository.Load().Result?.BestRecords, Mapping);
+      var result = SortInternal(levels, () => _repository.Load().Result, Mapping);
       _logger.Info(result.Message);
       return result.Result;
     }

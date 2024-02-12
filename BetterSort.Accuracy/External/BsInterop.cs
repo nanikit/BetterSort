@@ -10,7 +10,7 @@ using System.Reflection;
 using Zenject;
 
 namespace BetterSort.Accuracy.External {
-  public record class PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
+  public record PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
 
   public interface IBsInterop : IDisposable {
 

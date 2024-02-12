@@ -27,10 +27,13 @@ namespace BetterSort.Accuracy.Test {
     [TestMethod]
     public void TestSingle() {
       var levels = new List<ILevelPreview>() { new MockPreview("custom_level_0000000000000000000000000000000000000000") };
-      var records = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>() {
-        { "custom_level_0000000000000000000000000000000000000000", new() {
-          { "Standard", new() { { RecordDifficulty.ExpertPlus, 0.90292 } }},
-        }},
+      var records = new SorterData() {
+        {
+          "custom_level_0000000000000000000000000000000000000000",
+          new() {
+            { ("Standard", RecordDifficulty.ExpertPlus), 0.90292  },
+          }
+        },
       };
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
@@ -48,11 +51,14 @@ namespace BetterSort.Accuracy.Test {
         new MockPreview("custom_level_1111111111111111111111111111111111111111"),
         new MockPreview("custom_level_0000000000000000000000000000000000000000"),
       };
-      var records = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>() {
-          { "custom_level_0000000000000000000000000000000000000000", new() {
-            { "Standard", new() { { RecordDifficulty.ExpertPlus, 0.90292 } }},
-          }},
-        };
+      var records = new SorterData() {
+        {
+          "custom_level_0000000000000000000000000000000000000000",
+          new() {
+            { ("Standard", RecordDifficulty.ExpertPlus) , 0.90292 },
+          }
+        },
+      };
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 
@@ -72,17 +78,21 @@ namespace BetterSort.Accuracy.Test {
         new MockPreview("custom_level_1111111111111111111111111111111111111111"),
         new MockPreview("custom_level_0000000000000000000000000000000000000000"),
       };
-      var records = new Dictionary<string, Dictionary<string, Dictionary<RecordDifficulty, double>>>() {
-          { "custom_level_0000000000000000000000000000000000000000", new() {
-            { "Standard", new() { { RecordDifficulty.ExpertPlus, 0.90292 } } },
-          }},
-          { "custom_level_1111111111111111111111111111111111111111", new() {
-            { "Standard", new() {
-              { RecordDifficulty.ExpertPlus, 0.80004 },
-              { RecordDifficulty.Expert, 0.92004 } }
-            },
-          }},
-        };
+      var records = new SorterData() {
+        {
+          "custom_level_0000000000000000000000000000000000000000",
+          new() {
+            { ("Standard", RecordDifficulty.ExpertPlus) , 0.90292 },
+          }
+        },
+        {
+          "custom_level_1111111111111111111111111111111111111111",
+          new() {
+            { ("Standard", RecordDifficulty.ExpertPlus), 0.80004 },
+            { ("Standard", RecordDifficulty.Expert), 0.92004 },
+          }
+        },
+      };
 
       var result = AccuracySorter.SortInternal(levels, () => records, new List<LevelRecord>()).Result;
 

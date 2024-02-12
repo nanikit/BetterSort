@@ -13,8 +13,8 @@ namespace BetterSort.Common.Models {
   }
 
   public record PlayedMap(
-    [JsonProperty("type")] string Type,
-    [JsonProperty("difficulty")] RecordDifficulty Difficulty
+    [property: JsonProperty("type")] string Type,
+    [property: JsonProperty("difficulty")] RecordDifficulty Difficulty
   );
 
   public static class RecordDifficultyExtension {

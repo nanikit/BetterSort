@@ -44,13 +44,9 @@ namespace BetterSort.Accuracy.Test {
       _repository.Json = """
 {
   "lastRecordAt": "2021-08-01T00:00:00Z",
-  "bestRecords": {
-    "custom_level_1111111111111111111111111111111111111111": {
-      "Standard": {
-        "ExpertPlus": 0.90292
-      }
-    }
-  }
+  "bestRecords": [
+    { levelId: "custom_level_1111111111111111111111111111111111111111", type: "Standard", difficulty: "ExpertPlus", accuracy: 0.90292 }
+  ]
 }
 """;
       var input = new IPreviewBeatmapLevel[] {
