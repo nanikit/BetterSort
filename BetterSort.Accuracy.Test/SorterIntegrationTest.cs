@@ -15,18 +15,18 @@ namespace BetterSort.Accuracy.Test {
   public class SorterIntegrationTest {
     private readonly ISorterCustom _adaptor;
     private readonly ISorterWithLegend _legend;
-    private readonly InMemoryRepository _repository;
+    private readonly InMemoryJsonRepository _repository;
 
     public SorterIntegrationTest() {
       var container = new DiContainer();
       container.Install<MockEnvironmentInstaller>();
-      container.BindInterfacesAndSelfTo<InMemoryRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<InMemoryJsonRepository>().AsSingle();
       container.BindInterfacesAndSelfTo<MockBsInterop>().AsSingle();
       container.Install<SorterInstaller>();
 
       _adaptor = container.Resolve<ISorterCustom>();
       _legend = container.Resolve<ISorterWithLegend>();
-      _repository = container.Resolve<InMemoryRepository>();
+      _repository = container.Resolve<InMemoryJsonRepository>();
     }
 
     // BetterSongList can pass empty list.
@@ -41,13 +41,18 @@ namespace BetterSort.Accuracy.Test {
 
     [TestMethod]
     public void TestComplexCase() {
-      _repository.BestAccuracies = new() {
-        { "custom_level_1111111111111111111111111111111111111111", new() {
-            { "Standard", new() {
-              { RecordDifficulty.ExpertPlus, 0.90292 }
-            }},
-        }},
-      };
+      _repository.Json = """
+{
+  "lastRecordAt": "2021-08-01T00:00:00Z",
+  "bestRecords": {
+    "custom_level_1111111111111111111111111111111111111111": {
+      "Standard": {
+        "ExpertPlus": 0.90292
+      }
+    }
+  }
+}
+""";
       var input = new IPreviewBeatmapLevel[] {
         MockPreview.GetMockPreviewBeatmapLevel("custom_level_2222222222222222222222222222222222222222"),
         MockPreview.GetMockPreviewBeatmapLevel("custom_level_1111111111111111111111111111111111111111"),

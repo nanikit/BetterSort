@@ -27,7 +27,6 @@ namespace BetterSort.Accuracy {
           .WithId("BetterSort.Accuracy.Harmony")
           .FromInstance(new Harmony("BetterSort.Accuracy"))
           .AsCached();
-        container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
       });
       zenjector.Install<SorterInstaller>(Location.App);
 

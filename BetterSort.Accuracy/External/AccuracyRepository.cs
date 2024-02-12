@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
@@ -17,12 +16,10 @@ namespace BetterSort.Accuracy.External {
     Task<StoredData?> Load();
   }
 
-  public class AccuracyRepository(SiraLog logger, IClock clock) : IAccuracyRepository {
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "UserData", "BestAccuracies.json.dat");
-
+  public class AccuracyRepository(SiraLog logger, IAccuracyJsonRepository jsonRepository, IClock clock) : IAccuracyRepository {
     private readonly SiraLog _logger = logger;
-
     private readonly IClock _clock = clock;
+    private readonly IAccuracyJsonRepository _jsonRepository = jsonRepository;
 
     private StoredData? _cache;
 
@@ -31,7 +28,7 @@ namespace BetterSort.Accuracy.External {
 
       var indented = new JsonSerializerSettings() { Formatting = Formatting.Indented };
       string json = JsonConvert.SerializeObject(accuracies, indented);
-      File.WriteAllText(_path, json);
+      _jsonRepository.Save(json);
 
       _logger.Info($"Saved {accuracies.Count} records");
 
@@ -46,13 +43,13 @@ namespace BetterSort.Accuracy.External {
         return Task.FromResult<StoredData?>(_cache);
       }
 
-      if (!File.Exists(_path)) {
-        _logger.Debug($"Try loading but play history is not exist.");
-        return Task.FromResult<StoredData?>(null);
-      }
-
       try {
-        string json = File.ReadAllText(_path);
+        string? json = _jsonRepository.Load();
+        if (json == null) {
+          _logger.Debug($"Attempted to load but play history is not exist.");
+          return Task.FromResult<StoredData?>(null);
+        }
+
         _cache = JsonConvert.DeserializeObject<StoredData>(json);
         _logger.Info($"Loaded {_cache!.BestRecords?.Count.ToString() ?? "no"} records");
         return Task.FromResult<StoredData?>(_cache);

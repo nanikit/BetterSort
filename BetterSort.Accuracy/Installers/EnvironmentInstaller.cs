@@ -8,6 +8,7 @@ namespace BetterSort.Accuracy.Installers {
     public override void InstallBindings() {
       Container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
       Container.BindInterfacesAndSelfTo<BsUtilsInterop>().AsSingle();
+      Container.BindInterfacesAndSelfTo<AccuracyJsonRepository>().AsSingle();
     }
   }
 }

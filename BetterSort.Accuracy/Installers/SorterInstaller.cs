@@ -13,6 +13,7 @@ namespace BetterSort.Accuracy.Installers {
       Container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
       Container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
       Container.Bind<UnifiedImporter>().AsSingle();
+      Container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
 
       Container.Bind<AccuracySorter>().AsSingle();
       Container.BindInterfacesAndSelfTo<UIAwareSorter>().AsSingle();

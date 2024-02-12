@@ -18,7 +18,7 @@ namespace BetterSort.Accuracy.Test {
       var container = new DiContainer();
       container.Install<MockEnvironmentInstaller>();
       container.BindInterfacesAndSelfTo<FakeHttpService>().AsSingle();
-      container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
+      container.BindInterfacesAndSelfTo<InMemoryJsonRepository>().AsSingle();
       container.Install<SorterInstaller>();
 
       var mockId = new MockId();
