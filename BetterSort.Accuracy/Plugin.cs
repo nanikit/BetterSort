@@ -1,7 +1,5 @@
-using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Installers;
 using BetterSort.Common;
-using HarmonyLib;
 using IPA;
 using SiraUtil.Zenject;
 using System.Runtime.CompilerServices;
@@ -22,12 +20,6 @@ namespace BetterSort.Accuracy {
       zenjector.UseLogger(logger);
       zenjector.Install<CommonEnvironmentInstaller>(Location.App);
       zenjector.Install<EnvironmentInstaller>(Location.App);
-      zenjector.Install(Location.App, container => {
-        container.Bind<Harmony>()
-          .WithId("BetterSort.Accuracy.Harmony")
-          .FromInstance(new Harmony("BetterSort.Accuracy"))
-          .AsCached();
-      });
       zenjector.Install<SorterInstaller>(Location.App);
 
       logger.Info("Initialized.");

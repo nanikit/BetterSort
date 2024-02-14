@@ -7,7 +7,6 @@ using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Zenject;
 
 namespace BetterSort.Accuracy.External {
   public record PlayRecord(string LevelId, string Mode, RecordDifficulty Difficulty, double Accuracy);
@@ -27,15 +26,12 @@ namespace BetterSort.Accuracy.External {
 
     private readonly Beatleader _beatleader;
 
-    private readonly Harmony _harmony;
-
     private bool _hasPlaylistManager = true;
 
-    public BsUtilsInterop(SiraLog logger, Common.External.Scoresaber scoresaber, Beatleader beatleader, [Inject(Id = "BetterSort.Accuracy.Harmony")] Harmony harmony) {
+    public BsUtilsInterop(SiraLog logger, Common.External.Scoresaber scoresaber, Beatleader beatleader) {
       _logger = logger;
       _scoresaber = scoresaber;
       _beatleader = beatleader;
-      _harmony = harmony;
       BSEvents.levelCleared += DispatchWithAccuracy;
     }
 
