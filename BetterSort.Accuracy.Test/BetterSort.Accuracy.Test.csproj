@@ -17,6 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="BetterSongList">
+      <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
+    </Reference>
     <Reference Include="SiraUtil">
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
     </Reference>

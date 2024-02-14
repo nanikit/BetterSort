@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSongList", "BetterSongList\BetterSongList.csproj", "{6752527E-B01D-4457-8ADE-262B2A6A1125}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.LastPlayed", "BetterSort.LastPlayed\BetterSort.LastPlayed.csproj", "{14269CDE-DEC8-458D-84A3-ACD5A768A04C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSort.LastPlayed.Test", "BetterSort.LastPlayed.Test\BetterSort.LastPlayed.Test.csproj", "{248F8761-0D9B-41BB-BC89-E2331D744BC0}"
@@ -37,14 +35,6 @@ Global
 		Release-1.34.2|x64 = Release-1.34.2|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Debug-1.29.1|x64.ActiveCfg = Debug|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Debug-1.29.1|x64.Build.0 = Debug|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Debug-1.34.2|x64.ActiveCfg = Debug|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Debug-1.34.2|x64.Build.0 = Debug|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Release-1.29.1|x64.ActiveCfg = Release|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Release-1.29.1|x64.Build.0 = Release|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Release-1.34.2|x64.ActiveCfg = Release|x64
-		{6752527E-B01D-4457-8ADE-262B2A6A1125}.Release-1.34.2|x64.Build.0 = Release|x64
 		{14269CDE-DEC8-458D-84A3-ACD5A768A04C}.Debug-1.29.1|x64.ActiveCfg = Debug-1.29.1|x64
 		{14269CDE-DEC8-458D-84A3-ACD5A768A04C}.Debug-1.29.1|x64.Build.0 = Debug-1.29.1|x64
 		{14269CDE-DEC8-458D-84A3-ACD5A768A04C}.Debug-1.34.2|x64.ActiveCfg = Debug-1.34.2|x64

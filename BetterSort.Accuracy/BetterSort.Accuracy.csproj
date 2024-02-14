@@ -19,6 +19,9 @@
     <Reference Include="BeatmapCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
     </Reference>
+    <Reference Include="BetterSongList">
+      <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
+    </Reference>
     <Reference Include="BGLib.AppFlow">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.AppFlow.dll</HintPath>
     </Reference>
@@ -76,7 +79,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BetterSongList\BetterSongList.csproj" />
     <ProjectReference Include="..\BetterSort.Common\BetterSort.Common.csproj" />
   </ItemGroup>
 
