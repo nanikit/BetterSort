@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Profile 1": {
-      "commandName": "Executable",
-      "executablePath": "C:\\Windows\\System32\\cmd.exe",
-      "commandLineArgs": "/C start steam://rungameid/620980"
-    }
-  }
-}

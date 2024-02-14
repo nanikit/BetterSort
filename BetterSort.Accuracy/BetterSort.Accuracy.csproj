@@ -89,6 +89,13 @@
     <GameVersion>1.21.0</GameVersion>
     <Description>Add accuracy sort to BetterSongList</Description>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files %28x86%29\Steam\steam.exe</StartProgram>
+    <StartArguments>-applaunch 620980 --verbose fpfc</StartArguments>
+  </PropertyGroup>
+
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BS Utils" Version="^1.12.0" />
