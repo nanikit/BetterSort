@@ -56,7 +56,6 @@
     <PluginId>BetterSort.Accuracy.Test</PluginId>
     <PluginName>BetterSort.Accuracy.Test</PluginName>
     <Version>0.0.1</Version>
-    <GameVersion>1.19.1</GameVersion>
     <Description>Assembly for mod test</Description>
   </PropertyGroup>
   <ItemGroup>

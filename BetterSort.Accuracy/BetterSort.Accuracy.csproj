@@ -86,7 +86,6 @@
     <PluginId>BetterSort.Accuracy</PluginId>
     <PluginName>BetterSort.Accuracy</PluginName>
     <Version>1.0.0</Version>
-    <GameVersion>1.21.0</GameVersion>
     <Description>Add accuracy sort to BetterSongList</Description>
   </PropertyGroup>
 
