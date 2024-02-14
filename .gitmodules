@@ -1,3 +1,7 @@
 [submodule "BetterSongList"]
 	path = BetterSongList
 	url = https://github.com/nanikit/BeatSaber_BetterSongList.git
+[submodule "beatsaber-stripped"]
+	path = beatsaber-stripped
+	url = https://github.com/nanikit/beatsaber-stripped.git
+	branch = better-sort
