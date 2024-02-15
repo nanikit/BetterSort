@@ -4,9 +4,6 @@
   <PropertyGroup>
     <RootNamespace>BetterSort.Accuracy.Test</RootNamespace>
     <Product>BetterSort.Accuracy.Test</Product>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <OutputPath>bin\Debug</OutputPath>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
