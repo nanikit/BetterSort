@@ -70,9 +70,9 @@
   <Target Name="AddToSearchPaths" BeforeTargets="ResolveAssemblyReferences">  
     <PropertyGroup>
       <ReferencePath>
-         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Beat Saber_Data\Managed;
-         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Libs;
          $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Plugins;
+         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Libs;
+         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Beat Saber_Data\Managed;
       </ReferencePath>
       <AssemblySearchPaths>$(AssemblySearchPaths);$(ReferencePath)</AssemblySearchPaths>
     </PropertyGroup>
