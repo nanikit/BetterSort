@@ -22,10 +22,10 @@
     <Reference Include="BetterSongList">
       <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
     </Reference>
-    <Reference Include="BGLib.AppFlow">
+    <Reference Include="BGLib.AppFlow" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_34'))">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.AppFlow.dll</HintPath>
     </Reference>
-    <Reference Include="BGLib.UnityExtension">
+    <Reference Include="BGLib.UnityExtension" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_34'))">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.UnityExtension.dll</HintPath>
     </Reference>
     <Reference Include="BS_Utils">
@@ -43,7 +43,7 @@
     <Reference Include="IPA.Loader">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
     </Reference>
-    <Reference Include="PlatformUserModel">
+    <Reference Include="PlatformUserModel" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_34'))">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\PlatformUserModel.dll</HintPath>
     </Reference>
     <Reference Include="SiraUtil">
