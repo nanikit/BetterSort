@@ -29,7 +29,7 @@ namespace BetterSort.LastPlayed.Test {
       Assert.AreEqual($$"""
 {
   "latestRecords": [
-    { "time": "2024-02-06T07:00:00+09:00", "levelId": "custom_level_000", "map": { "type": "Standard", "difficulty": "ExpertPlus" } }
+    { "time": "2024-02-05T22:00:00Z", "levelId": "custom_level_000", "map": { "type": "Standard", "difficulty": "ExpertPlus" } }
   ],
   "version": "{{typeof(PlayedDateRepository).Assembly.GetName().Version}}"
 }
@@ -46,8 +46,8 @@ namespace BetterSort.LastPlayed.Test {
       Assert.AreEqual($$"""
 {
   "latestRecords": [
-    { "time": "2024-02-06T07:00:00+09:00", "levelId": "custom_level_000", "map": { "type": "Standard", "difficulty": "ExpertPlus" } },
-    { "time": "2024-02-03T07:00:00+09:00", "levelId": "custom_level_100", "map": { "type": "Lawless", "difficulty": "Easy" } }
+    { "time": "2024-02-05T22:00:00Z", "levelId": "custom_level_000", "map": { "type": "Standard", "difficulty": "ExpertPlus" } },
+    { "time": "2024-02-02T22:00:00Z", "levelId": "custom_level_100", "map": { "type": "Lawless", "difficulty": "Easy" } }
   ],
   "version": "{{typeof(PlayedDateRepository).Assembly.GetName().Version}}"
 }

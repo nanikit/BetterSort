@@ -121,7 +121,10 @@ namespace BetterSort.LastPlayed.External {
       return JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
         LatestRecords = playDates.OrderByDescending(x => x.Time).ToList(),
-      }, Formatting.Indented);
+      }, new JsonSerializerSettings() {
+        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+        Formatting = Formatting.Indented,
+      });
     }
 
     private StoredData? TryImportingSongPlayHistoryData() {

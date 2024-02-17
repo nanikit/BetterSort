@@ -40,8 +40,9 @@ namespace BetterSort.LastPlayed.External {
       }
 
       writer.WriteStartObject();
+      string time = JsonConvert.ToString(value.Time, writer.DateFormatHandling, writer.DateTimeZoneHandling);
       writer.WriteRaw($$"""
- "time": {{JsonConvert.ToString(value.Time)}}, "levelId": {{JsonConvert.ToString(value.LevelId)}}
+ "time": {{time}}, "levelId": {{JsonConvert.ToString(value.LevelId)}}
 """);
       if (value.Map is var (type, difficulty)) {
         writer.WriteRaw($$"""

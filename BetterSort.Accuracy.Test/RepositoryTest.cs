@@ -59,7 +59,7 @@ namespace BetterSort.Accuracy.Test {
       Assert.AreEqual($$"""
 {
   "bestRecords": [],
-  "lastRecordAt": "2022-03-01T09:00:00+09:00",
+  "lastRecordAt": "2022-03-01T00:00:00Z",
   "version": "{{_version}}"
 }
 """, json);
@@ -79,8 +79,8 @@ namespace BetterSort.Accuracy.Test {
   "bestRecords": [
     { "levelId": "custom_level_000", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
-  "lastRecordAt": "2022-03-02T09:00:00+09:00",
-  "version": "1.0.0.0"
+  "lastRecordAt": "2022-03-02T00:00:00Z",
+  "version": "{{_version}}"
 }
 """, json);
       Assert.AreEqual(anotherTime, data.LastRecordAt);
@@ -98,8 +98,8 @@ namespace BetterSort.Accuracy.Test {
     { "levelId": "custom_level_111", "type": "Standard", "difficulty": "Expert", "accuracy": 0.92192 },
     { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
-  "lastRecordAt": "2022-03-01T09:00:00+09:00",
-  "version": "1.0.0.0"
+  "lastRecordAt": "2022-03-01T00:00:00Z",
+  "version": "{{_version}}"
 }
 """, json);
       Assert.AreEqual(_fixedTime, data.LastRecordAt);
@@ -118,8 +118,8 @@ namespace BetterSort.Accuracy.Test {
     { "levelId": "custom_level_222", "type": "Lawless", "difficulty": "Hard", "accuracy": 0.91 },
     { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
-  "lastRecordAt": "2022-03-01T09:00:00+09:00",
-  "version": "1.0.0.0"
+  "lastRecordAt": "2022-03-01T00:00:00Z",
+  "version": "{{_version}}"
 }
 """, json);
       Assert.AreEqual(_fixedTime, data.LastRecordAt);
@@ -140,8 +140,8 @@ namespace BetterSort.Accuracy.Test {
     { "levelId": "custom_level_222", "type": "Lawless", "difficulty": "Hard", "accuracy": 0.91 },
     { "levelId": "custom_level_111", "type": "Standard", "difficulty": "ExpertPlus", "accuracy": 0.90292 }
   ],
-  "lastRecordAt": "2022-03-01T09:00:00+09:00",
-  "version": "1.0.0.0"
+  "lastRecordAt": "2022-03-01T00:00:00Z",
+  "version": "{{_version}}"
 }
 """, json);
       Assert.AreEqual(_fixedTime, data.LastRecordAt);

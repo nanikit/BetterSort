@@ -115,7 +115,10 @@ namespace BetterSort.Accuracy.External {
     }
 
     private static string SerializeRecords(StoredData data) {
-      return JsonConvert.SerializeObject(data, Formatting.Indented);
+      return JsonConvert.SerializeObject(data, new JsonSerializerSettings() {
+        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+        Formatting = Formatting.Indented,
+      });
     }
   }
 }
