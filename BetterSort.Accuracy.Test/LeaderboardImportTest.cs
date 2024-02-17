@@ -10,6 +10,7 @@ using Zenject;
 
 namespace BetterSort.Accuracy.Test {
 
+  [TestCategory("NoCi")]
   [TestClass]
   public class LeaderboardImportTest {
     private readonly DiContainer _container;

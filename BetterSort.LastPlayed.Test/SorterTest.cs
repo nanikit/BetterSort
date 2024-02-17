@@ -16,6 +16,7 @@ using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
+  [TestCategory("NoCi")]
   [TestClass]
   public class SorterTest {
     private readonly FilterSortAdaptor _adaptor;

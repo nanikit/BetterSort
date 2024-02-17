@@ -13,6 +13,7 @@ using Zenject;
 
 namespace BetterSort.LastPlayed.Test {
 
+  [TestCategory("NoCi")]
   [TestClass]
   public class HistoryImportTest {
 

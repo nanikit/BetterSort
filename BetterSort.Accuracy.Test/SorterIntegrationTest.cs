@@ -1,7 +1,6 @@
 using BetterSongList.SortModels;
 using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Test.Mocks;
-using BetterSort.Common.Models;
 using BetterSort.Common.Test;
 using BetterSort.Common.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +10,7 @@ using Zenject;
 
 namespace BetterSort.Accuracy.Test {
 
+  [TestCategory("NoCi")]
   [TestClass]
   public class SorterIntegrationTest {
     private readonly ISorterCustom _adaptor;
