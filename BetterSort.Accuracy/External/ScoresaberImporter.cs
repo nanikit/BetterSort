@@ -8,20 +8,11 @@ using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
 
-  public class ScoresaberImporter : IScoreImporter {
-    private readonly ScoreImporterHelper _helper;
-    private readonly ILeaderboardId _id;
-    private readonly SiraLog _logger;
-
-    internal ScoresaberImporter(SiraLog logger, ILeaderboardId id, ScoreImporterHelper helper) {
-      _logger = logger;
-      _id = id;
-      _helper = helper;
-    }
+  public class ScoresaberImporter(SiraLog logger, ILeaderboardId boardId, ScoreImporterHelper helper) : IScoreImporter {
 
     public async Task<(List<OnlineBestRecord> Records, int MaxPage)?> GetPagedRecord(string platformId, int page) {
       string url = GetUrl(platformId, page);
-      string? json = await _helper.GetJsonWithRetry(url).ConfigureAwait(false);
+      string? json = await helper.GetJsonWithRetry(url).ConfigureAwait(false);
       if (json == null) {
         return null;
       }
@@ -30,9 +21,9 @@ namespace BetterSort.Accuracy.External {
     }
 
     public async Task<List<OnlineBestRecord>?> GetPlayerBests() {
-      string? id = await _id.GetUserId().ConfigureAwait(false);
+      string? id = await boardId.GetUserId().ConfigureAwait(false);
       if (id == null) {
-        _logger.Info("Cannot get user ID. Abort data import.");
+        logger.Info("Cannot get user ID. Abort data import.");
         return null;
       }
 
@@ -58,7 +49,7 @@ namespace BetterSort.Accuracy.External {
     private async Task<List<OnlineBestRecord>> GetRecords(string platformId) {
       var records = new List<OnlineBestRecord>();
       for (int page = 1; ; page++) {
-        _logger.Debug($"Try getting scoresaber page {page}...");
+        logger.Debug($"Try getting scoresaber page {page}...");
 
         var scores = await GetPagedRecord(platformId, page).ConfigureAwait(false);
         if (scores is not (var data, var maxPage)) {
@@ -67,7 +58,7 @@ namespace BetterSort.Accuracy.External {
 
         records.AddRange(data);
         if (page >= maxPage) {
-          _logger.Info("Scoresaber score last page reached.");
+          logger.Info("Scoresaber score last page reached.");
           break;
         }
       }
@@ -81,14 +72,14 @@ namespace BetterSort.Accuracy.External {
       var page = JsonConvert.DeserializeObject<PagedPlayerScores>(json);
       var scores = page!.PlayerScores;
       if (scores == null) {
-        _logger.Warn("Records field is missing. Can't import from scoresaber.");
+        logger.Warn("Records field is missing. Can't import from scoresaber.");
         return null;
       }
 
       foreach (var score in scores) {
         string? hash = score.Leaderboard?.SongHash;
         if (hash == null) {
-          _logger.Warn("Cannot get song hash from scoresaber. skip.");
+          logger.Warn("Cannot get song hash from scoresaber. skip.");
           continue;
         }
 
@@ -102,12 +93,12 @@ namespace BetterSort.Accuracy.External {
         }
         double? accuracyOrNull = (double?)multiplied / maxScore;
         if (accuracyOrNull is not double accuracy) {
-          _logger.Warn($"Can't derive scoresaber accuracy. skip({hash}, {score.Leaderboard?.SongName})");
+          logger.Warn($"Can't derive scoresaber accuracy. skip({hash}, {score.Leaderboard?.SongName})");
           continue;
         }
         var difficulty = ConvertToEnum(score.Leaderboard?.Difficulty?.Difficulty);
         if (difficulty == null) {
-          _logger.Warn($"Unknown scoresaber difficulty. Regard it as ExpertPlus({hash}, {score.Leaderboard?.SongName})");
+          logger.Warn($"Unknown scoresaber difficulty. Regard it as ExpertPlus({hash}, {score.Leaderboard?.SongName})");
         }
 
         records.Add(new OnlineBestRecord(

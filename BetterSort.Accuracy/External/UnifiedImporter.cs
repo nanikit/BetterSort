@@ -6,26 +6,17 @@ using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
 
-  public class UnifiedImporter {
-    private readonly List<IScoreImporter> _importers;
-    private readonly SiraLog _logger;
-    private readonly IAccuracyRepository _repository;
-
-    internal UnifiedImporter(SiraLog logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
-      _logger = logger;
-      _importers = importers;
-      _repository = repository;
-    }
+  public class UnifiedImporter(SiraLog logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
 
     public async Task CollectOrImport() {
-      var data = await _repository.Load().ConfigureAwait(false);
+      var data = await repository.Load().ConfigureAwait(false);
       if (data != null) {
         return;
       }
 
-      _logger.Info("Local history is not found. Import from online.");
+      logger.Info("Local history is not found. Import from online.");
       var records = await CollectRecordsFromOnline().ConfigureAwait(false);
-      await _repository.Save(records).ConfigureAwait(false);
+      await repository.Save(records).ConfigureAwait(false);
     }
 
     public async Task<SorterData> CollectRecordsFromOnline() {
@@ -36,12 +27,12 @@ namespace BetterSort.Accuracy.External {
     }
 
     private async Task<List<OnlineBestRecord>> ImportRecords() {
-      var imports = _importers.Select(x => x.GetPlayerBests()).ToArray();
+      var imports = importers.Select(x => x.GetPlayerBests()).ToArray();
       try {
         await Task.WhenAll(imports).ConfigureAwait(false);
       }
       catch (Exception ex) {
-        _logger.Error(ex);
+        logger.Error(ex);
       }
 
       var records = imports
