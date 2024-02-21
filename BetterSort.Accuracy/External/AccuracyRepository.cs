@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
@@ -21,17 +20,13 @@ namespace BetterSort.Accuracy.External {
   }
 
   public class AccuracyRepository(SiraLog logger, IAccuracyJsonRepository jsonRepository, IClock clock) : IAccuracyRepository {
-    private readonly SiraLog _logger = logger;
-    private readonly IClock _clock = clock;
-    private readonly IAccuracyJsonRepository _jsonRepository = jsonRepository;
-
     private SorterData? _cache;
 
     public Task Save(SorterData accuracies) {
-      var (json, data) = GetPersistentData(accuracies, _clock.Now);
-      _jsonRepository.Save(json);
+      var (json, data) = GetPersistentData(accuracies, clock.Now);
+      jsonRepository.Save(json);
 
-      _logger.Info($"Saved {data.BestRecords.Count} records");
+      logger.Info($"Saved {data.BestRecords.Count} records");
       _cache = accuracies;
 
       return Task.CompletedTask;
@@ -39,24 +34,24 @@ namespace BetterSort.Accuracy.External {
 
     public Task<SorterData?> Load() {
       if (_cache != null) {
-        _logger.Trace($"Load from cache.");
+        logger.Trace($"Load from cache.");
         return Task.FromResult<SorterData?>(_cache);
       }
 
       try {
-        string? json = _jsonRepository.Load();
+        string? json = jsonRepository.Load();
         if (json == null) {
-          _logger.Debug($"Attempted to load but play history is not exist.");
+          logger.Debug($"Attempted to load but play history is not exist.");
           return Task.FromResult<SorterData?>(null);
         }
 
         var data = JsonConvert.DeserializeObject<StoredData>(json);
-        _logger.Info($"Loaded {data?.BestRecords?.Count.ToString() ?? "no"} records");
+        logger.Info($"Loaded {data?.BestRecords?.Count.ToString() ?? "no"} records");
 
         return Task.FromResult<SorterData?>(GetSorterData(data?.BestRecords));
       }
       catch (Exception exception) {
-        _logger.Warn(exception);
+        logger.Warn(exception);
         return Task.FromResult<SorterData?>(null);
       }
     }
@@ -109,7 +104,7 @@ namespace BetterSort.Accuracy.External {
 
       return new StoredData() {
         Version = $"{typeof(AccuracyRepository).Assembly.GetName().Version}",
-        BestRecords = bests.Keys.ToList(),
+        BestRecords = [.. bests.Keys],
         LastRecordAt = now,
       };
     }
