@@ -1,4 +1,5 @@
 using SiraUtil.Logging;
+using SiraUtil.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace BetterSort.Accuracy.External {
 
-  public class UnifiedImporter(SiraLog logger, List<IScoreImporter> importers, IAccuracyRepository repository) {
+  public class UnifiedImporter(
+    SiraLog logger, List<IScoreSource> importers, IAccuracyRepository repository,
+    ILeaderboardId boardId, IHttpService http) {
 
     public async Task CollectOrImport() {
       var data = await repository.Load().ConfigureAwait(false);
@@ -26,8 +29,31 @@ namespace BetterSort.Accuracy.External {
       return sorterData;
     }
 
+    private async Task<string?> GetJsonWithRetry(string url) {
+      for (int i = 0; i < 3; i++) {
+        var response = await http.GetAsync(url).ConfigureAwait(false);
+        if (!response.Successful) {
+          string? error = await response.Error().ConfigureAwait(false);
+          logger.Error($"http request was not successful: {response.Code} {error}");
+          await Task.Delay((int)Math.Pow(2, i + 1)).ConfigureAwait(false);
+          continue;
+        }
+
+        return await response.ReadAsStringAsync().ConfigureAwait(false);
+      }
+
+      logger.Warn($"Request keeps failing. Stop collecting scores.");
+      return null;
+    }
+
     private async Task<List<OnlineBestRecord>> ImportRecords() {
-      var imports = importers.Select(x => x.GetPlayerBests()).ToArray();
+      string? playerId = await boardId.GetUserId().ConfigureAwait(false);
+      if (playerId == null) {
+        logger.Info("Cannot get user ID. Abort data import.");
+        return [];
+      }
+
+      var imports = importers.Select(x => GetPlayerBests(x, playerId)).ToArray();
       try {
         await Task.WhenAll(imports).ConfigureAwait(false);
       }
@@ -39,6 +65,42 @@ namespace BetterSort.Accuracy.External {
         .Where(x => x.Status == TaskStatus.RanToCompletion)
         .SelectMany(x => x.Result ?? []).ToList();
       return records;
+    }
+
+    private async Task<List<OnlineBestRecord>> GetPlayerBests(IScoreSource importer, string playerId) {
+      var result = new List<OnlineBestRecord>();
+      int failureCount = 0;
+
+      for (int page = 1; ; page++) {
+        try {
+          logger.Info($"Importing {importer.GetType().Name} score page {page}.");
+
+          string url = importer.GetRecordUrl(playerId, page);
+          string? json = await GetJsonWithRetry(url).ConfigureAwait(false);
+          if (json == null) {
+            failureCount++;
+            continue;
+          }
+
+          var (records, paging, log) = importer.ToBestRecords(json);
+          if (log != null) {
+            logger.Warn(log);
+          }
+          result.AddRange(records);
+
+          int maxPage = (int)Math.Ceiling((double)paging.Total / paging.ItemsPerPage);
+          if (page >= maxPage) {
+            logger.Info($"{importer.GetType().Name} score last page reached.");
+            break;
+          }
+        }
+        catch (Exception exception) {
+          failureCount++;
+          logger.Error(exception);
+        }
+      }
+
+      return result;
     }
   }
 }

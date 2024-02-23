@@ -9,9 +9,8 @@ namespace BetterSort.Accuracy.Installers {
   public class SorterInstaller : Installer {
 
     public override void InstallBindings() {
-      Container.BindInterfacesAndSelfTo<ScoreImporterHelper>().AsSingle();
-      Container.BindInterfacesAndSelfTo<ScoresaberImporter>().AsSingle();
-      Container.BindInterfacesAndSelfTo<BeatLeaderImporter>().AsSingle();
+      Container.BindInterfacesAndSelfTo<ScoresaberBest>().AsSingle();
+      Container.BindInterfacesAndSelfTo<BeatleaderBest>().AsSingle();
       Container.Bind<UnifiedImporter>().AsSingle();
       Container.BindInterfacesAndSelfTo<AccuracyRepository>().AsSingle();
 

@@ -3,7 +3,6 @@ using BetterSort.Accuracy.Installers;
 using BetterSort.Accuracy.Test.Mocks;
 using BetterSort.Common.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Zenject;
@@ -28,16 +27,19 @@ namespace BetterSort.Accuracy.Test {
     }
 
     [TestMethod]
-    public async Task TestBeatLeader() {
-      var beatLeader = _container.Resolve<BeatLeaderImporter>();
-      var page = await beatLeader.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
-      if (page is not (var records, var maxPage)) {
-        Assert.Fail("Failed to get data");
-        throw new Exception();
-      }
-      Assert.AreNotEqual(0, records.Count);
-      Assert.IsTrue(0 <= records[0].Accuracy && records[0].Accuracy <= 1);
-      Assert.IsTrue(0 <= maxPage && maxPage <= int.MaxValue);
+    public void TestBeatLeader() {
+      var beatLeader = new BeatleaderBest();
+      string url = beatLeader.GetRecordUrl(MockId.QuitUserId, 1);
+
+      Assert.AreEqual(url, $"https://api.beatleader.xyz/player/{MockId.QuitUserId}/scores?page=1&sortBy=date&order=desc");
+
+      string json = File.ReadAllText(@"..\..\Data\beatleader_scores.json");
+      var (Records, Paging, Log) = beatLeader.ToBestRecords(json);
+
+      Assert.AreEqual(8, Records.Count);
+      Assert.IsTrue(0 < Records[0].Accuracy && Records[0].Accuracy <= 1);
+      Assert.AreEqual(1849, Paging.Total);
+      Assert.IsNull(Log);
     }
 
     [TestMethod]
@@ -48,16 +50,19 @@ namespace BetterSort.Accuracy.Test {
     }
 
     [TestMethod]
-    public async Task TestScoresaber() {
-      var scoresaber = _container.Resolve<ScoresaberImporter>();
-      var page = await scoresaber.GetPagedRecord(MockId.QuitUserId, 1).ConfigureAwait(false);
-      if (page is not (var records, var maxPage)) {
-        Assert.Fail("Failed to get data");
-        throw new Exception();
-      }
-      Assert.AreNotEqual(0, records.Count);
-      Assert.IsTrue(0 <= records[0].Accuracy && records[0].Accuracy <= 1);
-      Assert.IsTrue(0 <= maxPage && maxPage <= int.MaxValue);
+    public void TestScoresaber() {
+      var scoresaber = new ScoresaberBest();
+      string url = scoresaber.GetRecordUrl(MockId.QuitUserId, 1);
+
+      Assert.AreEqual(url, $"https://scoresaber.com/api/player/{MockId.QuitUserId}/scores?page=1&sort=recent");
+
+      string json = File.ReadAllText(@"..\..\Data\scoresaber_scores.json");
+      var (Records, Paging, Log) = scoresaber.ToBestRecords(json);
+
+      Assert.AreEqual(8, Records.Count);
+      Assert.IsTrue(0 < Records[0].Accuracy && Records[0].Accuracy <= 1);
+      Assert.AreEqual(2133, Paging.Total);
+      Assert.IsNull(Log);
     }
   }
 

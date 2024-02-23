@@ -72,4 +72,7 @@
     <ProjectReference Include="..\BetterSort.Accuracy\BetterSort.Accuracy.csproj" />
     <ProjectReference Include="..\BetterSort.Common.Test\BetterSort.Common.Test.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
 </Project>
