@@ -80,7 +80,7 @@
     <PluginId>BetterSort.LastPlayed</PluginId>
     <PluginName>BetterSort.LastPlayed</PluginName>
     <Authors>nanikit</Authors>
-    <Version>2.1.$(BeatmodsPatchNumber)</Version>
+    <Version>3.0.$(BeatmodsPatchNumber)</Version>
     <Description>Add last played date sort to BetterSongList</Description>
   </PropertyGroup>
 
