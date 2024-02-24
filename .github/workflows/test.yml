@@ -31,5 +31,5 @@ jobs:
       - name: Push to main
         if: ${{ github.event_name == 'push' }}
         run: |
-          git fetch origin $(git branch --show-current)
+          git fetch --unshallow origin $(git branch --show-current) main
           git push origin HEAD:main
