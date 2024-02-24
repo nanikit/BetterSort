@@ -9,7 +9,9 @@ namespace BetterSort.Accuracy.External {
 
   public class UnifiedImporter(
     SiraLog logger, List<IScoreSource> importers, IAccuracyRepository repository,
-    ILeaderboardId boardId, IHttpService http) {
+    ILeaderboardId boardId, IHttpService http, IProgressBar progress) {
+    private int _totalPages;
+    private int _fetchedPages;
 
     public async Task CollectOrImport() {
       var data = await repository.Load().ConfigureAwait(false);
@@ -53,6 +55,7 @@ namespace BetterSort.Accuracy.External {
         return [];
       }
 
+      _totalPages = 0;
       var imports = importers.Select(x => GetPlayerBests(x, playerId)).ToArray();
       try {
         await Task.WhenAll(imports).ConfigureAwait(false);
@@ -64,14 +67,23 @@ namespace BetterSort.Accuracy.External {
       var records = imports
         .Where(x => x.Status == TaskStatus.RanToCompletion)
         .SelectMany(x => x.Result ?? []).ToList();
+
+      var message = new ProgressMessage("BetterSort.Accuracy", "Import finished.", "", null, TimeSpan.FromSeconds(5));
+      _ = progress.SetMessage(message);
       return records;
     }
 
     private async Task<List<OnlineBestRecord>> GetPlayerBests(IScoreSource importer, string playerId) {
       var result = new List<OnlineBestRecord>();
       int failureCount = 0;
+      var message = new ProgressMessage("BetterSort.Accuracy", "Importing records from BL and SS", "", 0, TimeSpan.MaxValue);
 
-      for (int page = 1; ; page++) {
+      for (int page = 0; ; page++) {
+        if (failureCount > 3) {
+          logger.Warn($"Too many failures. Stop importing {importer.GetType().Name} score.");
+          break;
+        }
+
         try {
           logger.Info($"Importing {importer.GetType().Name} score page {page}.");
 
@@ -93,6 +105,16 @@ namespace BetterSort.Accuracy.External {
             logger.Info($"{importer.GetType().Name} score last page reached.");
             break;
           }
+
+          _fetchedPages++;
+          if (page == 1) {
+            _totalPages += maxPage;
+          }
+          message = message with {
+            Progress = $"{_fetchedPages} / {_totalPages}",
+            Ratio = (float)_fetchedPages / _totalPages
+          };
+          _ = progress.SetMessage(message);
         }
         catch (Exception exception) {
           failureCount++;

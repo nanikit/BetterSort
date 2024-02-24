@@ -16,8 +16,9 @@ namespace BetterSort.Accuracy.Sorter {
         bsInterop.OnSongPlayed += RecordHistoryWithGuard;
         logger.Info($"{nameof(Initialize)}.");
 
-        await importer.CollectOrImport().ConfigureAwait(false);
+        // If we register after, registration may fail. I have no idea.
         pluginHelper.Register(adaptor);
+        await importer.CollectOrImport().ConfigureAwait(false);
       }
       catch (Exception ex) {
         logger.Error(ex);

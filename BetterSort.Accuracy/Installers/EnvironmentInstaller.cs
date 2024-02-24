@@ -9,6 +9,7 @@ namespace BetterSort.Accuracy.Installers {
       Container.BindInterfacesAndSelfTo<LeaderboardId>().AsSingle();
       Container.BindInterfacesAndSelfTo<BsUtilsInterop>().AsSingle();
       Container.BindInterfacesAndSelfTo<AccuracyJsonRepository>().AsSingle();
+      Container.BindInterfacesAndSelfTo<ProgressBar>().FromNewComponentOnNewGameObject().AsSingle();
     }
   }
 }
