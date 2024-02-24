@@ -1,13 +1,13 @@
 # BetterSort
 
-This contains additional beat saber sort plugins can be used with [BetterSongList](https://github.com/kinsi55/BeatSaber_BetterSongList).
-All plugins here requires BetterSongList.
+This repository contains additional beat saber sort plugins can be used with [BetterSongList](https://github.com/kinsi55/BeatSaber_BetterSongList).
+All plugins here require BetterSongList.
 
 ## BetterSort.LastPlayed
 
 <img src="docs/preview.webp" alt="last played sorter screen" width="300"/>
 
-It records your last played date and sorts by it.
+This plugin records your last played date and sorts songs accordingly.
 
 ## BetterSort.Accuracy
 
@@ -17,24 +17,23 @@ It sorts by difficulty according to your best accuracy.
 
 ## Installation
 
-Use [ModAssistant](https://github.com/Assistant/ModAssistant/releases/latest). I'll support that.
+You can use [ModAssistant](https://github.com/Assistant/ModAssistant/releases/latest) for installation, which I fully support.
 
-If it's not available or new features is added later, download [the latest release](https://github.com/nanikit/BetterSort/releases/latest).
+If plugins isn't available on ModAssistant or new features are added later, you can [download plugins manually](https://github.com/nanikit/BetterSort/releases/latest).
 
-I won't release BetterSort.Accuracy on ModAssistant for a while because it may be unstable.
+When manually downloading mods, please be careful of the mod's dependencies. Currently BS_Utils.dll, SiraUtil.dll, and BetterSongList.dll are required.
 
 ## Usage
 
-Just click left-bottom sort button in song select scene, and select 'Last played' or 'Accuracy'.
+Simply click the left-bottom sort button in the song select scene, and choose either 'Last played' or 'Accuracy'.
 
 ## Q&A
 
 - Q: Just installed, it doesn't sort at all.
 
-  A: For LastPlayed right after installation there's no play history. So play first.<br />
+  A: For LastPlayed, immediately after installation, there's no play history recorded. So, play some songs first.<br />
 
-  For Accuracy it gathers your scores from scoresaber and beatleader at first launch. It takes a while according to your history.<br />
-  Currently there's no UI for checking the import progress. If you want to see it open the log file.
+  For Accuracy, the plugin gathers your scores from ScoreSaber and BeatLeader upon first launch. This process may take a while depending on your score history.
 
-- Q: Reverse sort not work.<br />
-  A: I didn't support it intentionally. Currently BetterSongList doesn't remember sort direction of each sorter, it confused me.
+- Q: Reverse sort doesn't work.<br />
+  A: I intentionally didn't support reverse sorting. Currently BetterSongList doesn't remember the sort direction of each sorter, which caused confusion for me while playing.
