@@ -79,4 +79,11 @@
       <AssemblySearchPaths>$(AssemblySearchPaths);$(ReferencePath)</AssemblySearchPaths>
     </PropertyGroup>
   </Target>
+
+  <Target Name="MoveZips" AfterTargets="BSMT_ZipRelease">
+    <ItemGroup>
+      <ZipFile Include="$(ZipDestinationDirectory)*.zip" />
+    </ItemGroup>
+    <Move SourceFiles="@(ZipFile)" DestinationFolder="$(SolutionDir)zip" />
+  </Target>
 </Project>
