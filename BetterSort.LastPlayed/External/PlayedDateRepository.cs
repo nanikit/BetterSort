@@ -58,7 +58,7 @@ namespace BetterSort.LastPlayed.External {
       }
 
       int count = data.LastPlays.Count;
-      var latest = data.LatestRecords ?? new List<LastPlayRecord>();
+      var latest = data.LatestRecords ?? [];
       var records = data.LastPlays
         .Select(x => new LastPlayRecord(x.Value, x.Key, null))
         .OrderByDescending(x => x.Time)
@@ -120,7 +120,7 @@ namespace BetterSort.LastPlayed.External {
     internal static string Serialize(IEnumerable<LastPlayRecord> playDates) {
       return JsonConvert.SerializeObject(new StoredData() {
         Version = $"{typeof(PlayedDateRepository).Assembly.GetName().Version}",
-        LatestRecords = playDates.OrderByDescending(x => x.Time).ToList(),
+        LatestRecords = [.. playDates.OrderByDescending(x => x.Time)],
       }, new JsonSerializerSettings() {
         DateTimeZoneHandling = DateTimeZoneHandling.Utc,
         Formatting = Formatting.Indented,

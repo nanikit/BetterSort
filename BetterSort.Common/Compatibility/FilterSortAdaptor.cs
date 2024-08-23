@@ -62,7 +62,7 @@ namespace BetterSort.Common.Compatibility {
 
     public IEnumerable<KeyValuePair<string, int>> BuildLegend(IPreviewBeatmapLevel[] levels) {
       _logger.Trace($"BuildLegend() is called.");
-      return _result.Task.Result?.Legend.Select(x => new KeyValuePair<string, int>(x.Label, x.Index)) ?? Enumerable.Empty<KeyValuePair<string, int>>();
+      return _result.Task.Result?.Legend.Select(x => new KeyValuePair<string, int>(x.Label, x.Index)) ?? [];
     }
 
     private void SaveResult(ISortFilterResult? result) {

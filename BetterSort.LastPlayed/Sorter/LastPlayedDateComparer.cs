@@ -4,16 +4,10 @@ using System.Collections.Generic;
 
 namespace BetterSort.LastPlayed.Sorter {
 
-  internal class LastPlayedDateComparer : IComparer<ILevelPreview>, IComparer<string> {
-
-    /// <summary>
-    /// Level id to instant.
-    /// </summary>
-    private readonly IReadOnlyDictionary<string, DateTime> _lastPlayedDates;
-
-    public LastPlayedDateComparer(IReadOnlyDictionary<string, DateTime> lastPlayedDates) {
-      _lastPlayedDates = lastPlayedDates;
-    }
+  /// <param name="lastPlayedDates">
+  /// Level id to instant.
+  /// </param>
+  internal class LastPlayedDateComparer(IReadOnlyDictionary<string, DateTime> lastPlayedDates) : IComparer<ILevelPreview>, IComparer<string> {
 
     public int Compare(ILevelPreview a, ILevelPreview b) {
       return Compare(a.LevelId, b.LevelId);
@@ -23,19 +17,19 @@ namespace BetterSort.LastPlayed.Sorter {
     /// Use with map id that will be serialized.
     /// </summary>
     public int Compare(string a, string b) {
-      if (_lastPlayedDates == null) {
+      if (lastPlayedDates == null) {
         return 0;
       }
 
-      if (_lastPlayedDates.TryGetValue(a, out var lastPlayOfA)) {
-        if (_lastPlayedDates.TryGetValue(b, out var lastPlayOfB)) {
+      if (lastPlayedDates.TryGetValue(a, out var lastPlayOfA)) {
+        if (lastPlayedDates.TryGetValue(b, out var lastPlayOfB)) {
           int descending = lastPlayOfB.CompareTo(lastPlayOfA);
           return descending;
         }
         return -1;
       }
       else {
-        if (_lastPlayedDates.TryGetValue(b, out var _)) {
+        if (lastPlayedDates.TryGetValue(b, out var _)) {
           return 1;
         }
         return 0;
