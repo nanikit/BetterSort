@@ -27,49 +27,55 @@ namespace BetterSort.LastPlayed.External {
       BSEvents.gameSceneLoaded -= RecordStartTime;
     }
 
+    private static LastPlayRecord MakeRecord(IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel preview, DateTime now) {
+      string levelId = preview.levelID;
+      string type = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
+      var difficulty = RecordDifficultyExtension.ConvertFromString(difficultyBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
+      return new LastPlayRecord(now, levelId, new PlayedMap(type, difficulty));
+    }
+
     private void RecordStartTime() {
       _startTime = clock.Now;
     }
 
     private void DispatchIfLongEnough(object sender, LevelFinishedEventArgs finished) {
-      if (finished is not LevelFinishedWithResultsEventArgs) {
-        logger.Info($"Skip tutorial play record.");
-        return;
-      }
-      if (scoresaber.IsInReplay()) {
-        logger.Info($"Skip scoresaber replay record.");
-        return;
-      }
-      if (beatleader.IsInReplay()) {
-        logger.Info($"Skip beatleader replay record.");
-        return;
-      }
-
       var setup = BS_Utils.Plugin.LevelData?.GameplayCoreSceneSetupData;
       if (setup == null) {
         logger.Warn($"Skip because cannot query game stats.");
         return;
       }
 
-      var now = clock.Now;
-      var duration = now - _startTime;
       var preview = setup.previewBeatmapLevel;
-      string songName = preview.songName;
-      float songDuration = preview.songDuration;
-      bool isPlayedTooShort = duration.TotalSeconds < 10 && songDuration > 10;
-      if (isPlayedTooShort) {
-        logger.Info($"Skip record due to too short play: {songName}");
+      var now = clock.Now;
+      string? reason = GetSkipReason(finished, preview, now);
+      if (reason != null) {
+        logger.Info(reason);
         return;
       }
 
-      logger.Info($"Dispatch play event: {songName}");
+      logger.Info($"Dispatch play event: {preview.songName}");
+      OnSongPlayed(MakeRecord(setup.difficultyBeatmap, preview, now));
+    }
 
-      var diffBeatmap = setup.difficultyBeatmap;
-      string levelId = preview.levelID;
-      string type = diffBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
-      var difficulty = RecordDifficultyExtension.ConvertFromString(diffBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
-      var lastPlay = new LastPlayRecord(now, levelId, new PlayedMap(type, difficulty));
-      OnSongPlayed(lastPlay);
+    private string? GetSkipReason(LevelFinishedEventArgs finished, IPreviewBeatmapLevel preview, DateTime now) {
+      if (finished is not LevelFinishedWithResultsEventArgs) {
+        return "Skip tutorial play record.";
+      }
+      if (scoresaber.IsInReplay()) {
+        return "Skip scoresaber replay record.";
+      }
+      if (beatleader.IsInReplay()) {
+        return "Skip beatleader replay record.";
+      }
+
+      var duration = now - _startTime;
+      float songDuration = preview.songDuration;
+      bool isPlayedTooShort = duration.TotalSeconds < 10 && songDuration > 10;
+      if (isPlayedTooShort) {
+        return $"Skip record due to too short play: {preview.songName}";
+      }
+
+      return null;
     }
   }
 }
