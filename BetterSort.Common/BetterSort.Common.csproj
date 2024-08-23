@@ -30,8 +30,14 @@
     <Reference Include="BeatmapCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
     </Reference>
+    <Reference Include="BGLib.UnityExtension" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.UnityExtension.dll</HintPath>
+    </Reference>
     <Reference Include="BetterSongList">
       <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
+    </Reference>
+    <Reference Include="DataModels" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
     </Reference>
     <Reference Include="HMUI">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
