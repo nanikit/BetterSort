@@ -7,8 +7,8 @@ using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace BetterSort.Common.External {
 
@@ -23,8 +23,7 @@ namespace BetterSort.Common.External {
     Task SelectDifficulty(string type, RecordDifficulty difficulty, LevelPreview preview);
   }
 
-  public class SongSelection(SiraLog logger) : ISongSelection, IAffinity {
-    private readonly SiraLog _logger = logger;
+  public class SongSelection(SiraLog logger, PlayerDataModel playerData, StandardLevelDetailViewController levelDetailViewController) : ISongSelection, IAffinity {
 
     public event OnSongSelectedHandler OnSongSelected = delegate { };
 
@@ -32,7 +31,7 @@ namespace BetterSort.Common.External {
       get {
         var type = Type.GetType("BetterSongList.HarmonyPatches.HookLevelCollectionTableSet, BetterSongList");
         if (type == null) {
-          _logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
+          logger.Warn($"Can't find current sorter while selecting difficulty. Skip.");
           return null;
         }
 
@@ -46,9 +45,11 @@ namespace BetterSort.Common.External {
       ).ConfigureAwait(false);
     }
 
-    [AffinityPostfix]
+#if NOT_BEFORE_1_36_2
+
+    [AffinityPrefix]
     [AffinityPatch(typeof(LevelCollectionNavigationController), "HandleLevelCollectionViewControllerDidSelectLevel")]
-    protected void HandleLevelCollectionViewControllerDidSelectLevelPostfix(LevelCollectionViewController viewController, IPreviewBeatmapLevel level) {
+    protected void HandleLevelCollectionViewControllerDidSelectLevelPrefix(LevelCollectionViewController viewController, BaseBeatmapLevel level) {
       var view = viewController.GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView");
       int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
       bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
@@ -56,37 +57,60 @@ namespace BetterSort.Common.External {
       OnSongSelected.Invoke(index, new LevelPreview(level));
     }
 
+#else
+    [AffinityPostfix]
+    [AffinityPatch(typeof(LevelCollectionNavigationController), "HandleLevelCollectionViewControllerDidSelectLevel")]
+    protected void HandleLevelCollectionViewControllerDidSelectLevelPostfix(LevelCollectionViewController viewController, BaseBeatmapLevel level) {
+      var view = viewController.GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView");
+      int row = view.GetField<int, LevelCollectionTableView>("_selectedRow");
+      bool hasHeader = view.GetField<bool, LevelCollectionTableView>("_showLevelPackHeader");
+      int index = hasHeader ? row - 1 : row;
+      OnSongSelected.Invoke(index, new LevelPreview(level));
+    }
+#endif
+
     private void SelectDifficultyInternal(string type, RecordDifficulty difficulty, LevelPreview preview) {
-      var player = UnityEngine.Object.FindObjectOfType<PlayerDataModel>()?.playerData;
-      if (player == null) {
-        _logger.Warn("playerData is null. Quit.");
+      logger.Debug($"Try selecting {preview.LevelId} {type} {difficulty}.");
+
+      var diff = difficulty.ToGameDifficulty() ?? BeatmapDifficulty.ExpertPlus;
+
+#if NOT_BEFORE_1_36_2
+
+      var sameType = preview.Preview.GetCharacteristics().FirstOrDefault(x => x.serializedName == type);
+      if (sameType == null) {
+        var characteristics = preview.Preview.GetCharacteristics().Select(x => x.serializedName).ToList();
+        logger.Warn($"BeatmapCharacteristic {type} not found in {string.Join(", ", characteristics)}. Quit.");
         return;
       }
 
+      playerData.playerData.SetLastSelectedBeatmapCharacteristic(sameType);
+      playerData.playerData.SetLastSelectedBeatmapDifficulty(diff);
+      ReflectionUtil.InvokeMethod<object, StandardLevelDetailViewController>(levelDetailViewController, "ShowOwnedContent", []);
+#else
       var view = Resources.FindObjectsOfTypeAll<StandardLevelDetailView>().FirstOrDefault();
-      var viewLevel = view?.GetField<IBeatmapLevel, StandardLevelDetailView>("_level");
-      if (view == null || preview == null) {
-        _logger.Warn("StandardLevelDetailView?._level is null. Quit.");
+      var viewLevel = view?.GetField<BaseBeatmapLevel, StandardLevelDetailView>("_level");
+      if (viewLevel == null || preview == null) {
+        logger.Warn("StandardLevelDetailView?._level is null. Quit.");
         return;
       }
 
       var sameType = preview.Preview.previewDifficultyBeatmapSets.FirstOrDefault(x => x.beatmapCharacteristic.serializedName == type);
       if (sameType == null) {
         string characteristics = string.Join(", ", preview.Preview.previewDifficultyBeatmapSets.Select(x => x.beatmapCharacteristic.serializedName));
-        _logger.Warn($"BeatmapCharacteristic {type} not found in {string.Join(", ", characteristics)}. Quit.");
+        logger.Warn($"BeatmapCharacteristic {type} not found in {string.Join(", ", characteristics)}. Quit.");
         return;
       }
 
-      var diff = difficulty.ToGameDifficulty() ?? BeatmapDifficulty.ExpertPlus;
       bool hasDifficulty = sameType.beatmapDifficulties.Contains(diff);
       if (!hasDifficulty) {
-        _logger.Warn($"BeatmapDifficulty {diff} not found in {string.Join(", ", sameType.beatmapDifficulties)}. Quit.");
+        logger.Warn($"BeatmapDifficulty {diff} not found in {string.Join(", ", sameType.beatmapDifficulties)}. Quit.");
         return;
       }
 
       player.SetProperty(nameof(PlayerData.lastSelectedBeatmapCharacteristic), sameType.beatmapCharacteristic);
       player.SetProperty(nameof(PlayerData.lastSelectedBeatmapDifficulty), diff);
       view.SetContent(viewLevel, diff, sameType.beatmapCharacteristic, player);
+#endif
     }
   }
 }

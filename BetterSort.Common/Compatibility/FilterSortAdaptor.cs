@@ -35,11 +35,11 @@ namespace BetterSort.Common.Compatibility {
       return Task.CompletedTask;
     }
 
-    public void ContextSwitch(SelectLevelCategoryViewController.LevelCategory levelCategory, IAnnotatedBeatmapLevelCollection? playlist) {
+    public void ContextSwitch(SelectLevelCategoryViewController.LevelCategory levelCategory, BaseLevelPack? playlist) {
       // It doesn't need this information.
     }
 
-    public void DoSort(ref IEnumerable<IPreviewBeatmapLevel> levels, bool ascending) {
+    public void DoSort(ref IEnumerable<BaseBeatmapLevel> levels, bool ascending) {
       _logger.Trace($"DoSort({levels.Count()}, {ascending}) is called.");
       _result = new();
       _sorter.NotifyChange(levels.Select(level => new LevelPreview(level)), true);
@@ -60,7 +60,7 @@ namespace BetterSort.Common.Compatibility {
       }
     }
 
-    public IEnumerable<KeyValuePair<string, int>> BuildLegend(IPreviewBeatmapLevel[] levels) {
+    public IEnumerable<KeyValuePair<string, int>> BuildLegend(BaseBeatmapLevel[] levels) {
       _logger.Trace($"BuildLegend() is called.");
       return _result.Task.Result?.Legend.Select(x => new KeyValuePair<string, int>(x.Label, x.Index)) ?? [];
     }

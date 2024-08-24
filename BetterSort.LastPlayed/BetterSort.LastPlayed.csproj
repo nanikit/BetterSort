@@ -30,6 +30,9 @@
       <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DataModels" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
+    </Reference>
     <Reference Include="HMLib">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Private>False</Private>
@@ -93,8 +96,13 @@
   <ItemGroup>
     <DependsOn Include="BSIPA" Version="^4.2.0" />
     <DependsOn Include="BS Utils" Version="^1.12.0" />
-    <DependsOn Include="BetterSongList" Version="^0.3.0" />
     <DependsOn Include="SiraUtil" Version="^3.0.5" />
+  </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+    <DependsOn Include="BetterSongList" Version="^0.4.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+    <DependsOn Include="BetterSongList" Version="^0.3.0" />
   </ItemGroup>
   <ItemGroup>
     <LoadBefore Include="BetterSongList.LastPlayedSort" />

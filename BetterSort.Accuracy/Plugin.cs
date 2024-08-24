@@ -18,9 +18,9 @@ namespace BetterSort.Accuracy {
 
       zenjector.UseHttpService();
       zenjector.UseLogger(logger);
-      zenjector.Install<CommonEnvironmentInstaller>(Location.App);
-      zenjector.Install<EnvironmentInstaller>(Location.App);
-      zenjector.Install<SorterInstaller>(Location.App);
+      zenjector.Install<CommonEnvironmentInstaller>(Location.Menu);
+      zenjector.Install<EnvironmentInstaller>(Location.Menu);
+      zenjector.Install<SorterInstaller>(Location.Menu);
 
       logger.Info("Initialized.");
     }

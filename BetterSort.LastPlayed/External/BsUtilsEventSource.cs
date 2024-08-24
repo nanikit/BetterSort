@@ -27,11 +27,9 @@ namespace BetterSort.LastPlayed.External {
       BSEvents.gameSceneLoaded -= RecordStartTime;
     }
 
-    private static LastPlayRecord MakeRecord(IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel preview, DateTime now) {
-      string levelId = preview.levelID;
-      string type = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
-      var difficulty = RecordDifficultyExtension.ConvertFromString(difficultyBeatmap.difficulty.SerializedName()) ?? RecordDifficulty.ExpertPlus;
-      return new LastPlayRecord(now, levelId, new PlayedMap(type, difficulty));
+    private static LastPlayRecord MakeRecord(string characteristic, string difficulty, string levelId, DateTime now) {
+      var recordDifficulty = RecordDifficultyExtension.ConvertFromString(difficulty) ?? RecordDifficulty.ExpertPlus;
+      return new LastPlayRecord(now, levelId, new PlayedMap(characteristic, recordDifficulty));
     }
 
     private void RecordStartTime() {
@@ -45,19 +43,28 @@ namespace BetterSort.LastPlayed.External {
         return;
       }
 
+#if NOT_BEFORE_1_36_2
+      var preview = setup.beatmapLevel;
+      string characteristic = setup.beatmapKey.beatmapCharacteristic.serializedName;
+      string difficulty = setup.beatmapKey.difficulty.SerializedName();
+#else
       var preview = setup.previewBeatmapLevel;
+      string characteristic = setup.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
+      string difficulty = setup.difficultyBeatmap.difficulty.SerializedName();
+#endif
+
       var now = clock.Now;
-      string? reason = GetSkipReason(finished, preview, now);
+      string? reason = GetSkipReason(finished, preview.songDuration, preview.songName, now);
       if (reason != null) {
         logger.Info(reason);
         return;
       }
 
       logger.Info($"Dispatch play event: {preview.songName}");
-      OnSongPlayed(MakeRecord(setup.difficultyBeatmap, preview, now));
+      OnSongPlayed(MakeRecord(characteristic, difficulty, preview.levelID, now));
     }
 
-    private string? GetSkipReason(LevelFinishedEventArgs finished, IPreviewBeatmapLevel preview, DateTime now) {
+    private string? GetSkipReason(LevelFinishedEventArgs finished, float songDuration, string songName, DateTime now) {
       if (finished is not LevelFinishedWithResultsEventArgs) {
         return "Skip tutorial play record.";
       }
@@ -69,10 +76,9 @@ namespace BetterSort.LastPlayed.External {
       }
 
       var duration = now - _startTime;
-      float songDuration = preview.songDuration;
       bool isPlayedTooShort = duration.TotalSeconds < 10 && songDuration > 10;
       if (isPlayedTooShort) {
-        return $"Skip record due to too short play: {preview.songName}";
+        return $"Skip record due to too short play: {songName}";
       }
 
       return null;

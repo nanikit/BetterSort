@@ -7,8 +7,8 @@ namespace BetterSort.Common.Models {
     ILevelPreview Clone();
   }
 
-  public class LevelPreview(IPreviewBeatmapLevel preview) : ILevelPreview {
-    public IPreviewBeatmapLevel Preview { get => preview; }
+  public class LevelPreview(BaseBeatmapLevel preview) : ILevelPreview {
+    public BaseBeatmapLevel Preview { get => preview; }
     public string LevelId { get => preview.levelID; }
     public string SongName { get => preview.songName; }
 
