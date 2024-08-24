@@ -35,6 +35,9 @@
     <Reference Include="BetterSongList">
       <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
     </Reference>
+    <Reference Include="DataModels" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
+    </Reference>
     <Reference Include="IPA.Loader">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
     </Reference>

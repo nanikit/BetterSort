@@ -45,7 +45,7 @@ namespace BetterSort.LastPlayed.Test {
     [TestMethod]
     public void TestEmptySort() {
       _sorter.PlayRecords = [];
-      var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
+      var data = new List<BaseBeatmapLevel>().AsEnumerable();
       _adaptor.DoSort(ref data, true);
       Assert.AreEqual(0, data.Count());
     }

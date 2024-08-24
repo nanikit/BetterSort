@@ -32,11 +32,11 @@ namespace BetterSort.Accuracy.Test {
     // BetterSongList can pass empty list.
     [TestMethod]
     public void TestEmptyCase() {
-      var data = new List<IPreviewBeatmapLevel>().AsEnumerable();
+      var data = new List<BaseBeatmapLevel>().AsEnumerable();
 
       _adaptor.DoSort(ref data, true);
 
-      CollectionAssert.AreEqual(new List<IPreviewBeatmapLevel>(), data.ToList());
+      CollectionAssert.AreEqual(new List<BaseBeatmapLevel>(), data.ToList());
     }
 
     [TestMethod]
@@ -49,7 +49,7 @@ namespace BetterSort.Accuracy.Test {
   ]
 }
 """;
-      var input = new IPreviewBeatmapLevel[] {
+      var input = new BaseBeatmapLevel[] {
         MockPreview.GetMockPreviewBeatmapLevel("custom_level_2222222222222222222222222222222222222222"),
         MockPreview.GetMockPreviewBeatmapLevel("custom_level_1111111111111111111111111111111111111111"),
         MockPreview.GetMockPreviewBeatmapLevel("custom_level_3333333333333333333333333333333333333333"),

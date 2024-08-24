@@ -18,6 +18,10 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="..\BetterSort.Common\Compatibility\BreakingTypes.cs" Link="External\BreakingTypes.cs" />
+  </ItemGroup>
+  
   <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>

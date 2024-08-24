@@ -8,10 +8,7 @@ namespace BetterSort.Accuracy.Test.Mocks {
 
     public event Action<PlayRecord> OnSongPlayed = delegate { };
 
-    public void Dispose() {
-    }
-
-    public void SetPlaylistItem(IReadOnlyCollection<IPreviewBeatmapLevel> levels) {
+    public void SetPlaylistItem(IReadOnlyCollection<BaseBeatmapLevel> levels) {
     }
   }
 }

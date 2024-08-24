@@ -3,26 +3,24 @@ using Moq;
 
 namespace BetterSort.Common.Test.Mocks {
 
-  public class MockPreview : ILevelPreview {
-    private readonly string _id;
+  public class MockPreview(string id) : ILevelPreview {
+    public string LevelId => id;
 
-    public MockPreview(string id) {
-      _id = id;
-    }
+    public string SongName => id;
 
-    public string LevelId => _id;
-
-    public string SongName => _id;
-
-    public static IPreviewBeatmapLevel GetMockPreviewBeatmapLevel(string id) {
-      var mock = new Mock<IPreviewBeatmapLevel>();
+    public static BaseBeatmapLevel GetMockPreviewBeatmapLevel(string id) {
+#if NOT_BEFORE_1_36_2
+      var mock = new Mock<BaseBeatmapLevel>([false, id, id, id, id, new string[] { }, new string[] { }, 0, 0, 0, 0, 0, 0, null, null, null]);
+#else
+      var mock = new Mock<BaseBeatmapLevel>();
       mock.Setup(mock => mock.levelID).Returns(id);
       mock.Setup(mock => mock.songName).Returns(id);
+#endif
       return mock.Object;
     }
 
     public ILevelPreview Clone() {
-      return new MockPreview(_id);
+      return new MockPreview(id);
     }
   }
 }
