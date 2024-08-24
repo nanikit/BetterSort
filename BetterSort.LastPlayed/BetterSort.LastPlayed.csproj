@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\BetterSort.props" />
-
   <PropertyGroup>
     <RootNamespace>BetterSort.LastPlayed</RootNamespace>
     <Product>BetterSort.LastPlayed</Product>

@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\BetterSort.props" />
-
   <PropertyGroup>
     <RootNamespace>BetterSort.Accuracy</RootNamespace>
     <Product>BetterSort.Accuracy</Product>
