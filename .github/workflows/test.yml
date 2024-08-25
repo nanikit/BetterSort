@@ -26,8 +26,15 @@ jobs:
         run: msbuild /p:Configuration=Release-1.29.1 BetterSort.sln
       - name: Build 1.34.2
         run: msbuild /p:Configuration=Release-1.34.2 BetterSort.sln
+      - name: Build 1.36.2
+        run: msbuild /p:Configuration=Release-1.36.2 BetterSort.sln
       - name: Test
-        run: vstest.console.exe --testcasefilter:'TestCategory != NoCi' BetterSort.LastPlayed.Test\bin\Release-1.29.1\BetterSort.LastPlayed.Test.dll BetterSort.Accuracy.Test\bin\Release-1.29.1\BetterSort.Accuracy.Test.dll
+        run: >
+          vstest.console.exe --testcasefilter:'TestCategory != NoCi'
+          BetterSort.LastPlayed.Test\bin\Release-1.29.1\BetterSort.LastPlayed.Test.dll
+          BetterSort.Accuracy.Test\bin\Release-1.29.1\BetterSort.Accuracy.Test.dll
+          BetterSort.LastPlayed.Test\bin\Release-1.36.2\BetterSort.LastPlayed.Test.dll
+          BetterSort.Accuracy.Test\bin\Release-1.36.2\BetterSort.Accuracy.Test.dll
       - name: Push to main
         if: ${{ github.event_name == 'push' }}
         run: |
