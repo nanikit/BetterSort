@@ -46,8 +46,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OutputType)' == 'Library'">
-    <PackageReference Include="BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta7</Version>
+    <PackageReference Include="Nanikit.BeatSaberModdingTools.Tasks">
+      <Version>2.0.0-beta8</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

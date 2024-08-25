@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    # Disabled due to https://github.com/Zingabopp/BeatSaberModdingTools.Tasks/issues/11
-    tags: ["!*.*.*"]
+    tags: ["*.*.*"]
 
 jobs:
   test:
