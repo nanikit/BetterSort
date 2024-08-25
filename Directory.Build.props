@@ -31,14 +31,6 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
-    <DisableCopyToGame>True</DisableCopyToGame>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(NCrunch)' == '1'">
-    <DisableCopyToGame>True</DisableCopyToGame>
-    <DisableZipRelease>True</DisableZipRelease>
-  </PropertyGroup>
-
   <Sdk Name="DotNet.ReproducibleBuilds.Isolated" Version="1.2.4" />
   <ItemGroup>
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.4" PrivateAssets="All" />
@@ -46,7 +38,7 @@
 
   <ItemGroup Condition="'$(OutputType)' == 'Library'">
     <PackageReference Include="Nanikit.BeatSaberModdingTools.Tasks">
-      <Version>2.0.0-beta8</Version>
+      <Version>2.0.0-beta9-g99d7dd8810</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

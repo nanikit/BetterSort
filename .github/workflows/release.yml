@@ -2,10 +2,10 @@ name: Release
 
 on:
   push:
-    tags: ["*.*.*"]
+    tags: ["*@*.*.*"]
 
 jobs:
-  test:
+  release:
     runs-on: windows-latest
     permissions:
       contents: write
@@ -28,4 +28,6 @@ jobs:
         run: msbuild /p:Configuration=Release-1.36.2 BetterSort.sln
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/bin/Release-*/zip/*.zip"
+          artifacts: "zip/*.zip"
+          draft: true
+          skipIfReleaseExists: true

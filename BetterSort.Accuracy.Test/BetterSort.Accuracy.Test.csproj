@@ -8,7 +8,6 @@
   <PropertyGroup>
     <ImportBSMTTargets>False</ImportBSMTTargets>
     <DisableCopyToGame>True</DisableCopyToGame>
-    <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
 
   <ItemGroup>
