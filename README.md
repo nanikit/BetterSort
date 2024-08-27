@@ -19,7 +19,7 @@ It sorts by difficulty according to your best accuracy.
 
 You can use [ModAssistant](https://github.com/Assistant/ModAssistant/releases/latest) for installation, which I fully support.
 
-If plugins isn't available on ModAssistant or new features are added later, you can [download plugins manually](https://github.com/nanikit/BetterSort/releases/latest).
+If plugins isn't available on ModAssistant or new features are added later, you can [download plugins manually](https://github.com/nanikit/BetterSort/releases).
 
 When manually downloading mods, please be careful of the mod's dependencies. Currently BS_Utils.dll, SiraUtil.dll, and BetterSongList.dll are required.
 
