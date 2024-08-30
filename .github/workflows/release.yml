@@ -2,10 +2,13 @@ name: Release
 
 on:
   push:
-    tags: ["*@*.*.*"]
+    tags: ["*@*.*"]
 
 jobs:
   release:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: windows-latest
     permissions:
       contents: write
