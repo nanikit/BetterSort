@@ -32,7 +32,9 @@ namespace BetterSort.Accuracy.External {
         }
 
         records.Add(new OnlineBestRecord(
-          Accuracy: score.Accuracy,
+          // Cannot use modifiedScore because modifiers change star rating instead of the score for them.
+          // https://github.com/BeatLeader/beatleader-server/issues/44#issuecomment-2243677732
+          Accuracy: score.Accuracy * (score.Modifiers?.Contains("NF") == true ? 0.5 : 1),
           SongHash: hash.ToUpperInvariant(),
           Mode: score.Leaderboard?.Difficulty?.ModeName ?? "Standard",
           Difficulty: difficulty ?? RecordDifficulty.ExpertPlus,
@@ -80,6 +82,9 @@ namespace BeatLeader {
 
     [JsonProperty("modifiedScore")]
     public int ModifiedScore { get; set; }
+
+    [JsonProperty("modifiers")]
+    public string? Modifiers { get; set; }
   }
 
   public class Leaderboard {

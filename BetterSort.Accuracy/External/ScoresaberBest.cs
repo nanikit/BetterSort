@@ -46,7 +46,7 @@ namespace BetterSort.Accuracy.External {
         }
 
         records.Add(new OnlineBestRecord(
-          Accuracy: accuracy,
+          Accuracy: accuracy * (score.Score?.Modifiers?.Contains("NF") == true ? 0.5 : 1),
           SongHash: hash.ToUpperInvariant(),
           Mode: GetGameMode(score.Leaderboard?.Difficulty?.GameMode),
           Difficulty: difficulty ?? RecordDifficulty.ExpertPlus,

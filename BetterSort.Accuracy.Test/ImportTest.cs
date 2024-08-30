@@ -1,9 +1,10 @@
-﻿using BetterSort.Accuracy.External;
+using BetterSort.Accuracy.External;
 using BetterSort.Accuracy.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
 namespace BetterSort.Accuracy.Test {
+
   [TestClass]
   public class ImportTest {
 
@@ -21,6 +22,9 @@ namespace BetterSort.Accuracy.Test {
       Assert.IsTrue(0 < Records[0].Accuracy && Records[0].Accuracy <= 1);
       Assert.AreEqual(1849, Paging.Total);
       Assert.IsNull(Log);
+
+      // NF modifier multiplier should be 0.5
+      Assert.AreEqual(0.754181 / 2, Records[1].Accuracy, 0.00001);
     }
 
     [TestMethod]
@@ -37,6 +41,9 @@ namespace BetterSort.Accuracy.Test {
       Assert.IsTrue(0 < Records[0].Accuracy && Records[0].Accuracy <= 1);
       Assert.AreEqual(2133, Paging.Total);
       Assert.IsNull(Log);
+
+      // NF modifier multiplier should be 0.5
+      Assert.AreEqual(0.754181 / 2, Records[1].Accuracy, 0.00001);
     }
   }
 }
