@@ -35,7 +35,7 @@ jobs:
           BetterSort.Accuracy.Test\bin\Release-1.29.1\BetterSort.Accuracy.Test.dll
           BetterSort.LastPlayed.Test\bin\Release-1.36.2\BetterSort.LastPlayed.Test.dll
           BetterSort.Accuracy.Test\bin\Release-1.36.2\BetterSort.Accuracy.Test.dll
-          --TestCaseFilter:"(TestCategory!=NoCi & Name!=TestComplexCase)"
+          --TestCaseFilter:"(TestCategory!=NoCi)"
       - name: Push to main
         if: ${{ github.event_name == 'push' }}
         run: |

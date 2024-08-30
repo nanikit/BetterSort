@@ -10,7 +10,6 @@ using Zenject;
 
 namespace BetterSort.Accuracy.Test {
 
-  [TestCategory("NoCi")]
   [TestClass]
   public class SorterIntegrationTest {
     private readonly ISorterCustom _adaptor;
