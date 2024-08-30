@@ -6,7 +6,7 @@ namespace BetterSort.Common.Test.Mocks {
 
   public class MockTransformerPluginHelper : ITransformerPluginHelper {
 
-    public void Register<T>(T plugin) where T : ITransformerPlugin, ISorterCustom {
+    public void Register(FilterSortAdaptor plugin) {
       // Do nothing.
     }
   }
