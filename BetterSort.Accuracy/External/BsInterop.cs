@@ -110,9 +110,11 @@ namespace BetterSort.Accuracy.External {
 
       int maxMultiplied = ScoreModel.ComputeMaxMultipliedScoreForBeatmap(transformed);
       double accuracy = (double)result.multipliedScore / maxMultiplied;
+      bool isFailed = setup.gameplayModifiers.noFailOn0Energy && result.energy == 0;
+      double modifiedAccuracy = accuracy * (isFailed ? 0.5 : 1);
 
-      logger.Debug($"Dispatch play event: {songName ?? "(null)"} {mode} {diff} {accuracy}");
-      OnSongPlayed?.Invoke(new PlayRecord(levelId, mode, diff, accuracy));
+      logger.Debug($"Dispatch play event: {songName ?? "(null)"} {mode} {diff} {modifiedAccuracy}{(isFailed ? " NF" : "")}");
+      OnSongPlayed?.Invoke(new PlayRecord(levelId, mode, diff, modifiedAccuracy));
     }
 
     private string? GetSkipReason(PracticeSettings practiceSettings) {
