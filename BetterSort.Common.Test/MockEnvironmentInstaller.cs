@@ -14,6 +14,7 @@ namespace BetterSort.Common.Test {
 
     public override void InstallBindings() {
       Container.BindInterfacesAndSelfTo<Logger>().FromInstance(_logger).AsSingle();
+      Container.BindInterfacesAndSelfTo<MockLogger>().FromInstance(_logger).AsSingle();
       Container.BindInterfacesAndSelfTo<SiraLog>().FromInstance(new MockSiraLog(_logger)).AsSingle();
       Container.BindInterfacesAndSelfTo<FixedClock>().AsSingle();
       Container.BindInterfacesAndSelfTo<MockBeatleader>().AsSingle();

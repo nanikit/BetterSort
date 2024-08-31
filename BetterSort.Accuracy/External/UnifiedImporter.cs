@@ -14,12 +14,28 @@ namespace BetterSort.Accuracy.External {
     private int _fetchedPages;
 
     public async Task CollectOrImport() {
-      var data = await repository.Load().ConfigureAwait(false);
-      if (data != null) {
-        return;
+      string? importReason = await GetImportReason().ConfigureAwait(false);
+      if (importReason != null) {
+        logger.Info(importReason);
+        await ImportAndSave().ConfigureAwait(false);
+      }
+    }
+
+    public async Task<string?> GetImportReason() {
+      var data = await repository.LoadWithMetadata().ConfigureAwait(false);
+      if (data == null) {
+        return "Local history is not found. Import from online.";
       }
 
-      logger.Info("Local history is not found. Import from online.");
+      var breakingChangeVersion = new Version(2, 2);
+      if (Version.TryParse(data.Version, out var version) && version < breakingChangeVersion) {
+        return $"There are breaking changes between {data.Version} and {breakingChangeVersion}. Reimport from online.";
+      }
+
+      return null;
+    }
+
+    private async Task ImportAndSave() {
       var records = await CollectRecordsFromOnline().ConfigureAwait(false);
       await repository.Save(records).ConfigureAwait(false);
     }

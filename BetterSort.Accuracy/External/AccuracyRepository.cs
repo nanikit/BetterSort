@@ -17,42 +17,45 @@ namespace BetterSort.Accuracy.External {
     Task Save(SorterData accuracies);
 
     Task<SorterData?> Load();
+
+    Task<StoredData?> LoadWithMetadata();
   }
 
   public class AccuracyRepository(SiraLog logger, IAccuracyJsonRepository jsonRepository, IClock clock) : IAccuracyRepository {
-    private SorterData? _cache;
-
     public Task Save(SorterData accuracies) {
       var (json, data) = GetPersistentData(accuracies, clock.Now);
       jsonRepository.Save(json);
 
       logger.Info($"Saved {data.BestRecords.Count} records");
-      _cache = accuracies;
 
       return Task.CompletedTask;
     }
 
-    public Task<SorterData?> Load() {
-      if (_cache != null) {
-        logger.Trace($"Load from cache.");
-        return Task.FromResult<SorterData?>(_cache);
+    public Task<StoredData?> LoadWithMetadata() {
+      string? json = jsonRepository.Load();
+      if (json == null) {
+        logger.Debug($"Attempted to load but play history is not exist.");
+        return Task.FromResult<StoredData?>(null);
       }
 
+      var data = JsonConvert.DeserializeObject<StoredData>(json);
+      logger.Info($"Loaded {data?.BestRecords?.Count.ToString() ?? "no"} records");
+
+      return Task.FromResult(data);
+    }
+
+    public async Task<SorterData?> Load() {
       try {
-        string? json = jsonRepository.Load();
-        if (json == null) {
-          logger.Debug($"Attempted to load but play history is not exist.");
-          return Task.FromResult<SorterData?>(null);
+        var data = await LoadWithMetadata().ConfigureAwait(false);
+        if (data == null) {
+          return null;
         }
 
-        var data = JsonConvert.DeserializeObject<StoredData>(json);
-        logger.Info($"Loaded {data?.BestRecords?.Count.ToString() ?? "no"} records");
-
-        return Task.FromResult<SorterData?>(GetSorterData(data?.BestRecords));
+        return GetSorterData(data.BestRecords);
       }
       catch (Exception exception) {
         logger.Warn(exception);
-        return Task.FromResult<SorterData?>(null);
+        return null;
       }
     }
 
