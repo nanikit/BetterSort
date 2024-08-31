@@ -57,6 +57,12 @@
     <BeatmodsPatchNumber>0</BeatmodsPatchNumber>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files %28x86%29\Steam\steam.exe</StartProgram>
+    <StartArguments>-applaunch 620980 --verbose fpfc</StartArguments>
+  </PropertyGroup>
+
   <!-- For vscode language server -->
   <PropertyGroup Condition="'$(GameVersion)' == ''">
     <GameVersion>1.29.1</GameVersion>
