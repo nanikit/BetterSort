@@ -31,6 +31,10 @@
     <Reference Include="BGLib.UnityExtension" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.UnityExtension.dll</HintPath>
     </Reference>
+    <Reference Include="BeatSaber.ViewSystem" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_37_5'))">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.ViewSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="BetterSongList">
       <HintPath>$(BeatSaberDir)\Plugins\BetterSongList.dll</HintPath>
     </Reference>

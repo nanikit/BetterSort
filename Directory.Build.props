@@ -79,6 +79,10 @@
     <DefineConstants>$(DefineConstants);NOT_BEFORE_1_36_2</DefineConstants>
     <BeatmodsPatchNumber>2</BeatmodsPatchNumber>
   </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(GameVersion)', '1.37.5'))">
+    <DefineConstants>$(DefineConstants);NOT_BEFORE_1_37_5</DefineConstants>
+    <BeatmodsPatchNumber>3</BeatmodsPatchNumber>
+  </PropertyGroup>
 
   <Target Name="AddToSearchPaths" BeforeTargets="ResolveAssemblyReferences">  
     <PropertyGroup>
