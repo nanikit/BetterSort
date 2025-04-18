@@ -15,20 +15,17 @@ jobs:
     env:
       DOTNET_NOLOGO: true
     steps:
-      - name: Checkout
-        uses: actions/checkout@main
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-      - name: Restore dependencies
-        run: nuget restore BetterSort.sln
-      - name: Build 1.29.1
-        run: msbuild /p:Configuration=Release-1.29.1 BetterSort.sln
-      - name: Build 1.34.2
-        run: msbuild /p:Configuration=Release-1.34.2 BetterSort.sln
-      - name: Build 1.36.2
-        run: msbuild /p:Configuration=Release-1.36.2 BetterSort.sln
+      - uses: microsoft/setup-msbuild@v2
+
+      - run: nuget restore BetterSort.sln
+      - run: msbuild /p:Configuration=Release-1.29.1 BetterSort.sln
+      - run: msbuild /p:Configuration=Release-1.34.2 BetterSort.sln
+      - run: msbuild /p:Configuration=Release-1.36.2 BetterSort.sln
+      - run: msbuild /p:Configuration=Release-1.37.5 BetterSort.sln
+
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "zip/*.zip"
