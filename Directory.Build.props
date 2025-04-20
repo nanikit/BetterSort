@@ -2,8 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
-    <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>

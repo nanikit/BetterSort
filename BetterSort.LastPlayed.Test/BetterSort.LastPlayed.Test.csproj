@@ -21,6 +21,10 @@
       <HintPath>$(BeatSaberDir)\Libs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" >
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\netstandard.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
     <Reference Include="DataModels" Condition="$(DefineConstants.Contains('NOT_BEFORE_1_36_2'))">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
     </Reference>
