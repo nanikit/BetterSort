@@ -94,7 +94,7 @@
     <GenerateManifest>True</GenerateManifest>
     <PluginId>BetterSort.Accuracy</PluginId>
     <PluginName>BetterSort.Accuracy</PluginName>
-    <Version>2.2.$(BeatmodsPatchNumber)</Version>
+    <Version>2.3.$(BeatmodsPatchNumber)</Version>
     <Description>Add accuracy sort to BetterSongList</Description>
   </PropertyGroup>
 

@@ -27,6 +27,7 @@
 
   <PropertyGroup Condition="$(Configuration.Contains('Release'))">
     <DebugType>none</DebugType>
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
 
   <Sdk Name="DotNet.ReproducibleBuilds.Isolated" Version="1.2.4" />
