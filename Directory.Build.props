@@ -19,7 +19,7 @@
   <ItemGroup>
     <Compile Include="..\BetterSort.Common\Compatibility\BreakingTypes.cs" Link="External\BreakingTypes.cs" />
   </ItemGroup>
-  
+
   <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
@@ -64,7 +64,7 @@
 
   <!-- For vscode language server -->
   <PropertyGroup Condition="'$(GameVersion)' == ''">
-    <GameVersion>1.29.1</GameVersion>
+    <GameVersion>1.37.5</GameVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(GameVersion)', '1.29.1'))">
@@ -83,12 +83,12 @@
     <BeatmodsPatchNumber>3</BeatmodsPatchNumber>
   </PropertyGroup>
 
-  <Target Name="AddToSearchPaths" BeforeTargets="ResolveAssemblyReferences">  
+  <Target Name="AddToSearchPaths" BeforeTargets="ResolveAssemblyReferences">
     <PropertyGroup>
       <ReferencePath>
-         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Plugins;
-         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Libs;
-         $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Beat Saber_Data\Managed;
+        $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Plugins;
+        $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Libs;
+        $(SolutionDir)beatsaber-stripped\versions\$(GameVersion)\Beat Saber_Data\Managed;
       </ReferencePath>
       <AssemblySearchPaths>$(AssemblySearchPaths);$(ReferencePath)</AssemblySearchPaths>
     </PropertyGroup>
